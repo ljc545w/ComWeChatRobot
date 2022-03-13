@@ -3,4 +3,4 @@ PC微信机器人，实现获取通讯录，发送文本、图片、文件消息
 # 使用
 参考[wxRobot.py](https://github.com/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)
 # 免责声明
-仅供交流学习使用，严禁用于非法用途！
+工程仅供交流学习使用，请勿用于非法用途和商业用途！如因此产生任何法律纠纷，均与作者无关！
