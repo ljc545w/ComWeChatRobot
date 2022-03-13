@@ -15,13 +15,13 @@ CWeChatRobot.exe /regserver
 CWeChatRobot.exe /unregserver
 ```
 # 调用
-Python：
-参考[wxRobot.py](https://github.com/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)
-C#：
-我不会，但应该可以，不可以的话我在描述中删掉相关内容。
+Python：  
+参考[wxRobot.py](https://github.com/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)  
+C#：  
+我不会，但应该可以，不可以的话我在描述中删掉相关内容。  
 # 更多功能
-发送xml文章、发送名片，wxid查询好友信息，coming soon...
-代码里还有个保存gif表情的Hook函数，自行探索...
+发送xml文章、发送名片，wxid查询好友信息，coming soon...  
+代码里还有个保存gif表情的Hook函数，自行探索...  
 # 打赏作者
 ？
 # 免责声明
