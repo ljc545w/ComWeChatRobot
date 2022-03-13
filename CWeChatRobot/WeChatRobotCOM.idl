@@ -1,0 +1,42 @@
+﻿// WeChatRobotCOM.idl: WeChatRobotCOM 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 生成类型库(WeChatRobotCOM.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(a836e359-59b2-4e01-9b0c-0e5a5a2efa22),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWeChatRobot : IDispatch
+{
+	[id(1)] HRESULT CStartRobotService([in] BSTR workPath, [out, retval] int* __result);
+	[id(2)] HRESULT CStopRobotService([out, retval] int* __result);
+	[id(3)] HRESULT CSendText([in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
+	[id(4)] HRESULT CSendImage([in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
+	[id(5)] HRESULT CSendFile([in] BSTR wxid, [in] BSTR filepath, [out, retval] int* __result);
+	[id(6)] HRESULT CGetFriendList([out, retval] BSTR* __result);
+};
+[
+	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),
+	version(1.0),
+]
+library WeChatRobotCOMLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(4ce7f5e1-2c93-4bfe-86ac-886452e47475)
+	]
+	coclass WeChatRobot
+	{
+		[default] interface IWeChatRobot;
+	};
+};
+
+import "shobjidl.idl";

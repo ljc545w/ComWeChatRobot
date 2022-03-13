@@ -1,0 +1,8 @@
+/Debug
+/Release/*.exp
+/Release/*.pdb
+/Release/*.lib
+*/Debug/
+*/Release/
+*.rar
+/.vs/

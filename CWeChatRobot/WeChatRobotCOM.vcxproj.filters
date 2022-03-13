@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="生成的文件">
+      <UniqueIdentifier>{bbe1ba5c-e2d6-4aad-b97a-18ad64a9f157}</UniqueIdentifier>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="注入工具">
+      <UniqueIdentifier>{2a494b07-1ec6-45c4-960c-09875429c485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息">
+      <UniqueIdentifier>{9e0389a0-4ff4-40a5-8d6a-2c446d7c10b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送文本">
+      <UniqueIdentifier>{2f5b934c-6123-4271-880a-7e185fde0fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送图片">
+      <UniqueIdentifier>{99158de3-8221-42df-8b1f-eb3c7c383e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送文件">
+      <UniqueIdentifier>{eb0eba18-3b38-466c-8978-f7d0f2bb756e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友列表">
+      <UniqueIdentifier>{be3e55a9-dd57-4e92-a340-cb558f3cd4f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="xdlldata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WeChatRobotCOM_i.h">
+      <Filter>生成的文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WeChatRobot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InjertDll.h">
+      <Filter>注入工具</Filter>
+    </ClInclude>
+    <ClInclude Include="SendImage.h">
+      <Filter>发送消息\发送图片</Filter>
+    </ClInclude>
+    <ClInclude Include="SendText.h">
+      <Filter>发送消息\发送文本</Filter>
+    </ClInclude>
+    <ClInclude Include="FriendList.h">
+      <Filter>好友列表</Filter>
+    </ClInclude>
+    <ClInclude Include="SendFile.h">
+      <Filter>发送消息\发送文件</Filter>
+    </ClInclude>
+    <ClInclude Include="robotdata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WeChatRobotCOM.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="xdlldata.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WeChatRobotCOM_i.c">
+      <Filter>生成的文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WeChatRobot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InjertDll.cpp">
+      <Filter>注入工具</Filter>
+    </ClCompile>
+    <ClCompile Include="SendImage.cpp">
+      <Filter>发送消息\发送图片</Filter>
+    </ClCompile>
+    <ClCompile Include="SendText.cpp">
+      <Filter>发送消息\发送文本</Filter>
+    </ClCompile>
+    <ClCompile Include="FriendList.cpp">
+      <Filter>好友列表</Filter>
+    </ClCompile>
+    <ClCompile Include="SendFile.cpp">
+      <Filter>发送消息\发送文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="WeChatRobotCOM.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WeChatRobotCOM.rgs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="WeChatRobot.rgs">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="WeChatRobotCOM.idl">
+      <Filter>源文件</Filter>
+    </Midl>
+  </ItemGroup>
+</Project>

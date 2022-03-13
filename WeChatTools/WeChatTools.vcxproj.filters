@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="注入工具">
+      <UniqueIdentifier>{4212f33d-28e9-4a15-90c9-8f292a8a90b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="主函数">
+      <UniqueIdentifier>{601f5067-b37e-4adf-b081-ba472f0eb50c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="通用函数">
+      <UniqueIdentifier>{32810a6d-ba95-4285-b52b-62ce859da7f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>主函数</Filter>
+    </ClCompile>
+    <ClCompile Include="Injert.cpp">
+      <Filter>注入工具</Filter>
+    </ClCompile>
+    <ClCompile Include="base.cpp">
+      <Filter>通用函数</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>主函数</Filter>
+    </ClInclude>
+    <ClInclude Include="base.h">
+      <Filter>通用函数</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
