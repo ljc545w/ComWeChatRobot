@@ -101,7 +101,7 @@ VOID DeleteUserInfoCacheRemote() {
 	}
 }
 
-BOOL GetUserInfoByWxId(wchar_t* wxid,DWORD &address) {
+BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid,DWORD &address) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD GetUserDetailInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
 	DWORD GetUserDetailInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
@@ -157,7 +157,7 @@ BOOL GetUserInfoByWxId(wchar_t* wxid,DWORD &address) {
 }
 
 // 另外一个查询好友信息的地方
-BOOL GetWxUserInfoByWxid2(wchar_t* wxid, DWORD& address) {
+BOOL __stdcall GetWxUserInfoByWxid2(wchar_t* wxid, DWORD& address) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD WxUserDataCall1 = WeChatWinBase + 0x645BD9A0 - 0x64530000;
 	DWORD WxUserDataCall2 = WeChatWinBase + 0x64C08420 - 0x64530000;

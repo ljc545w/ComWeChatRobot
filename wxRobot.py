@@ -27,6 +27,9 @@ class ChatSession():
     def SendMp4(self,mp4path):
         return self.robot.CSendImage(self.chatwith,mp4path)
         
+    def SendArticle(self,title,abstract,url):
+        return self.robot.CSendArticle(self.chatwith,title,abstract,url)
+        
 
 class WeChatRobot():
     
@@ -39,9 +42,10 @@ class WeChatRobot():
     def StartService(self):
         status = self.robot.CStartRobotService(self.dllpath)
         if status == 0:
-            self.myinfo = self.GetSelfInfo()
+            pass
         return status
-    
+
+    # 有bug待修复，需要判断某项信息是否是指针
     def GetSelfInfo(self):
         myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
         myinfo = ast.literal_eval(myinfo)
@@ -124,7 +128,7 @@ def test():
     mp4path = r"C:\Users\Administrator\Desktop\快捷\wechat\wxsend.mp4"
     me = wx.GetFriendByWxNickName("文件传送助手")
     session = wx.GetChatSession(me.get('wxid'))
-    
+    print(wx.GetWxUserInfo(me.get('wxid')))
     session.SendText('来自python的消息')
     session.SendImage(imgpath)
     session.SendFile(filepath)
@@ -133,12 +137,12 @@ def test():
 
 if __name__ == '__main__':
     # DWeChatRobot.dll path
-    dllpath = r'D:\C++\ComWeChatRobot\Release'
+    dllpath = r'D:\VS2019C++\MyWeChatRobot\Release'
 
     wx = WeChatRobot(dllpath)
     wx.StartService()
     wxid = wx.GetFriendByWxNickName("文件传输助手").get('wxid')
-    print(wx.myinfo)
-    print(wx.GetWxUserInfo(wxid))
+    session = wx.GetChatSession(wxid)
+    session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
     
     wx.StopService()

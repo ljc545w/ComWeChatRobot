@@ -8,6 +8,7 @@ struct SelfInfoStruct {
 	DWORD length;
 } ret;
 
+// 这里有待解决的BUG
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
@@ -35,14 +36,24 @@ DWORD GetSelfInfoRemote() {
 		L"\"wxCity\"",
 		L"\"PhoneNumber\""
 	};
-
+#ifdef _DEBUG
+	wcout.imbue(locale("chs"));
+#endif
 	selfinfo = selfinfo + L"{";
 	for (unsigned int i = 0; i < SelfInfoAddr.size(); i++) {
 		selfinfo = selfinfo + SelfInfoKey[i] + L":";
 		selfinfo = selfinfo + L"\"";
 		char* temp = (*((DWORD*)SelfInfoAddr[i]) != 0) ? (char*)SelfInfoAddr[i] : (char*)"null";
+#ifdef _DEBUG
+		cout << temp << endl;
+#endif
+		continue;
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];
+		ZeroMemory(wtemp, (strlen(temp) + 1) * 2);
 		MultiByteToWideChar(CP_UTF8, MB_COMPOSITE, temp, -1, wtemp, strlen(temp) + 1);
+#ifdef _DEBUG
+		wcout << wtemp << endl;
+#endif
 		selfinfo = selfinfo + wtemp;
 		selfinfo = selfinfo + L"\"";
 		if(i!= SelfInfoAddr.size() - 1)
@@ -54,7 +65,6 @@ DWORD GetSelfInfoRemote() {
 	ret.message = (DWORD)selfinfo.c_str();
 	ret.length = selfinfo.length();
 #ifdef _DEBUG
-	wcout.imbue(locale("chs"));
 	wcout << selfinfo << endl;
 	DeleteSelfInfoCacheRemote();
 #endif

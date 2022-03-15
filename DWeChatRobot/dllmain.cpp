@@ -25,8 +25,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("HookExtractExpression 0x%08X\n", (DWORD)HookExtractExpression);
         printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
         printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
-        system("pause");
-        SendArticle((WCHAR*)L"filehelper",(WCHAR*)L"这是标题",(WCHAR*)L"这是摘要",(WCHAR*)L"https://www.ljczero.top/article/2022/3/13/133.html");
+        
+        // GetSelfInfoRemote();
 #endif
         break;
     }
@@ -36,7 +36,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #ifdef _DEBUG
         detach_count++;
         if (detach_count != 1) {
-            FreeConsole();
+            // FreeConsole();
             // UnHookAll();
         }
 #endif

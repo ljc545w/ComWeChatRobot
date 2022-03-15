@@ -218,6 +218,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
     <ClInclude Include="SelfInfo.h" />
+    <ClInclude Include="SendArticle.h" />
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
@@ -237,6 +238,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SelfInfo.cpp" />
+    <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />

@@ -110,6 +110,13 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR filepath,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendArticle( 
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR title,
+            /* [in] */ BSTR abstract,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ int *__result) = 0;
+        
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendList( 
             /* [retval][out] */ BSTR *__result) = 0;
         
@@ -205,6 +212,14 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR filepath,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendArticle )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR title,
+            /* [in] */ BSTR abstract,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ int *__result);
+        
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendList )( 
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
@@ -268,6 +283,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CSendFile(This,wxid,filepath,__result)	\
     ( (This)->lpVtbl -> CSendFile(This,wxid,filepath,__result) ) 
+
+#define IWeChatRobot_CSendArticle(This,wxid,title,abstract,url,__result)	\
+    ( (This)->lpVtbl -> CSendArticle(This,wxid,title,abstract,url,__result) ) 
 
 #define IWeChatRobot_CGetFriendList(This,__result)	\
     ( (This)->lpVtbl -> CGetFriendList(This,__result) ) 

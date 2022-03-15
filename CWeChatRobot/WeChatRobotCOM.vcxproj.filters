@@ -44,6 +44,9 @@
     <Filter Include="个人信息">
       <UniqueIdentifier>{82fef7e4-e819-4cb2-9087-40ae1f426e73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送文章">
+      <UniqueIdentifier>{1986e9ed-7cd3-4ad3-b333-a1d74cc53c28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -91,6 +94,9 @@
     <ClInclude Include="SelfInfo.h">
       <Filter>个人信息</Filter>
     </ClInclude>
+    <ClInclude Include="SendArticle.h">
+      <Filter>发送消息\发送文章</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -128,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="SelfInfo.cpp">
       <Filter>个人信息</Filter>
+    </ClCompile>
+    <ClCompile Include="SendArticle.cpp">
+      <Filter>发送消息\发送文章</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

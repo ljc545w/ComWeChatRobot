@@ -56,6 +56,7 @@ public:
 	STDMETHODIMP CSendImage(BSTR wxid, BSTR imagepath, int* __result);
 	STDMETHODIMP CSendText(BSTR wxid, BSTR wxmsg, int* __result);
 	STDMETHODIMP CSendFile(BSTR wxid, BSTR filepath, int* __result);
+	STDMETHODIMP CSendArticle(BSTR wxid, BSTR title, BSTR abstract, BSTR url, int* __result);
 	STDMETHODIMP CGetFriendList(BSTR* __result);
 	STDMETHODIMP CGetWxUserInfo(BSTR wxid, BSTR* __result);
 	STDMETHODIMP CGetSelfInfo(BSTR* __result);

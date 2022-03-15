@@ -53,6 +53,18 @@ STDMETHODIMP CWeChatRobot::CSendFile(BSTR wxid, BSTR filepath, int* __result) {
 }
 
 /*
+* 参数1：接收人wxid
+* 参数2：文章标题
+* 参数3：文章摘要
+* 参数4：文章链接
+* 参数5：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR url, int* __result) {
+    *__result = SendArticle(wxid, title,abstract,url);
+    return S_OK;
+}
+
+/*
 * 参数1：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetFriendList(BSTR* __result) {
