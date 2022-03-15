@@ -23,6 +23,7 @@ interface IWeChatRobot : IDispatch
 	[id(5)] HRESULT CSendFile([in] BSTR wxid, [in] BSTR filepath, [out, retval] int* __result);
 	[id(6)] HRESULT CGetFriendList([out, retval] BSTR* __result);
 	[id(7)] HRESULT CGetWxUserInfo([in] BSTR wxid, [out, retval] BSTR* __result);
+	[id(8)] HRESULT CGetSelfInfo([out, retval] BSTR* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

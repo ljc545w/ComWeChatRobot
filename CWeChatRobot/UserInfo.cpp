@@ -5,7 +5,21 @@ struct GetUserInfoStruct {
 	DWORD length;
 };
 
+VOID DeleteUserInfoCache() {
+	if (!hProcess)
+		return;
+	DWORD dwId = 0;
+	DWORD DeleteUserInfoCacheProcAddr = GetWeChatRobotBase() + DeleteUserInfoCacheOffset;
+	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)DeleteUserInfoCacheProcAddr, NULL, 0, &dwId);
+	if (hThread) {
+		WaitForSingleObject(hThread, INFINITE);
+		CloseHandle(hThread);
+	}
+}
+
 std::wstring GetWxUserInfo(wchar_t* wxid) {
+	if (!hProcess)
+		return L"";
 	wstring WString = L"";
 	DWORD GetUserInfoProcAddr = GetWeChatRobotBase() + GetWxUserInfoOffset;
 	LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
@@ -35,5 +49,7 @@ std::wstring GetWxUserInfo(wchar_t* wxid) {
 	}
 
 	VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
+	DeleteUserInfoCache();
 	return WString;
 }
+

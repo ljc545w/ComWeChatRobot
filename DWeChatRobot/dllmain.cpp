@@ -23,12 +23,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("SendFile 0x%08X\n", (DWORD)SendFile);
         printf("GetFriendList 0x%08X\n", (DWORD)GetFriendList);
         printf("HookExtractExpression 0x%08X\n", (DWORD)HookExtractExpression);
-        printf("GetWxUserInfoByWxid 0x%08X\n", (DWORD)GetWxUserInfoByWxid);
-        printf("GetUserDetailInfoByWxId 0x%08X\n", (DWORD)GetUserDetailInfoByWxId);
-        printf("GetWxUserInfoRemote 0x%08X\n", (DWORD)GetWxUserInfoRemote);
+        printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
+        printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
         system("pause");
-        wchar_t* wxid = (wchar_t*)L"wxid_ltedgfwcw7yu22";
-        GetWxUserInfoRemote(wxid);
+        SendArticle((WCHAR*)L"filehelper",(WCHAR*)L"这是标题",(WCHAR*)L"这是摘要",(WCHAR*)L"https://www.ljczero.top/article/2022/3/13/133.html");
 #endif
         break;
     }

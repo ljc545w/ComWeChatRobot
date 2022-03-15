@@ -70,3 +70,12 @@ STDMETHODIMP CWeChatRobot::CGetWxUserInfo(BSTR wxid,BSTR* __result) {
     *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
     return S_OK;
 }
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetSelfInfo(BSTR* __result) {
+    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetSelfInfo().c_str()));
+    *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
+    return S_OK;
+}

@@ -58,6 +58,7 @@ public:
 	STDMETHODIMP CSendFile(BSTR wxid, BSTR filepath, int* __result);
 	STDMETHODIMP CGetFriendList(BSTR* __result);
 	STDMETHODIMP CGetWxUserInfo(BSTR wxid, BSTR* __result);
+	STDMETHODIMP CGetSelfInfo(BSTR* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

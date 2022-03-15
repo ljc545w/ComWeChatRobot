@@ -6,10 +6,17 @@
 DWORD SendImageOffset = 0x0;
 DWORD SendTextOffset = 0x0;
 DWORD SendFileOffset = 0x0;
+
 DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
 DWORD GetFriendListFinishOffset = 0x0;
+
 DWORD GetWxUserInfoOffset = 0x0;
+DWORD DeleteUserInfoCacheOffset = 0x0;
+
+DWORD GetSelfInfoOffset = 0x0;
+DWORD DeleteSelfInfoCacheOffset = 0x0;
+wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
 
@@ -77,15 +84,20 @@ void GetProcOffset(wchar_t* workPath) {
 
     DWORD GetFriendListInitProcAddr = (DWORD)GetProcAddress(hd, GetFriendListInit);
     GetFriendListInitOffset = GetFriendListInitProcAddr - WeChatBase;
-
     DWORD GetFriendListRemoteProcAddr = (DWORD)GetProcAddress(hd, GetFriendListRemote);
     GetFriendListRemoteOffset = GetFriendListRemoteProcAddr - WeChatBase;
-
     DWORD GetFriendListFinishProcAddr = (DWORD)GetProcAddress(hd, GetFriendListFinish);
     GetFriendListFinishOffset = GetFriendListFinishProcAddr - WeChatBase;
 
     DWORD GetWxUserInfoProcAddr = (DWORD)GetProcAddress(hd, GetWxUserInfoRemote);
     GetWxUserInfoOffset = GetWxUserInfoProcAddr - WeChatBase;
+    DWORD DeleteUserInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteUserInfoCacheRemote);
+    DeleteUserInfoCacheOffset = DeleteUserInfoCacheProcAddr - WeChatBase;
+
+    DWORD GetSelfInfoProcAddr = (DWORD)GetProcAddress(hd, GetSelfInfoRemote);
+    GetSelfInfoOffset = GetSelfInfoProcAddr - WeChatBase;
+    DWORD DeleteSelfInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteSelfInfoCacheRemote);
+    DeleteSelfInfoCacheOffset = DeleteSelfInfoCacheProcAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;
@@ -120,6 +132,7 @@ DWORD StopRobotService() {
         return 1;
     DWORD wxPid = GetWeChatPid();
     RemoveDll(wxPid);
+    ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
     return 0;
 }

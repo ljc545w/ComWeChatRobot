@@ -14,9 +14,11 @@
 #include "SendImage.h"
 #include "SendText.h"
 #include "SendFile.h"
+#include "SendArticle.h"
 #include "FriendList.h"
 #include "SaveGif.h"
 #include "UserInfo.h"
+#include "SelfInfo.h"
 #endif //PCH_H
 
 using namespace std;

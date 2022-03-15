@@ -3,9 +3,12 @@
 #include <string>
 #include <vector>
 
-#define GetUserInfoCall1Offset 0x645BD9A0 - 0x64530000
-#define GetUserInfoCall2Offset 0x64C08420 - 0x64530000
-#define GetUserInfoCall3Offset 0x64914260 - 0x64530000
+#define GetUserInfoCall1Offset 0x5F917490 - 0x5F230000
+#define GetUserInfoCall2Offset 0x5F2BD9A0 - 0x5F230000
+#define GetUserInfoCall3Offset 0x5F619F70 - 0x5F230000
+
+#define DeleteCacheCall1Offset 0x56C349A0 - 0x56B80000
+#define DeleteCacheCall2Offset 0x56D983B0 - 0x56B80000
 
 struct GetUserInfoStruct {
 	DWORD message;
@@ -15,19 +18,19 @@ struct GetUserInfoStruct {
 wstring wUserInfo = L"";
 GetUserInfoStruct ret = { 0 };
 
-struct GetDetailUserInfoStruct {
+struct GetDetailUserInfoParamStruct {
 	WxString* pWxString;
 	DWORD ptr1 = 0;
 	DWORD ptr2 = 0;
 	char fill[0x18] = { 0 };
-	GetDetailUserInfoStruct(WxString* pWxString) {
+	GetDetailUserInfoParamStruct(WxString* pWxString) {
 		this->pWxString = pWxString;
 		ptr1 = DWORD(pWxString) + sizeof(WxString);
 		ptr2 = DWORD(pWxString) + sizeof(WxString);
 	}
 };
 
-struct UserInfoBaseStruct {
+struct UserInfoBaseParamStruct {
 	DWORD data;
 	DWORD endbuffer1;
 	DWORD endbuffer2;
@@ -82,7 +85,7 @@ DWORD GetWxUserInfoRemote(LPVOID lparamter) {
 	wchar_t* userwxid = (wchar_t*)lparamter;
 	DWORD address = 0;
 	
-	if (!GetUserDetailInfoByWxId(userwxid, address)) {
+	if (!GetUserInfoByWxId(userwxid, address)) {
 		return 0;
 	}
 	ret.message = (DWORD)wUserInfo.c_str();
@@ -90,29 +93,36 @@ DWORD GetWxUserInfoRemote(LPVOID lparamter) {
 	return (DWORD)&ret;
 }
 
+VOID DeleteUserInfoCacheRemote() {
+	if (ret.length) {
+		ZeroMemory((wchar_t*)ret.message, ret.length * 2 + 2);
+		ret.length = 0;
+		wUserInfo = L"";
+	}
+}
 
-BOOL GetUserDetailInfoByWxId(wchar_t* wxid,DWORD &address) {
+BOOL GetUserInfoByWxId(wchar_t* wxid,DWORD &address) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD GetUserDetailInfoCall1 = WeChatWinBase + 0x5F917490 - 0x5F230000;
-	DWORD GetUserDetailInfoCall2 = WeChatWinBase + 0x5F2BD9A0 - 0x5F230000;
-	DWORD GetUserDetailInfoCall3 = WeChatWinBase + 0x5F619F70 - 0x5F230000;
+	DWORD GetUserDetailInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
+	DWORD GetUserDetailInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
+	DWORD GetUserDetailInfoCall3 = WeChatWinBase + GetUserInfoCall3Offset;
 
-	DWORD DeleteCacheCall1 = WeChatWinBase + 0x56C349A0 - 0x56B80000;
-	DWORD DeleteCacheCall2 = WeChatWinBase + 0x56D983B0 - 0x56B80000;
+	DWORD DeleteCacheCall1 = WeChatWinBase + DeleteCacheCall1Offset;
+	DWORD DeleteCacheCall2 = WeChatWinBase + DeleteCacheCall2Offset;
 	WxString* pWxid = new WxString;
 	pWxid->buffer = wxid;
 	pWxid->length = wcslen(wxid);
 	pWxid->maxLength = wcslen(wxid) * 2;
 
-	UserInfoBaseStruct temp = { 0 };
-	UserInfoBaseStruct userinfo = { 0 };
-	GetDetailUserInfoStruct pUser(pWxid);
+	UserInfoBaseParamStruct temp = { 0 };
+	UserInfoBaseParamStruct userinfo = { 0 };
+	GetDetailUserInfoParamStruct pUser(pWxid);
 	DWORD isSuccess = 0;
 
 	__asm {
 		pushad;
 		pushfd;
-		mov eax, 0x7;
+		// mov eax, 0x7;
 		lea ecx, pUser;
 		lea edx, temp;
 		call GetUserDetailInfoCall1;
@@ -130,6 +140,7 @@ BOOL GetUserDetailInfoByWxId(wchar_t* wxid,DWORD &address) {
 	address = userinfo.data;
 	if(isSuccess != 0)
 		WxUserInfo(address);
+	// 释放内存
 	__asm {
 		pushad;
 		pushfd;
@@ -145,11 +156,12 @@ BOOL GetUserDetailInfoByWxId(wchar_t* wxid,DWORD &address) {
 	return (isSuccess != 0);
 }
 
-BOOL GetWxUserInfoByWxid(wchar_t* wxid, DWORD& address) {
+// 另外一个查询好友信息的地方
+BOOL GetWxUserInfoByWxid2(wchar_t* wxid, DWORD& address) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD WxUserDataCall1 = WeChatWinBase + GetUserInfoCall1Offset;
-	DWORD WxUserDataCall2 = WeChatWinBase + GetUserInfoCall2Offset;
-	DWORD WxUserDataCall3 = WeChatWinBase + GetUserInfoCall3Offset;
+	DWORD WxUserDataCall1 = WeChatWinBase + 0x645BD9A0 - 0x64530000;
+	DWORD WxUserDataCall2 = WeChatWinBase + 0x64C08420 - 0x64530000;
+	DWORD WxUserDataCall3 = WeChatWinBase + 0x64914260 - 0x64530000;
 	char buffer[0xF90] = { 0 };
 	WxBaseStruct pWxid(wxid);
 	DWORD r_ebx = 0;

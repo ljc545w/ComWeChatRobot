@@ -41,6 +41,9 @@
     <Filter Include="好友相关\好友信息">
       <UniqueIdentifier>{cdd9e8b4-4576-499c-b20e-60e05911f6d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="个人信息">
+      <UniqueIdentifier>{82fef7e4-e819-4cb2-9087-40ae1f426e73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -85,6 +88,9 @@
     <ClInclude Include="UserInfo.h">
       <Filter>好友相关\好友信息</Filter>
     </ClInclude>
+    <ClInclude Include="SelfInfo.h">
+      <Filter>个人信息</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -119,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="UserInfo.cpp">
       <Filter>好友相关\好友信息</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfInfo.cpp">
+      <Filter>个人信息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

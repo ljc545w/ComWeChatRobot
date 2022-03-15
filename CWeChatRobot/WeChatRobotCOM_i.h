@@ -117,6 +117,9 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxid,
             /* [retval][out] */ BSTR *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetSelfInfo( 
+            /* [retval][out] */ BSTR *__result) = 0;
+        
     };
     
     
@@ -211,6 +214,10 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxid,
             /* [retval][out] */ BSTR *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetSelfInfo )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ BSTR *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -267,6 +274,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetWxUserInfo(This,wxid,__result)	\
     ( (This)->lpVtbl -> CGetWxUserInfo(This,wxid,__result) ) 
+
+#define IWeChatRobot_CGetSelfInfo(This,__result)	\
+    ( (This)->lpVtbl -> CGetSelfInfo(This,__result) ) 
 
 #endif /* COBJMACROS */
 

@@ -40,6 +40,12 @@
     <Filter Include="好友相关\好友信息">
       <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
     </Filter>
+    <Filter Include="个人信息">
+      <UniqueIdentifier>{722c02ee-dda5-4a6a-9443-f1ed3c112709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送文章">
+      <UniqueIdentifier>{edd6e39f-235b-4db5-aea1-ec2c8d0072c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -65,6 +71,12 @@
     </ClInclude>
     <ClInclude Include="UserInfo.h">
       <Filter>好友相关\好友信息</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfInfo.h">
+      <Filter>个人信息</Filter>
+    </ClInclude>
+    <ClInclude Include="SendArticle.h">
+      <Filter>发送消息\发送文章</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="UserInfo.cpp">
       <Filter>好友相关\好友信息</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfInfo.cpp">
+      <Filter>个人信息</Filter>
+    </ClCompile>
+    <ClCompile Include="SendArticle.cpp">
+      <Filter>发送消息\发送文章</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
