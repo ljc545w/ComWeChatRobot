@@ -16,13 +16,19 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
 #ifdef _DEBUG
         CreateConsole();
-        DWORD base = (DWORD)GetModuleHandleA("MyWeChatRobot.dll");
+        DWORD base = (DWORD)GetModuleHandleA("DWeChatRobot.dll");
 
         printf("SendImage 0x%08X\n", (DWORD)SendImage);
         printf("SendText 0x%08X\n", (DWORD)SendText);
         printf("SendFile 0x%08X\n", (DWORD)SendFile);
         printf("GetFriendList 0x%08X\n", (DWORD)GetFriendList);
         printf("HookExtractExpression 0x%08X\n", (DWORD)HookExtractExpression);
+        printf("GetWxUserInfoByWxid 0x%08X\n", (DWORD)GetWxUserInfoByWxid);
+        printf("GetUserDetailInfoByWxId 0x%08X\n", (DWORD)GetUserDetailInfoByWxId);
+        printf("GetWxUserInfoRemote 0x%08X\n", (DWORD)GetWxUserInfoRemote);
+        system("pause");
+        wchar_t* wxid = (wchar_t*)L"wxid_ltedgfwcw7yu22";
+        GetWxUserInfoRemote(wxid);
 #endif
         break;
     }
@@ -33,7 +39,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         detach_count++;
         if (detach_count != 1) {
             FreeConsole();
-            UnHookAll();
+            // UnHookAll();
         }
 #endif
         break;

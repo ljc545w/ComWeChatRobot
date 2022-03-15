@@ -113,6 +113,10 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendList( 
             /* [retval][out] */ BSTR *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetWxUserInfo( 
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ BSTR *__result) = 0;
+        
     };
     
     
@@ -202,6 +206,11 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetWxUserInfo )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ BSTR *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -255,6 +264,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetFriendList(This,__result)	\
     ( (This)->lpVtbl -> CGetFriendList(This,__result) ) 
+
+#define IWeChatRobot_CGetWxUserInfo(This,wxid,__result)	\
+    ( (This)->lpVtbl -> CGetWxUserInfo(This,wxid,__result) ) 
 
 #endif /* COBJMACROS */
 

@@ -9,6 +9,7 @@ DWORD SendFileOffset = 0x0;
 DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
 DWORD GetFriendListFinishOffset = 0x0;
+DWORD GetWxUserInfoOffset = 0x0;
 
 HANDLE hProcess = NULL;
 
@@ -82,6 +83,9 @@ void GetProcOffset(wchar_t* workPath) {
 
     DWORD GetFriendListFinishProcAddr = (DWORD)GetProcAddress(hd, GetFriendListFinish);
     GetFriendListFinishOffset = GetFriendListFinishProcAddr - WeChatBase;
+
+    DWORD GetWxUserInfoProcAddr = (DWORD)GetProcAddress(hd, GetWxUserInfoRemote);
+    GetWxUserInfoOffset = GetWxUserInfoProcAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;

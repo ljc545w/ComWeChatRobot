@@ -4,6 +4,7 @@
 #include "SendText.h"
 #include "SendFile.h"
 #include "FriendList.h"
+#include "UserInfo.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -14,6 +15,8 @@ extern DWORD GetFriendListInitOffset;
 extern DWORD GetFriendListRemoteOffset;
 extern DWORD GetFriendListFinishOffset;
 
+extern DWORD GetWxUserInfoOffset;
+
 #define dllname L"DWeChatRobot.dll"
 
 #define SendTextRemote "SendTextRemote"
@@ -23,3 +26,5 @@ extern DWORD GetFriendListFinishOffset;
 #define GetFriendListInit "GetFriendListInit"
 #define GetFriendListRemote "GetFriendListRemote"
 #define GetFriendListFinish "GetFriendListFinish"
+
+#define GetWxUserInfoRemote "GetWxUserInfoRemote"

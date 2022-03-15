@@ -16,6 +16,7 @@
 #include "SendFile.h"
 #include "FriendList.h"
 #include "SaveGif.h"
+#include "UserInfo.h"
 #endif //PCH_H
 
 using namespace std;
@@ -43,8 +44,8 @@ struct WxString
     wchar_t* buffer;
     DWORD length;
     DWORD maxLength;
-    DWORD fill1;
-    DWORD fill2;
+    DWORD fill1 = 0;
+    DWORD fill2 = 0;
 };
 
 

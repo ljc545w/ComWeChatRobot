@@ -221,6 +221,7 @@
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UserInfo.h" />
     <ClInclude Include="WeChatRobot.h" />
     <ClInclude Include="WeChatRobotCOM_i.h" />
     <ClInclude Include="xdlldata.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
+    <ClCompile Include="UserInfo.cpp" />
     <ClCompile Include="WeChatRobot.cpp" />
     <ClCompile Include="WeChatRobotCOM.cpp" />
     <ClCompile Include="WeChatRobotCOM_i.c">

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Created on Thu Feb 24 16:19:48 2022
 
@@ -100,6 +100,9 @@ class WeChatRobot():
     
     def GetChatSession(self,wxid):
         return ChatSession(self.robot, wxid)
+        
+    def GetWxDetailUserInfo(self,wxid):
+        return self.robot.CGetWxUserInfo(wxid)
 
 
 if __name__ == '__main__':
@@ -115,10 +118,14 @@ if __name__ == '__main__':
     wx = WeChatRobot(dllpath)
     wx.StartService()
 
-    me = wx.GetFriendByWxNickName("文件传输助手")
+    me = wx.GetFriendByWxNickName("文件传送助手")
     session = wx.GetChatSession(me.get('wxid'))
+    print(me.get('wxid'))
+    
 
     session.SendText('来自python的消息')
+    a = wx.GetWxDetailUserInfo(me.get('wxid'))
+    print(a)
     session.SendImage(imgpath)
     session.SendFile(filepath)
     session.SendMp4(mp4path)

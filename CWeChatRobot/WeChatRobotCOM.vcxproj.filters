@@ -32,8 +32,14 @@
     <Filter Include="发送消息\发送文件">
       <UniqueIdentifier>{eb0eba18-3b38-466c-8978-f7d0f2bb756e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="好友列表">
+    <Filter Include="好友相关">
+      <UniqueIdentifier>{19933e02-50d4-489c-823e-4e7fe6539792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\好友列表">
       <UniqueIdentifier>{be3e55a9-dd57-4e92-a340-cb558f3cd4f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\好友信息">
+      <UniqueIdentifier>{cdd9e8b4-4576-499c-b20e-60e05911f6d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -68,13 +74,16 @@
       <Filter>发送消息\发送文本</Filter>
     </ClInclude>
     <ClInclude Include="FriendList.h">
-      <Filter>好友列表</Filter>
+      <Filter>好友相关\好友列表</Filter>
     </ClInclude>
     <ClInclude Include="SendFile.h">
       <Filter>发送消息\发送文件</Filter>
     </ClInclude>
     <ClInclude Include="robotdata.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInfo.h">
+      <Filter>好友相关\好友信息</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -103,10 +112,13 @@
       <Filter>发送消息\发送文本</Filter>
     </ClCompile>
     <ClCompile Include="FriendList.cpp">
-      <Filter>好友列表</Filter>
+      <Filter>好友相关\好友列表</Filter>
     </ClCompile>
     <ClCompile Include="SendFile.cpp">
       <Filter>发送消息\发送文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInfo.cpp">
+      <Filter>好友相关\好友信息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -159,6 +159,7 @@
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
+    <ClInclude Include="UserInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
     <ClCompile Include="showFriendList.cpp" />
+    <ClCompile Include="UserInfo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

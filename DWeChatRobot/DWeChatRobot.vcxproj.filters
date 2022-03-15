@@ -25,14 +25,20 @@
     <Filter Include="发送消息\发送文件">
       <UniqueIdentifier>{069b8c09-e473-4bba-a49e-571f35f2efef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="好友列表">
-      <UniqueIdentifier>{24dc11dd-cb6a-4c63-bf21-35823cd389ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="自动功能">
       <UniqueIdentifier>{25f77de8-b12c-4f2b-a3ac-0260b6a16897}</UniqueIdentifier>
     </Filter>
     <Filter Include="自动功能\聊天表情">
       <UniqueIdentifier>{166b9e01-bc1c-4366-abcf-c14ec3fbbfb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关">
+      <UniqueIdentifier>{8ad1ff87-550b-4942-8ebd-afbe1cfaddc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\好友列表">
+      <UniqueIdentifier>{24dc11dd-cb6a-4c63-bf21-35823cd389ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\好友信息">
+      <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,10 +58,13 @@
       <Filter>发送消息\发送文件</Filter>
     </ClInclude>
     <ClInclude Include="FriendList.h">
-      <Filter>好友列表</Filter>
+      <Filter>好友相关\好友列表</Filter>
     </ClInclude>
     <ClInclude Include="SaveGif.h">
       <Filter>自动功能\聊天表情</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInfo.h">
+      <Filter>好友相关\好友信息</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -75,13 +84,16 @@
       <Filter>发送消息\发送文件</Filter>
     </ClCompile>
     <ClCompile Include="FriendList.cpp">
-      <Filter>好友列表</Filter>
+      <Filter>好友相关\好友列表</Filter>
     </ClCompile>
     <ClCompile Include="SaveGif.cpp">
       <Filter>自动功能\聊天表情</Filter>
     </ClCompile>
     <ClCompile Include="showFriendList.cpp">
-      <Filter>好友列表</Filter>
+      <Filter>好友相关\好友列表</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInfo.cpp">
+      <Filter>好友相关\好友信息</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
