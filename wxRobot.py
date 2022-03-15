@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     wx = WeChatRobot(dllpath)
     wx.StartService()
-    wxid = wx.GetFriendByWxNickName("传说中的勇者").get('wxid')
+    wxid = wx.GetFriendByWxNickName("文件传输助手").get('wxid')
     print(wx.myinfo)
     print(wx.GetWxUserInfo(wxid))
     
