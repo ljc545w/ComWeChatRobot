@@ -1,5 +1,14 @@
 #include "pch.h"
 
+#define SendArticleCall1Offset 0x5BC68E80 - 0x5BBE0000
+#define SendArticleCall2Offset 0x03297840 - 0x02F20000
+#define SendArticleCall3Offset 0x5BC9C570 - 0x5BBE0000
+#define SendArticleCall4Offset 0x5BF57A10 - 0x5BBE0000
+#define SendArticleParamOffset 0x5DDCCD1C - 0x5BBE0000
+
+#define SendArticleClearCacheCall1Offset 0x5C1F40D0 - 0x5BBE0000
+#define SendArticleClearCacheCall2Offset 0x59637BA0 - 0x595B0000
+
 struct SendArticleStruct {
 	DWORD wxid;
 	DWORD title;
@@ -18,15 +27,15 @@ VOID SendArticleRemote(LPVOID lparameter) {
 
 BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD SendArticleCall1 = WeChatWinBase + 0x5BC68E80 - 0x5BBE0000;
-	DWORD SendArticleCall2 = WeChatWinBase + 0x03297840 - 0x02F20000;
-	DWORD SendArticleCall3 = WeChatWinBase + 0x5BC9C570 - 0x5BBE0000;
-	DWORD SendArticleCall4 = WeChatWinBase + 0x5BF57A10 - 0x5BBE0000;
+	DWORD SendArticleCall1 = WeChatWinBase + SendArticleCall1Offset;
+	DWORD SendArticleCall2 = WeChatWinBase + SendArticleCall2Offset;
+	DWORD SendArticleCall3 = WeChatWinBase + SendArticleCall3Offset;
+	DWORD SendArticleCall4 = WeChatWinBase + SendArticleCall4Offset;
 
-	DWORD SendArticleParam = WeChatWinBase + 0x5DDCCD1C - 0x5BBE0000;
+	DWORD SendArticleParam = WeChatWinBase + SendArticleParamOffset;
 
-	DWORD SendArticleClearCacheCall1 = WeChatWinBase + 0x5C1F40D0 - 0x5BBE0000;
-	DWORD SendArticleClearCacheCall2 = WeChatWinBase + 0x59637BA0 - 0x595B0000;
+	DWORD SendArticleClearCacheCall1 = WeChatWinBase + SendArticleClearCacheCall1Offset;
+	DWORD SendArticleClearCacheCall2 = WeChatWinBase + SendArticleClearCacheCall2Offset;
 	// 自己的wxid，发送者
 	char* sselfwxid = (char*)(*(DWORD*)(WeChatWinBase + 0x21DC9C4));
 	wchar_t* wselfwxid = new wchar_t[strlen(sselfwxid) + 1];

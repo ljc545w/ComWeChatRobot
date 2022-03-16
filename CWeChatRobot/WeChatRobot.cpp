@@ -65,6 +65,17 @@ STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR
 }
 
 /*
+* 参数1：接收人wxid
+* 参数2：被分享人wxid
+* 参数3：显示的名字
+* 参数4：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSendCard(BSTR receiver, BSTR sharedwxid, BSTR nickname, int* __result) {
+    *__result = SendCard(receiver, sharedwxid, nickname);
+    return S_OK;
+}
+
+/*
 * 参数1：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetFriendList(BSTR* __result) {

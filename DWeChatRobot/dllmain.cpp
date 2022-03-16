@@ -25,8 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("HookExtractExpression 0x%08X\n", (DWORD)HookExtractExpression);
         printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
         printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
-        
-        // GetSelfInfoRemote();
+        printf("SendCard 0x%08X\n", (DWORD)SendCard);
 #endif
         break;
     }

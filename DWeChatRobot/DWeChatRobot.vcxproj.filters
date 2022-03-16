@@ -46,6 +46,9 @@
     <Filter Include="发送消息\发送文章">
       <UniqueIdentifier>{edd6e39f-235b-4db5-aea1-ec2c8d0072c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送名片">
+      <UniqueIdentifier>{fc747a68-6314-4f23-92de-a1e55275a01e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -78,6 +81,9 @@
     <ClInclude Include="SendArticle.h">
       <Filter>发送消息\发送文章</Filter>
     </ClInclude>
+    <ClInclude Include="SendCard.h">
+      <Filter>发送消息\发送名片</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -101,9 +107,6 @@
     <ClCompile Include="SaveGif.cpp">
       <Filter>自动功能\聊天表情</Filter>
     </ClCompile>
-    <ClCompile Include="showFriendList.cpp">
-      <Filter>好友相关\好友列表</Filter>
-    </ClCompile>
     <ClCompile Include="UserInfo.cpp">
       <Filter>好友相关\好友信息</Filter>
     </ClCompile>
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="SendArticle.cpp">
       <Filter>发送消息\发送文章</Filter>
+    </ClCompile>
+    <ClCompile Include="SendCard.cpp">
+      <Filter>发送消息\发送名片</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

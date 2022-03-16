@@ -19,6 +19,7 @@
 #include "SaveGif.h"
 #include "UserInfo.h"
 #include "SelfInfo.h"
+#include "SendCard.h"
 #endif //PCH_H
 
 using namespace std;

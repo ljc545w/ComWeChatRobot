@@ -4,6 +4,7 @@
 #include "SendText.h"
 #include "SendFile.h"
 #include "SendArticle.h"
+#include "SendCard.h"
 #include "FriendList.h"
 #include "UserInfo.h"
 #include "SelfInfo.h"
@@ -13,6 +14,7 @@ extern DWORD SendImageOffset;
 extern DWORD SendTextOffset;
 extern DWORD SendFileOffset;
 extern DWORD SendArticleOffset;
+extern DWORD SendCardOffset;
 
 extern DWORD GetFriendListInitOffset;
 extern DWORD GetFriendListRemoteOffset;
@@ -31,6 +33,7 @@ extern wstring SelfInfoString;
 #define SendImageRemote "SendImageRemote"
 #define SendFileRemote "SendFileRemote"
 #define SendArticleRemote "SendArticleRemote"
+#define SendCardRemote "SendCardRemote"
 
 #define GetFriendListInit "GetFriendListInit"
 #define GetFriendListRemote "GetFriendListRemote"

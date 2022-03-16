@@ -11,10 +11,22 @@ struct SelfInfoStruct {
 // 这里有待解决的BUG
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	vector<DWORD> SelfInfoAddr = {
+	/*vector<DWORD> SelfInfoAddr = {
 		*(DWORD*)(WeChatWinBase + 0x21DC9C4),
 		WeChatWinBase + 0x21DCBB8,
 		*(DWORD*)(WeChatWinBase + 0x21DCA3C),
+		*(DWORD*)(WeChatWinBase + 0x21DCB74),
+		*(DWORD*)(WeChatWinBase + 0x21DCD34),
+		*(DWORD*)(WeChatWinBase + 0x21DCD1C),
+		WeChatWinBase + 0x21DCC30,
+		WeChatWinBase + 0x21DCB44,
+		WeChatWinBase + 0x21DCB5C,
+		WeChatWinBase + 0x21DCA70
+	};*/
+	vector<DWORD> SelfInfoAddr = {
+		*(DWORD*)(WeChatWinBase + 0x21DC9C4),
+		WeChatWinBase + 0x21DCBB8,
+		WeChatWinBase + 0x21DCA3C,
 		*(DWORD*)(WeChatWinBase + 0x21DCB74),
 		*(DWORD*)(WeChatWinBase + 0x21DCD34),
 		*(DWORD*)(WeChatWinBase + 0x21DCD1C),
@@ -43,17 +55,23 @@ DWORD GetSelfInfoRemote() {
 	for (unsigned int i = 0; i < SelfInfoAddr.size(); i++) {
 		selfinfo = selfinfo + SelfInfoKey[i] + L":";
 		selfinfo = selfinfo + L"\"";
-		char* temp = (*((DWORD*)SelfInfoAddr[i]) != 0) ? (char*)SelfInfoAddr[i] : (char*)"null";
-#ifdef _DEBUG
-		cout << temp << endl;
-#endif
-		continue;
+		char* temp = NULL;
+		if (!SelfInfoKey[i].compare(L"\"wxNickName\"")) {
+			if (*(DWORD*)(SelfInfoAddr[i] + 0x14) == 0xF) {
+				temp = (*((DWORD*)SelfInfoAddr[i]) != 0) ? (char*)SelfInfoAddr[i] : (char*)"null";
+			}
+			else {
+				temp = (*((DWORD*)SelfInfoAddr[i]) != 0) ? (char*)(*(DWORD*)SelfInfoAddr[i]) : (char*)"null";
+			}
+		}
+		else {
+			temp = (char*)SelfInfoAddr[i];
+			if (strlen(temp) == 0)
+				temp = (char*)"null";
+		}
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];
 		ZeroMemory(wtemp, (strlen(temp) + 1) * 2);
 		MultiByteToWideChar(CP_UTF8, MB_COMPOSITE, temp, -1, wtemp, strlen(temp) + 1);
-#ifdef _DEBUG
-		wcout << wtemp << endl;
-#endif
 		selfinfo = selfinfo + wtemp;
 		selfinfo = selfinfo + L"\"";
 		if(i!= SelfInfoAddr.size() - 1)

@@ -29,6 +29,9 @@ class ChatSession():
         
     def SendArticle(self,title,abstract,url):
         return self.robot.CSendArticle(self.chatwith,title,abstract,url)
+    
+    def SendCard(self,sharedwxid,nickname):
+        return self.robot.CSendCard(self.chatwith,sharedwxid,nickname)
         
 
 class WeChatRobot():
@@ -41,22 +44,21 @@ class WeChatRobot():
         
     def StartService(self):
         status = self.robot.CStartRobotService(self.dllpath)
-        if status == 0:
-            pass
         return status
 
-    # 有bug待修复，需要判断某项信息是否是指针
+    # 有bug待修复，需要判断某项信息是否是指针，修复前不要使用
     def GetSelfInfo(self):
         myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
         myinfo = ast.literal_eval(myinfo)
         myinfo['wxBigAvatar'] = myinfo['wxBigAvatar'].replace("/132","/0")
-        return myinfo
+        self.myinfo = myinfo
+        return self.myinfo
         
     def StopService(self):
         return self.robot.CStopRobotService()
     
     def GetAddressBook(self):
-        AddressBookString = wx.robot.CGetFriendList()
+        AddressBookString = self.robot.CGetFriendList()
         AddressBookString = AddressBookString.replace("\n","\\n")
         self.AddressBook = ast.literal_eval(AddressBookString)
         return self.AddressBook
@@ -120,29 +122,30 @@ class WeChatRobot():
         return ast.literal_eval(userinfo)
         
 def test():
+    import os,sys
+    # DWeChatRobot.dll path
+    dllpath = os.path.join(sys.path[0],'Release')
     # image full path
-    imgpath = r"C:\Users\Administrator\Desktop\快捷\wechat\测试图片.jpg"
+    imgpath = os.path.join(sys.path[0],'test\\测试图片.png')
     # file full path
-    filepath = r"C:\Users\Administrator\Desktop\快捷\wechat\MyWeChatRobot.zip"
-    # mp4 full path
-    mp4path = r"C:\Users\Administrator\Desktop\快捷\wechat\wxsend.mp4"
-    me = wx.GetFriendByWxNickName("文件传送助手")
-    session = wx.GetChatSession(me.get('wxid'))
-    print(wx.GetWxUserInfo(me.get('wxid')))
-    session.SendText('来自python的消息')
-    session.SendImage(imgpath)
-    session.SendFile(filepath)
-    session.SendMp4(mp4path)
+    filepath = os.path.join(sys.path[0],'test\\测试文件')
+    wx = WeChatRobot(dllpath)
+    wx.StartService()
+    myinfo = wx.GetSelfInfo()
+    chatwith = wx.GetFriendByWxNickName("文件传输助手")
+    session = wx.GetChatSession(chatwith.get('wxid'))
+    filehelper = wx.GetWxUserInfo(chatwith.get('wxid'))
+    session.SendText('个人信息：{}'.format(str(myinfo.get('wxNickName'))))
+    session.SendText('好友信息：{}'.format(str(filehelper.get('wxNickName'))))
+    if os.path.exists(imgpath): session.SendImage(imgpath)
+    if os.path.exists(filepath): session.SendFile(filepath)
+    session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
+    shared = wx.GetFriendByWxNickName("小冰的宇宙")
+    if shared:
+        session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
+    wx.StopService()
 
 
 if __name__ == '__main__':
-    # DWeChatRobot.dll path
-    dllpath = r'D:\VS2019C++\MyWeChatRobot\Release'
-
-    wx = WeChatRobot(dllpath)
-    wx.StartService()
-    wxid = wx.GetFriendByWxNickName("文件传输助手").get('wxid')
-    session = wx.GetChatSession(wxid)
-    session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
+    test()
     
-    wx.StopService()

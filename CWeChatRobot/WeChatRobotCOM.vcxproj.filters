@@ -47,6 +47,9 @@
     <Filter Include="发送消息\发送文章">
       <UniqueIdentifier>{1986e9ed-7cd3-4ad3-b333-a1d74cc53c28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送名片">
+      <UniqueIdentifier>{9d9c2a95-9243-4809-884b-70d6d87a7128}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -97,6 +100,9 @@
     <ClInclude Include="SendArticle.h">
       <Filter>发送消息\发送文章</Filter>
     </ClInclude>
+    <ClInclude Include="SendCard.h">
+      <Filter>发送消息\发送名片</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -137,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="SendArticle.cpp">
       <Filter>发送消息\发送文章</Filter>
+    </ClCompile>
+    <ClCompile Include="SendCard.cpp">
+      <Filter>发送消息\发送名片</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
