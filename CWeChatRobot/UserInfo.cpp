@@ -19,7 +19,7 @@ VOID DeleteUserInfoCache() {
 
 std::wstring GetWxUserInfo(wchar_t* wxid) {
 	if (!hProcess)
-		return L"";
+		return L"{}";
 	wstring WString = L"";
 	DWORD GetUserInfoProcAddr = GetWeChatRobotBase() + GetWxUserInfoOffset;
 	LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
@@ -28,7 +28,7 @@ std::wstring GetWxUserInfo(wchar_t* wxid) {
 	DWORD dwHandle = 0;
 	GetUserInfoStruct userinfo = { 0 };
 	if (!wxidaddr)
-		return WString;
+		return L"{}";
 	WriteProcessMemory(hProcess, wxidaddr, wxid, wcslen(wxid) * 2 + 2, &dwWriteSize);
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetUserInfoProcAddr, wxidaddr, 0, &dwId);
 	if (hThread) {

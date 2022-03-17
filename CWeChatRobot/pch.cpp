@@ -127,9 +127,14 @@ DWORD StartRobotService(wchar_t* workPath) {
         MessageBoxA(NULL, "请先启动目标程序", "提示", MB_ICONWARNING);
         return 1;
     }
-    GetProcOffset(workPath);
+    
     hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Injert(wxPid, workPath);
+    if (status == 1) {
+        CloseHandle(hProcess);
+        return status;
+    }
+    GetProcOffset(workPath);
     return status;
 }
 

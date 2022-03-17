@@ -27,14 +27,14 @@ int GetFriendListInit() {
 	return WxFriendList.size();
 }
 
-DWORD GetFriendListRemote(int index) {
-	if (WxFriendList.size() <= (unsigned int)index)
+DWORD GetFriendListRemote() {
+	if (WxFriendList.size() == 0)
 		return 0;
 #ifdef _DEBUG
-	printf("0x%08X\n", (DWORD)&WxFriendList[index]);
-	printf("0x%08X\n", (DWORD)&(WxFriendList[index].wxIdAddr));
+	printf("0x%08X\n", (DWORD)&WxFriendList[0]);
+	printf("0x%08X\n", (DWORD)&(WxFriendList[0].wxIdAddr));
 #endif
-	return (DWORD)&WxFriendList[index].wxIdAddr;
+	return (DWORD)&WxFriendList[0].wxIdAddr;
 }
 
 void GetFriendListFinish() {

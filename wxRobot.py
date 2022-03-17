@@ -49,7 +49,10 @@ class WeChatRobot():
     # 有bug待修复，需要判断某项信息是否是指针，修复前不要使用
     def GetSelfInfo(self):
         myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
-        myinfo = ast.literal_eval(myinfo)
+        try:
+            myinfo = ast.literal_eval(myinfo)
+        except SyntaxError:
+            return {}
         myinfo['wxBigAvatar'] = myinfo['wxBigAvatar'].replace("/132","/0")
         self.myinfo = myinfo
         return self.myinfo
@@ -122,13 +125,14 @@ class WeChatRobot():
         return ast.literal_eval(userinfo)
         
 def test():
-    import os,sys
+    import os
     # DWeChatRobot.dll path
-    dllpath = os.path.join(sys.path[0],'Release')
+    path = os.path.split(os.path.realpath(__file__))[0]
+    dllpath = os.path.join(path,'Release')
     # image full path
-    imgpath = os.path.join(sys.path[0],'test\\测试图片.png')
+    imgpath = os.path.join(path,'test\\测试图片.png')
     # file full path
-    filepath = os.path.join(sys.path[0],'test\\测试文件')
+    filepath = os.path.join(path,'test\\测试文件')
     wx = WeChatRobot(dllpath)
     wx.StartService()
     myinfo = wx.GetSelfInfo()
@@ -144,7 +148,6 @@ def test():
     if shared:
         session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
     wx.StopService()
-
 
 if __name__ == '__main__':
     test()

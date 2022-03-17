@@ -8,7 +8,7 @@ struct SendCardStruct {
 
 BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
 	if (!hProcess)
-		return 0;
+		return 1;
 	DWORD WeChatRobotBase = GetWeChatRobotBase();
 	DWORD dwId = 0;
 	DWORD dwWriteSize = 0;
@@ -22,7 +22,7 @@ BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
 	if (!receiveraddr || !sharedwxidaddr || !nicknameaddr ||
 		!paramAndFunc || !WeChatRobotBase)
 	{
-		return 0;
+		return 1;
 	}
 	if (receiveraddr)
 		WriteProcessMemory(hProcess, receiveraddr, receiver, wcslen(receiver) * 2 + 2, &dwWriteSize);
@@ -45,5 +45,5 @@ BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
 	VirtualFreeEx(hProcess, sharedwxidaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, nicknameaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-	return 1;
+	return 0;
 }

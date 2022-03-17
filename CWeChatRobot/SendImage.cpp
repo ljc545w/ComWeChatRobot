@@ -6,6 +6,8 @@ struct ImageParamStruct {
 };
 
 int SendImage(wchar_t* wxid, wchar_t* imagepath) {
+    if (!hProcess)
+        return 1;
     DWORD WeChatRobotBase = GetWeChatRobotBase();
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;

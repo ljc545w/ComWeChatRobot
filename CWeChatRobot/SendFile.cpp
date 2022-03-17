@@ -6,6 +6,8 @@ struct FileParamStruct {
 };
 
 int SendFile(wchar_t* wxid, wchar_t* filepath) {
+    if (!hProcess)
+        return 1;
     DWORD WeChatRobotBase = GetWeChatRobotBase();
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;

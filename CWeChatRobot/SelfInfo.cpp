@@ -19,7 +19,7 @@ VOID DeleteSelfInfoCache() {
 
 std::wstring GetSelfInfo() {
 	if (!hProcess)
-		return L"";
+		return L"{}";
 	if (SelfInfoString.compare(L"")) {
 		return SelfInfoString;
 	}

@@ -9,7 +9,7 @@ struct SendArticleStruct {
 
 BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url) {
 	if (!hProcess)
-		return 0;
+		return 1;
 	DWORD WeChatRobotBase = GetWeChatRobotBase();
 	DWORD dwId = 0;
 	DWORD dwWriteSize = 0;
@@ -24,7 +24,7 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url)
 	if (!wxidaddr || !titleaddr || !abstractaddr || !urladdr ||
 		!paramAndFunc || !WeChatRobotBase)
 	{
-		return 0;
+		return 1;
 	}
 
 	if (wxidaddr)
@@ -52,5 +52,5 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url)
 	VirtualFreeEx(hProcess, abstractaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, urladdr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-	return 1;
+	return 0;
 }

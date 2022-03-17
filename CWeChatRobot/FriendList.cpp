@@ -95,6 +95,8 @@ void FreeWxFriend(int index) {
 }
 
 std::wstring GetFriendList() {
+	if (!hProcess)
+		return L"[]";
 	DWORD GetFriendListInitAddr = GetWeChatRobotBase() + GetFriendListInitOffset;
 	DWORD GetFriendListRemoteAddr = GetWeChatRobotBase() + GetFriendListRemoteOffset;
 	DWORD GetFriendListFinishAddr = GetWeChatRobotBase() + GetFriendListFinishOffset;
@@ -108,7 +110,7 @@ std::wstring GetFriendList() {
 		CloseHandle(hThread);
 	}
 	// 获取保存第一个好友的数据指针的结构体首地址
-	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListRemoteAddr, 0, 0, &dwId);
+	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListRemoteAddr, NULL, 0, &dwId);
 	if (hThread) {
 		WaitForSingleObject(hThread, INFINITE);
 		GetExitCodeThread(hThread, &dwHandle);

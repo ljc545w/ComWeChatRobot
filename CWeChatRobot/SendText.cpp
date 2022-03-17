@@ -7,6 +7,8 @@ struct SendTextStruct
 };
 
 int SendText(wchar_t* wxid, wchar_t* wxmsg) {
+    if (!hProcess)
+        return 1;
     DWORD WeChatRobotBase = GetWeChatRobotBase();
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
