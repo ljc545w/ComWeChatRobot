@@ -71,7 +71,7 @@ DWORD GetSelfInfoRemote() {
 		}
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];
 		ZeroMemory(wtemp, (strlen(temp) + 1) * 2);
-		MultiByteToWideChar(CP_UTF8, MB_COMPOSITE, temp, -1, wtemp, strlen(temp) + 1);
+		MultiByteToWideChar(CP_UTF8, 0, temp, -1, wtemp, strlen(temp) + 1);
 		selfinfo = selfinfo + wtemp;
 		selfinfo = selfinfo + L"\"";
 		if(i!= SelfInfoAddr.size() - 1)

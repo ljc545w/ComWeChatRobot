@@ -144,7 +144,7 @@ def test():
     if os.path.exists(imgpath): session.SendImage(imgpath)
     if os.path.exists(filepath): session.SendFile(filepath)
     session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
-    shared = wx.GetFriendByWxNickName("小冰的宇宙")
+    shared = wx.GetFriendByWxNickName("码农翻身")
     if shared:
         session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
     wx.StopService()
