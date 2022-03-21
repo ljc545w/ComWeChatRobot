@@ -16,7 +16,6 @@
 #include "SendFile.h"
 #include "SendArticle.h"
 #include "FriendList.h"
-#include "SaveGif.h"
 #include "UserInfo.h"
 #include "SelfInfo.h"
 #include "SendCard.h"
