@@ -7,11 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CWeChatRobot", "CWeChatRobo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WeChatTools", "WeChatTools\WeChatTools.vcxproj", "{3F7198C7-68D1-4BBA-9BF2-B7FC67A9426E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DWeChatRobot", "DWeChatRobot", "{9C5F2C6B-73CE-49FC-B19C-478C50550FE4}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWeChatRobot_3.5.0.46", "DWeChatRobot_3.5.0.46\DWeChatRobot_3.5.0.46.vcxproj", "{7EDE81C4-63BC-4C4F-8424-210D91034FDE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWeChatRobot_3.6.0.18", "DWeChatRobot_3.6.0.18\DWeChatRobot_3.6.0.18.vcxproj", "{C0FC8DAB-0590-46AC-9270-6FEA45D52390}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWeChatRobot", "DWeChatRobot\DWeChatRobot.vcxproj", "{C0FC8DAB-0590-46AC-9270-6FEA45D52390}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +33,6 @@ Global
 		{3F7198C7-68D1-4BBA-9BF2-B7FC67A9426E}.Release|x64.Build.0 = Release|x64
 		{3F7198C7-68D1-4BBA-9BF2-B7FC67A9426E}.Release|x86.ActiveCfg = Release|Win32
 		{3F7198C7-68D1-4BBA-9BF2-B7FC67A9426E}.Release|x86.Build.0 = Release|Win32
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Debug|x64.ActiveCfg = Debug|x64
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Debug|x64.Build.0 = Debug|x64
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Debug|x86.ActiveCfg = Debug|Win32
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Debug|x86.Build.0 = Debug|Win32
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Release|x64.ActiveCfg = Release|x64
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Release|x64.Build.0 = Release|x64
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Release|x86.ActiveCfg = Release|Win32
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE}.Release|x86.Build.0 = Release|Win32
 		{C0FC8DAB-0590-46AC-9270-6FEA45D52390}.Debug|x64.ActiveCfg = Debug|x64
 		{C0FC8DAB-0590-46AC-9270-6FEA45D52390}.Debug|x64.Build.0 = Debug|x64
 		{C0FC8DAB-0590-46AC-9270-6FEA45D52390}.Debug|x86.ActiveCfg = Debug|Win32
@@ -56,10 +44,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{7EDE81C4-63BC-4C4F-8424-210D91034FDE} = {9C5F2C6B-73CE-49FC-B19C-478C50550FE4}
-		{C0FC8DAB-0590-46AC-9270-6FEA45D52390} = {9C5F2C6B-73CE-49FC-B19C-478C50550FE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20BD2B3B-13AA-4C38-8216-127895041F93}
