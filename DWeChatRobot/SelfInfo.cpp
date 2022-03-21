@@ -8,19 +8,32 @@ struct SelfInfoStruct {
 	DWORD length;
 } ret;
 
+// 这里有待解决的BUG
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
+	/*vector<DWORD> SelfInfoAddr = {
+		*(DWORD*)(WeChatWinBase + 0x21DC9C4),
+		WeChatWinBase + 0x21DCBB8,
+		*(DWORD*)(WeChatWinBase + 0x21DCA3C),
+		*(DWORD*)(WeChatWinBase + 0x21DCB74),
+		*(DWORD*)(WeChatWinBase + 0x21DCD34),
+		*(DWORD*)(WeChatWinBase + 0x21DCD1C),
+		WeChatWinBase + 0x21DCC30,
+		WeChatWinBase + 0x21DCB44,
+		WeChatWinBase + 0x21DCB5C,
+		WeChatWinBase + 0x21DCA70
+	};*/
 	vector<DWORD> SelfInfoAddr = {
-		*(DWORD*)(WeChatWinBase + 0x222EB3C),
-		WeChatWinBase + 0x222ED30,
-		WeChatWinBase + 0x222EBB4,
-		*(DWORD*)(WeChatWinBase + 0x222ECEC),
-		*(DWORD*)(WeChatWinBase + 0x222EE94),
-		*(DWORD*)(WeChatWinBase + 0x222EEAC),
-		WeChatWinBase + 0x222EF30,
-		WeChatWinBase + 0x222ECBC,
-		WeChatWinBase + 0x222ECD4,
-		WeChatWinBase + 0x222EBE8
+		*(DWORD*)(WeChatWinBase + 0x21DC9C4),
+		WeChatWinBase + 0x21DCBB8,
+		WeChatWinBase + 0x21DCA3C,
+		*(DWORD*)(WeChatWinBase + 0x21DCB74),
+		*(DWORD*)(WeChatWinBase + 0x21DCD34),
+		*(DWORD*)(WeChatWinBase + 0x21DCD1C),
+		WeChatWinBase + 0x21DCC30,
+		WeChatWinBase + 0x21DCB44,
+		WeChatWinBase + 0x21DCB5C,
+		WeChatWinBase + 0x21DCA70
 	};
 
 	vector<wstring> SelfInfoKey = {
