@@ -43,13 +43,14 @@ void GetFriendListFinish() {
 }
 
 void __stdcall GetFriendList() {
-	
+#ifdef _DEBUG
+	wcout.imbue(locale("chs"));
+#endif
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD LeftTreeAddr = 0;
 	DWORD RightTreeAddr = 0;
 	DWORD LeftTreeHead = 0;
 	DWORD baseAddr = WeChatWinBase + LeftTreeOffset;
-	printf("0x%08X\n", baseAddr);
 	__asm {
 		pushad;
 		mov eax, dword ptr[baseAddr];
@@ -90,6 +91,9 @@ void __stdcall GetFriendList() {
 		}
 		WxFriendStructW p(wxIdAddr, wxNumberAddr, wxNickNameAddr, wxRemarkAddr);
 		WxFriendList.push_back(p);
+#ifdef _DEBUG
+		wcout << (wchar_t*)(*(DWORD*)p.wxIdAddr) << endl;
+#endif
 		if (LeftTreeAddr == LeftTreeHead) {
 			break;
 		}
