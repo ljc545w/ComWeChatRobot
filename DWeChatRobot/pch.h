@@ -19,6 +19,7 @@
 #include "UserInfo.h"
 #include "SelfInfo.h"
 #include "SendCard.h"
+#include "CheckFriendStatus.h"
 #endif //PCH_H
 
 using namespace std;

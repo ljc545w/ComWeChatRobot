@@ -211,6 +211,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="InjertDll.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="xdlldata.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="InjertDll.cpp" />
     <ClCompile Include="pch.cpp">

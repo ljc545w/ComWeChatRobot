@@ -46,7 +46,6 @@ class WeChatRobot():
         status = self.robot.CStartRobotService(self.dllpath)
         return status
 
-    # 有bug待修复，需要判断某项信息是否是指针，修复前不要使用
     def GetSelfInfo(self):
         myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
         try:
@@ -123,8 +122,26 @@ class WeChatRobot():
     def GetWxUserInfo(self,wxid):
         userinfo = self.robot.CGetWxUserInfo(wxid).replace('\n','\\n')
         return ast.literal_eval(userinfo)
-        
-def test():
+    
+    def CheckFriendStatusInit(self):
+        return self.robot.CCheckFriendStatusInit()
+    
+    def CheckFriendStatusFinish(self):
+        return self.robot.CCheckFriendStatusFinish()
+    
+    def CheckFriendStatus(self,wxid):
+        _EnumFriendStatus = {
+            0xB0:'被删除',
+            0xB1:'是好友',
+            0xB5:'被拉黑',
+            }
+        status = self.robot.CCheckFriendStatus(wxid)
+        if status == 0x0:
+            print('请先初始化再进行检测！')
+            assert False
+        return _EnumFriendStatus[status]
+    
+def test_SendText():
     import os
     # DWeChatRobot.dll path
     path = os.path.split(os.path.realpath(__file__))[0]
@@ -145,10 +162,34 @@ def test():
     if os.path.exists(filepath): session.SendFile(filepath)
     session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
     shared = wx.GetFriendByWxNickName("码农翻身")
-    if shared:
-        session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
+    if shared: session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
+    wx.StopService()
+    
+def test_FriendStatus():
+    import os
+    import time
+    # DWeChatRobot.dll path
+    f = open('Friendstatus.txt','wt',encoding = 'utf-8')
+    path = os.path.split(os.path.realpath(__file__))[0]
+    dllpath = os.path.join(path,'Release')
+    wx = WeChatRobot(dllpath)
+    wx.StartService()
+    FriendList = wx.GetFriendList()
+    wx.CheckFriendStatusInit()
+    index = "\t".join(['微信号','昵称','备注','状态','\n'])
+    f.writelines(index)
+    for Friend in FriendList:
+        result = '\t'.join(
+            [Friend.get('wxNumber'),Friend.get('wxNickName'),Friend.get('wxRemark'),
+              wx.CheckFriendStatus(Friend.get('wxid'))])
+        print(result)
+        result += '\n'
+        f.writelines(result)
+        time.sleep(1)
+        break
+    f.close()
     wx.StopService()
 
 if __name__ == '__main__':
-    test()
+    test_SendText()
     

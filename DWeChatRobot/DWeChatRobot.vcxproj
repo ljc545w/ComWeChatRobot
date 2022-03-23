@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="pch.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="UserInfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="pch.cpp">

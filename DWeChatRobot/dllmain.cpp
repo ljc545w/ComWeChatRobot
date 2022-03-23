@@ -25,6 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
         printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
         printf("SendCard 0x%08X\n", (DWORD)SendCard);
+        printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
 #endif
         break;
     }
@@ -34,7 +35,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #ifdef _DEBUG
         detach_count++;
         if (detach_count != 1) {
-            // FreeConsole();
+            FreeConsole();
             // UnHookAll();
         }
 #endif

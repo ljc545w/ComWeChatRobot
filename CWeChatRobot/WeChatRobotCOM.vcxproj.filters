@@ -50,6 +50,9 @@
     <Filter Include="发送消息\发送名片">
       <UniqueIdentifier>{9d9c2a95-9243-4809-884b-70d6d87a7128}</UniqueIdentifier>
     </Filter>
+    <Filter Include="好友相关\好友状态">
+      <UniqueIdentifier>{2543fa88-031d-42ca-9dd1-ac564ee2f744}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -103,6 +106,9 @@
     <ClInclude Include="SendCard.h">
       <Filter>发送消息\发送名片</Filter>
     </ClInclude>
+    <ClInclude Include="CheckFriendStatus.h">
+      <Filter>好友相关\好友状态</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -146,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="SendCard.cpp">
       <Filter>发送消息\发送名片</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckFriendStatus.cpp">
+      <Filter>好友相关\好友状态</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 #include "FriendList.h"
 #include "UserInfo.h"
 #include "SelfInfo.h"
+#include "CheckFriendStatus.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -27,6 +28,11 @@ extern DWORD GetSelfInfoOffset;
 extern DWORD DeleteSelfInfoCacheOffset;
 extern wstring SelfInfoString;
 
+extern DWORD CheckFriendStatusInitRemoteOffset;
+extern DWORD CheckFriendStatusRemoteOffset;
+extern DWORD CheckFriendStatusFinishRemoteOffset;
+
+
 #define dllname L"DWeChatRobot.dll"
 
 #define SendTextRemote "SendTextRemote"
@@ -44,3 +50,7 @@ extern wstring SelfInfoString;
 
 #define GetSelfInfoRemote "GetSelfInfoRemote"
 #define DeleteSelfInfoCacheRemote "DeleteSelfInfoCacheRemote"
+
+#define CheckFriendStatusInitRemote "CheckFriendStatusInitRemote"
+#define CheckFriendStatusRemote "CheckFriendStatusRemote"
+#define CheckFriendStatusFinishRemote "CheckFriendStatusFinishRemote"
