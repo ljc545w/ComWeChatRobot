@@ -124,6 +124,7 @@ VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
 		mov eax, edi;
 		push eax;
 		call CheckFriendStatusCall2;
+		// 这里改成0x2就是添加好友，0x1是请求好友状态
 		push 0x1;
 		lea eax, pwxid;
 		sub esp, 0x14;
