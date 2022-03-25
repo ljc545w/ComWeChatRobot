@@ -20,7 +20,7 @@ CWeChatRobot.exe /unregserver
 ```
 # 调用
 Python：  
-参考[wxRobot.py](/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)  
+参考[wxRobot.py](/wxRobot.py)  
 C#（参考如下代码）：  
 ```csharp
 System.Type wxProtId = Type.GetTypeFromProgID("WeChatRobot.CWeChatRobot");
