@@ -16,7 +16,7 @@ import "ocidl.idl";
 ]
 interface IWeChatRobot : IDispatch
 {
-	[id(1)] HRESULT CStartRobotService([in] BSTR workPath, [out, retval] int* __result);
+	[id(1)] HRESULT CStartRobotService([out, retval] int* __result);
 	[id(2)] HRESULT CStopRobotService([out, retval] int* __result);
 	[id(3)] HRESULT CSendText([in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
 	[id(4)] HRESULT CSendImage([in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
@@ -29,6 +29,7 @@ interface IWeChatRobot : IDispatch
 	[id(11)] HRESULT CCheckFriendStatusInit([out, retval] int* __result);
 	[id(12)] HRESULT CCheckFriendStatus([in] BSTR wxid, [out, retval] int* __result);
 	[id(13)] HRESULT CCheckFriendStatusFinish([out, retval] int* __result);
+	[id(14)] HRESULT CGetComWorkPath([out, retval] BSTR* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

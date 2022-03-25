@@ -32,6 +32,7 @@ using namespace std;
 bool isFileExists_stat(string& name);
 DWORD GetWeChatRobotBase();
 DWORD GetWeChatPid();
-DWORD StartRobotService(wchar_t* workPath);
+DWORD StartRobotService();
 DWORD StopRobotService();
 BOOL CreateConsole(void);
+wstring GetComWorkPath();

@@ -1,10 +1,11 @@
 /Debug
-/Release/*.exp
-/Release/*.pdb
-/Release/*.lib
+*.exp
+*.pdb
+*.lib
 */Debug/
 */Release/
 *.rar
 /.vs/
 /x64
 */x64/
+*/obj/

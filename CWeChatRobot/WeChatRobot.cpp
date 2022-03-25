@@ -6,11 +6,10 @@
 
 // CWeChatRobot
 /*
-* 参数1：`DWeChatRobot.dll`所在目录
-* 参数2：预返回的值，调用时无需提供
+* 参数1：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CStartRobotService(BSTR workPath, int* __result) {
-    *__result = StartRobotService(workPath);
+STDMETHODIMP CWeChatRobot::CStartRobotService(int* __result) {
+    *__result = StartRobotService();
     return S_OK;
 }
 
@@ -125,5 +124,14 @@ STDMETHODIMP CWeChatRobot::CCheckFriendStatus(BSTR wxid,int* __result) {
 */
 STDMETHODIMP CWeChatRobot::CCheckFriendStatusFinish(int* __result) {
     *__result = CheckFriendStatusFinish();
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR* __result) {
+    string path = _com_util::ConvertBSTRToString((BSTR)(GetComWorkPath().c_str()));
+    *__result = _com_util::ConvertStringToBSTR(path.c_str());
     return S_OK;
 }

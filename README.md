@@ -20,13 +20,28 @@ CWeChatRobot.exe /unregserver
 ```
 # 调用
 Python：  
-参考[wxRobot.py](https://github.com/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)  
-C#：  
-我不会，但**应该可以**，不可以的话我在描述中删掉相关内容。  
+参考[wxRobot.py](/ljc545w/ComWeChatRobot/blob/master/wxRobot.py)  
+C#（参考如下代码）：  
+```csharp
+System.Type wxProtId = Type.GetTypeFromProgID("WeChatRobot.CWeChatRobot");
+if (wxProtId == null)
+    return;
+string workpath = System.AppDomain.CurrentDomain.BaseDirectory;
+string basePath = workpath.Replace("wxRobot\\bin\\Release\\","");
+dynamic wx = Activator.CreateInstance(wxProtId);
+wx.CStartRobotService();
+wx.CSendText("filehelper", "来自C艹艹的消息");
+wx.CSendImage("filehelper", basePath + "test\\测试图片.png");
+wx.CSendFile("filehelper", basePath + "test\\测试文件");
+wx.CSendArticle("filehelper","PC微信逆向--获取通讯录", "确定不来看看么?", "https://www.ljczero.top/article/2022/3/13/133.html");
+string selfinfo = wx.CGetSelfInfo();
+Console.WriteLine(selfinfo);
+wx.CStopRobotService();
+```
 # 更多功能
 目前没有添加更多功能的计划  
 已找到如下功能的CALL或HOOK位置：  
-1. 检测好友状态  
+1. 检测好友状态（已添加的功能）  
 2. 文本消息和各类xml消息  
 3. 未加密图片数据  
 4. 未加密聊天表情  

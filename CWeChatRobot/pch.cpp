@@ -133,13 +133,14 @@ DWORD GetWeChatPid() {
     return wxPid;
 }
 
-DWORD StartRobotService(wchar_t* workPath) {
+DWORD StartRobotService() {
     DWORD wxPid = GetWeChatPid();
     if (!wxPid) {
         MessageBoxA(NULL, "请先启动目标程序", "提示", MB_ICONWARNING);
         return 1;
     }
-    
+    wstring wworkPath = GetComWorkPath();
+    wchar_t* workPath = (wchar_t*)wworkPath.c_str();
     hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Injert(wxPid, workPath);
     if (status == 1) {
@@ -159,4 +160,13 @@ DWORD StopRobotService() {
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
     return 0;
+}
+
+wstring GetComWorkPath() {
+    wchar_t szFilePath[MAX_PATH + 1] = { 0 };
+    GetModuleFileName(NULL, szFilePath, MAX_PATH);
+    wstring wpath = szFilePath;
+    int pos = wpath.find_last_of(L"\\");
+    wpath = wpath.substr(0,pos);
+    return wpath;
 }

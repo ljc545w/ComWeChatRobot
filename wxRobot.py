@@ -36,14 +36,13 @@ class ChatSession():
 
 class WeChatRobot():
     
-    def __init__(self,dllpath):
+    def __init__(self):
         self.robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
-        self.dllpath = dllpath
         self.AddressBook = []
         self.myinfo = {}
         
     def StartService(self):
-        status = self.robot.CStartRobotService(self.dllpath)
+        status = self.robot.CStartRobotService()
         return status
 
     def GetSelfInfo(self):
@@ -143,14 +142,12 @@ class WeChatRobot():
     
 def test_SendText():
     import os
-    # DWeChatRobot.dll path
     path = os.path.split(os.path.realpath(__file__))[0]
-    dllpath = os.path.join(path,'Release')
     # image full path
     imgpath = os.path.join(path,'test\\测试图片.png')
     # file full path
     filepath = os.path.join(path,'test\\测试文件')
-    wx = WeChatRobot(dllpath)
+    wx = WeChatRobot()
     wx.StartService()
     myinfo = wx.GetSelfInfo()
     chatwith = wx.GetFriendByWxNickName("文件传输助手")
@@ -166,13 +163,9 @@ def test_SendText():
     wx.StopService()
     
 def test_FriendStatus():
-    import os
     import time
-    # DWeChatRobot.dll path
     f = open('Friendstatus.txt','wt',encoding = 'utf-8')
-    path = os.path.split(os.path.realpath(__file__))[0]
-    dllpath = os.path.join(path,'Release')
-    wx = WeChatRobot(dllpath)
+    wx = WeChatRobot()
     wx.StartService()
     FriendList = wx.GetFriendList()
     wx.CheckFriendStatusInit()

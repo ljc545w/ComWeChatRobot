@@ -51,7 +51,7 @@ END_COM_MAP()
 
 public:
 
-	STDMETHODIMP CStartRobotService(BSTR workPath, int* __result);
+	STDMETHODIMP CStartRobotService(int* __result);
 	STDMETHODIMP CStopRobotService(int* __result);
 	STDMETHODIMP CSendImage(BSTR wxid, BSTR imagepath, int* __result);
 	STDMETHODIMP CSendText(BSTR wxid, BSTR wxmsg, int* __result);
@@ -64,6 +64,7 @@ public:
 	STDMETHODIMP CCheckFriendStatusInit(int* __result);
 	STDMETHODIMP CCheckFriendStatus(BSTR wxid, int* __result);
 	STDMETHODIMP CCheckFriendStatusFinish(int* __result);
+	STDMETHODIMP CGetComWorkPath(BSTR* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

@@ -89,7 +89,6 @@ EXTERN_C const IID IID_IWeChatRobot;
     {
     public:
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartRobotService( 
-            /* [in] */ BSTR workPath,
             /* [retval][out] */ int *__result) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStopRobotService( 
@@ -142,6 +141,9 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CCheckFriendStatusFinish( 
             /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetComWorkPath( 
+            /* [retval][out] */ BSTR *__result) = 0;
         
     };
     
@@ -203,7 +205,6 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStartRobotService )( 
             IWeChatRobot * This,
-            /* [in] */ BSTR workPath,
             /* [retval][out] */ int *__result);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStopRobotService )( 
@@ -269,6 +270,10 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetComWorkPath )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ BSTR *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -305,8 +310,8 @@ EXTERN_C const IID IID_IWeChatRobot;
     ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
 
 
-#define IWeChatRobot_CStartRobotService(This,workPath,__result)	\
-    ( (This)->lpVtbl -> CStartRobotService(This,workPath,__result) ) 
+#define IWeChatRobot_CStartRobotService(This,__result)	\
+    ( (This)->lpVtbl -> CStartRobotService(This,__result) ) 
 
 #define IWeChatRobot_CStopRobotService(This,__result)	\
     ( (This)->lpVtbl -> CStopRobotService(This,__result) ) 
@@ -343,6 +348,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CCheckFriendStatusFinish(This,__result)	\
     ( (This)->lpVtbl -> CCheckFriendStatusFinish(This,__result) ) 
+
+#define IWeChatRobot_CGetComWorkPath(This,__result)	\
+    ( (This)->lpVtbl -> CGetComWorkPath(This,__result) ) 
 
 #endif /* COBJMACROS */
 
