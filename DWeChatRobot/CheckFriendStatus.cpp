@@ -16,7 +16,7 @@ DWORD CheckFriendStatusHookJmpBackAddress = GetWeChatWinBase() + CheckFriendStat
 
 char OldAsmCode[5] = { 0 };
 BOOL CheckFriendStatusHooked = false;
-BOOL LocalFriendStatus = 0x0;
+DWORD LocalFriendStatus = 0x0;
 
 struct FriendStatusParamStruct {
 	DWORD fill0 = 0x0;
