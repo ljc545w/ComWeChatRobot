@@ -9,3 +9,5 @@
 /x64
 */x64/
 */obj/
+/wxRobot/bin/Debug/
+/wxRobot/bin/Release/*.pdb
