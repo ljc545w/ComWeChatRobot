@@ -132,13 +132,18 @@ class WeChatRobot():
         _EnumFriendStatus = {
             0xB0:'被删除',
             0xB1:'是好友',
+            0xB2:'已拉黑',
             0xB5:'被拉黑',
             }
         status = self.robot.CCheckFriendStatus(wxid)
         if status == 0x0:
             print('请先初始化再进行检测！')
             assert False
-        return _EnumFriendStatus[status]
+        try:
+            return _EnumFriendStatus[status]
+        except KeyError:
+            return "未知状态：{}".format(
+                    hex(status).upper().replace('0X','0x'))
     
 def test_SendText():
     import os
