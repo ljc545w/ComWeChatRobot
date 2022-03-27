@@ -49,6 +49,9 @@
     <Filter Include="好友相关\好友状态">
       <UniqueIdentifier>{5a6d7d8b-a126-4da1-b540-09c79886ffef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="微信日志">
+      <UniqueIdentifier>{54c9691e-786d-4279-874d-b1e35673a666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -84,6 +87,9 @@
     <ClInclude Include="CheckFriendStatus.h">
       <Filter>好友相关\好友状态</Filter>
     </ClInclude>
+    <ClInclude Include="LogMsgInfo.h">
+      <Filter>微信日志</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -118,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="CheckFriendStatus.cpp">
       <Filter>好友相关\好友状态</Filter>
+    </ClCompile>
+    <ClCompile Include="LogMsgInfo.cpp">
+      <Filter>微信日志</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

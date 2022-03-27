@@ -20,6 +20,7 @@
 #include "SelfInfo.h"
 #include "SendCard.h"
 #include "CheckFriendStatus.h"
+#include "LogMsgInfo.h"
 #endif //PCH_H
 
 using namespace std;

@@ -63,5 +63,6 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 }
 
 void UnHookAll() {
+    UnHookLogMsgInfo();
     return;
 }

@@ -157,6 +157,7 @@
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
+    <ClInclude Include="LogMsgInfo.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendArticle.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
     <ClCompile Include="UserInfo.cpp" />
+    <ClCompile Include="LogMsgInfo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
