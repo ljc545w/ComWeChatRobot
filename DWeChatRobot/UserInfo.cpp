@@ -24,6 +24,7 @@ VOID WxUserInfo(DWORD address) {
 		address + 0x10,
 		address + 0x24,
 		address + 0x38,
+		address + 0x58,
 		address + 0x6C,
 		address + 0xFC,
 		address + 0x110,
@@ -37,6 +38,7 @@ VOID WxUserInfo(DWORD address) {
 		(WCHAR*)L"\"wxId\"",
 		(WCHAR*)L"\"wxNumber\"",
 		(WCHAR*)L"\"wxV3\"",
+		(WCHAR*)L"\"wxRemark\"",
 		(WCHAR*)L"\"wxNickName\"",
 		(WCHAR*)L"\"wxBigAvatar\"",
 		(WCHAR*)L"\"wxSmallAvatar\"",
@@ -49,7 +51,8 @@ VOID WxUserInfo(DWORD address) {
 	wUserInfo += L"{";
 	for (unsigned int i = 0; i < InfoType.size(); i++) {
 		wchar_t* wstemp = ((*((DWORD*)InfoType[i])) != 0) ? (WCHAR*)(*((LPVOID*)InfoType[i])) : (WCHAR*)L"null";
-		wUserInfo = wUserInfo + InfoTypeName[i] + L":\"" + wstemp + L"\"";
+		wstring wsrtemp = wreplace(wstemp,L'\"',L"\\\"");
+		wUserInfo = wUserInfo + InfoTypeName[i] + L":\"" + wsrtemp + L"\"";
 		if (i != InfoType.size() - 1) {
 			wUserInfo += L",";
 		}

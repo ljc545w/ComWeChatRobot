@@ -190,4 +190,3 @@ def test_FriendStatus():
 
 if __name__ == '__main__':
     test_SendText()
-    

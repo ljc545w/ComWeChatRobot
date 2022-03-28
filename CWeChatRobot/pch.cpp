@@ -32,7 +32,7 @@ bool isFileExists_stat(string& name) {
     return (stat(name.c_str(), &buffer) == 0);
 }
 
-BOOL CreateConsole(void) {
+BOOL CreateConsole() {
     if (AllocConsole()) {
         AttachConsole(GetCurrentProcessId());
         FILE* retStream;
@@ -169,4 +169,17 @@ wstring GetComWorkPath() {
     int pos = wpath.find_last_of(L"\\");
     wpath = wpath.substr(0,pos);
     return wpath;
+}
+
+wstring wreplace(wstring source, wchar_t replaced, wstring replaceto) {
+    wstring temp = L"";
+    wchar_t* buffer = (wchar_t*)source.c_str();
+    for (unsigned int i = 0; i < source.length(); i++) {
+        if (buffer[i] == replaced) {
+            temp += replaceto;
+            continue;
+        }
+        temp += buffer[i];
+    }
+    return temp;
 }

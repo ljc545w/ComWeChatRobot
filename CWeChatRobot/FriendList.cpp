@@ -70,6 +70,12 @@ void ReadFriendMessageByAddress(WxFriendAddrStruct* lpWxFriendAddr, WxFriendStru
 			ZeroMemory(lpWxFriend->wxRemark, sizeof(wchar_t) * (length + 1));
 			ReadProcessMemory(hProcess, (LPCVOID)lpWxFriendAddr->wxRemarkAddr, &bufferaddr, sizeof(DWORD), 0);
 			ReadProcessMemory(hProcess, (LPCVOID)bufferaddr, lpWxFriend->wxRemark, length * sizeof(wchar_t), 0);
+			wstring wswxRemark = wreplace(lpWxFriend->wxRemark,L'\"',L"\\\"");
+			delete[] lpWxFriend->wxRemark;
+			lpWxFriend->wxRemark = new wchar_t[wswxRemark.length() + 1];
+			ZeroMemory(lpWxFriend->wxRemark, sizeof(wchar_t) * (wswxRemark.length() + 1));
+			memcpy(lpWxFriend->wxRemark, wswxRemark.c_str(), wswxRemark.length() * 2);
+			wcout << lpWxFriend->wxRemark << endl;
 		}
 	}
 	else {

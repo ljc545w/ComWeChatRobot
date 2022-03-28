@@ -34,5 +34,6 @@ DWORD GetWeChatRobotBase();
 DWORD GetWeChatPid();
 DWORD StartRobotService();
 DWORD StopRobotService();
-BOOL CreateConsole(void);
+BOOL CreateConsole();
 wstring GetComWorkPath();
+wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);

@@ -59,3 +59,4 @@ void Wchar_tToString(std::string& szDst, wchar_t* wchar);
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char* originalRecieveCode);
 void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
 DLLEXPORT void UnHookAll();
+wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
