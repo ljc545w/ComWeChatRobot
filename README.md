@@ -17,7 +17,7 @@ PC微信机器人，实现获取通讯录、发送文本、图片、文件、xml
 `./wxRobot.py`：python示例文件  
 `./Release/CWeChatRobot.exe`：编译的COM组件  
 `./Release/DWeChatRobot.dll`：编译的DLL文件  
-`./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参加相关代码  
+`./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参看相关代码  
 # 注册COM
 以管理员权限执行以下命令：  
 ```shell
