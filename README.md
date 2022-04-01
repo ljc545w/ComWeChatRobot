@@ -16,8 +16,8 @@ PC微信机器人，实现获取通讯录、发送文本、图片、文件、xml
 `./wxRobot`:  包含C#的调用示例  
 `./wxRobot.py`：python示例文件  
 `./Release/CWeChatRobot.exe`：编译的COM组件  
-`./Release/DWeChatRobot.dll`：编译的动态库  
-`./Release/WeChatTools.exe`：用与调试时注入或卸载DLL程序，具体参加相关代码  
+`./Release/DWeChatRobot.dll`：编译的DLL文件  
+`./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参加相关代码  
 # 注册COM
 以管理员权限执行以下命令：  
 ```shell
@@ -43,11 +43,8 @@ CWeChatRobot.exe /unregserver
 
 暂时没有空闲时间继续开发，如果想开发相关功能请发邮件到ljc545w@qq.com  
 **也欢迎您提交PR**  
-# 已知BUG
-~~获取个人信息的接口不能很好的工作，因为需要判断数据是否是一个指针。~~  
-~~使用该接口将导致微信崩溃。~~  
-已对个人信息接口做了简单的修复，如果还有问题可报issue或搜索报错解决。
-# 2022.04.01更新
+# 更新记录
+## 2022.04.01
 1. 使用SAFEARRAY返回通讯录列表，可正确显示好友昵称中的特殊符号  
 2. README中添加目录说明  
 3. 更新C#示例代码，添加好友列表的遍历示例
