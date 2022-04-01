@@ -21,6 +21,7 @@
 #include <tchar.h>
 #include <sys/stat.h>
 #include <direct.h>
+#include <vector>
 
 #include <comutil.h>
 #pragma comment(lib, "comsuppw.lib")
@@ -28,6 +29,10 @@
 #include "robotdata.h"
 
 using namespace std;
+struct testStruct {
+	DWORD type;
+	wchar_t* desc;
+};
 
 bool isFileExists_stat(string& name);
 DWORD GetWeChatRobotBase();
@@ -36,4 +41,3 @@ DWORD StartRobotService();
 DWORD StopRobotService();
 BOOL CreateConsole();
 wstring GetComWorkPath();
-wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);

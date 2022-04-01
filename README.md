@@ -10,6 +10,14 @@ PC微信机器人，实现获取通讯录、发送文本、图片、文件、xml
 # 原理
 通过逆向PC微信，定位到关键CALL，dll内联汇编调用  
 注册32位COM组件，供64位/32位进程外部调用  
+# 目录说明
+`./CWeChatRobot`：COM组件的实现代码  
+`./DWeChatRobot`：注入的DLL实现代码  
+`./wxRobot`:  包含C#的调用示例  
+`./wxRobot.py`：python示例文件  
+`./Release/CWeChatRobot.exe`：编译的COM组件  
+`./Release/DWeChatRobot.dll`：编译的动态库  
+`./Release/WeChatTools.exe`：用与调试时注入或卸载DLL程序，具体参加相关代码  
 # 注册COM
 以管理员权限执行以下命令：  
 ```shell
@@ -19,25 +27,10 @@ CWeChatRobot.exe /regserver
 CWeChatRobot.exe /unregserver
 ```
 # 调用
-Python：  
+**Python：**  
 参考[wxRobot.py](/wxRobot.py)  
-C#（参考如下代码）：  
-```csharp
-System.Type wxProtId = Type.GetTypeFromProgID("WeChatRobot.CWeChatRobot");
-if (wxProtId == null)
-    return;
-string workpath = System.AppDomain.CurrentDomain.BaseDirectory;
-string basePath = workpath.Replace("wxRobot\\bin\\Release\\","");
-dynamic wx = Activator.CreateInstance(wxProtId);
-wx.CStartRobotService();
-wx.CSendText("filehelper", "来自C艹艹的消息");
-wx.CSendImage("filehelper", basePath + "test\\测试图片.png");
-wx.CSendFile("filehelper", basePath + "test\\测试文件");
-wx.CSendArticle("filehelper","PC微信逆向--获取通讯录", "确定不来看看么?", "https://www.ljczero.top/article/2022/3/13/133.html");
-string selfinfo = wx.CGetSelfInfo();
-Console.WriteLine(selfinfo);
-wx.CStopRobotService();
-```
+**C#：**  
+参考[Program.cs](/wxRobot/Program.cs)
 # 更多功能
 目前没有添加更多功能的计划  
 已找到如下功能的CALL或HOOK位置：  
@@ -49,10 +42,15 @@ wx.CStopRobotService();
 6. 微信Duilib界面xml文件  
 
 暂时没有空闲时间继续开发，如果想开发相关功能请发邮件到ljc545w@qq.com  
+**也欢迎您提交PR**  
 # 已知BUG
 ~~获取个人信息的接口不能很好的工作，因为需要判断数据是否是一个指针。~~  
 ~~使用该接口将导致微信崩溃。~~  
 已对个人信息接口做了简单的修复，如果还有问题可报issue或搜索报错解决。
+# 2022.04.01更新
+1. 使用SAFEARRAY返回通讯录列表，可正确显示好友昵称中的特殊符号  
+2. README中添加目录说明  
+3. 更新C#示例代码，添加好友列表的遍历示例
 # 打赏作者
 请给作者一个star，感谢感谢  
 # 免责声明

@@ -4,7 +4,7 @@ namespace wxRobot
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             System.Type wxProtId = Type.GetTypeFromProgID("WeChatRobot.CWeChatRobot");
             if (wxProtId == null)
@@ -19,6 +19,11 @@ namespace wxRobot
             wx.CSendArticle("filehelper","PC微信逆向--获取通讯录", "确定不来看看么?", "https://www.ljczero.top/article/2022/3/13/133.html");
             string selfinfo = wx.CGetSelfInfo();
             Console.WriteLine(selfinfo);
+            System.Object[,,] FriendList = wx.CGetFriendList();
+            int length = FriendList.GetLength(0);
+            for (int i = 0; i < 1/*length*/; i++) {
+                Console.WriteLine(FriendList[i, 0, 1]);
+            }
             wx.CStopRobotService();
         }
     }

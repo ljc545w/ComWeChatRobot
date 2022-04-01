@@ -6,6 +6,7 @@ Created on Thu Feb 24 16:19:48 2022
 """
 
 # Before use,execute `CWeChatRebot.exe /regserver` in cmd by admin user
+# need `pip install comtypes`
 import comtypes.client
 import ast
 
@@ -59,9 +60,11 @@ class WeChatRobot():
         return self.robot.CStopRobotService()
     
     def GetAddressBook(self):
-        AddressBookString = self.robot.CGetFriendList()
-        AddressBookString = AddressBookString.replace("\n","\\n")
-        self.AddressBook = ast.literal_eval(AddressBookString)
+        try:
+            FriendTuple = self.robot.CGetFriendList()
+            self.AddressBook = [dict(i) for i in list(FriendTuple)]
+        except IndexError:
+            self.AddressBook = []
         return self.AddressBook
     
     def GetFriendList(self):

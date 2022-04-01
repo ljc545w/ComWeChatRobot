@@ -76,9 +76,23 @@ STDMETHODIMP CWeChatRobot::CSendCard(BSTR receiver, BSTR sharedwxid, BSTR nickna
 
 /*
 * 参数1：预返回的值，调用时无需提供
+* 返回一个三维数组，python的comtypes包会将其解析为元组
 */
-STDMETHODIMP CWeChatRobot::CGetFriendList(BSTR* __result) {
-    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetFriendList().c_str()));
+STDMETHODIMP CWeChatRobot::CGetFriendList(VARIANT* __result) {
+    VARIANT vsaValue;
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(&vsaValue) = GetFriendList();
+    *__result = vsaValue;
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+  返回构造好的json串，在反序列化时需考虑好友信息中是否存在json字符
+  （考虑到从SAFEARRAY转换到适当变量可能较为繁琐，故保留此接口）
+*/
+STDMETHODIMP CWeChatRobot::CGetFriendListString(BSTR* __result) {
+    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetFriendListString().c_str()));
     *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
     return S_OK;
 }

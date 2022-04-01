@@ -123,6 +123,9 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [retval][out] */ int *__result) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendList( 
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendListString( 
             /* [retval][out] */ BSTR *__result) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetWxUserInfo( 
@@ -246,6 +249,10 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendList )( 
             IWeChatRobot * This,
+            /* [retval][out] */ VARIANT *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendListString )( 
+            IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetWxUserInfo )( 
@@ -334,6 +341,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 #define IWeChatRobot_CGetFriendList(This,__result)	\
     ( (This)->lpVtbl -> CGetFriendList(This,__result) ) 
 
+#define IWeChatRobot_CGetFriendListString(This,__result)	\
+    ( (This)->lpVtbl -> CGetFriendListString(This,__result) ) 
+
 #define IWeChatRobot_CGetWxUserInfo(This,wxid,__result)	\
     ( (This)->lpVtbl -> CGetWxUserInfo(This,wxid,__result) ) 
 
@@ -389,10 +399,20 @@ unsigned char * __RPC_USER  BSTR_UserMarshal(  unsigned long *, unsigned char *,
 unsigned char * __RPC_USER  BSTR_UserUnmarshal(unsigned long *, unsigned char *, BSTR * ); 
 void                      __RPC_USER  BSTR_UserFree(     unsigned long *, BSTR * ); 
 
+unsigned long             __RPC_USER  VARIANT_UserSize(     unsigned long *, unsigned long            , VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserMarshal(  unsigned long *, unsigned char *, VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserUnmarshal(unsigned long *, unsigned char *, VARIANT * ); 
+void                      __RPC_USER  VARIANT_UserFree(     unsigned long *, VARIANT * ); 
+
 unsigned long             __RPC_USER  BSTR_UserSize64(     unsigned long *, unsigned long            , BSTR * ); 
 unsigned char * __RPC_USER  BSTR_UserMarshal64(  unsigned long *, unsigned char *, BSTR * ); 
 unsigned char * __RPC_USER  BSTR_UserUnmarshal64(unsigned long *, unsigned char *, BSTR * ); 
 void                      __RPC_USER  BSTR_UserFree64(     unsigned long *, BSTR * ); 
+
+unsigned long             __RPC_USER  VARIANT_UserSize64(     unsigned long *, unsigned long            , VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserMarshal64(  unsigned long *, unsigned char *, VARIANT * ); 
+unsigned char * __RPC_USER  VARIANT_UserUnmarshal64(unsigned long *, unsigned char *, VARIANT * ); 
+void                      __RPC_USER  VARIANT_UserFree64(     unsigned long *, VARIANT * ); 
 
 /* end of Additional Prototypes */
 

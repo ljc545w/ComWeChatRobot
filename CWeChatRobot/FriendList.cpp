@@ -70,12 +70,6 @@ void ReadFriendMessageByAddress(WxFriendAddrStruct* lpWxFriendAddr, WxFriendStru
 			ZeroMemory(lpWxFriend->wxRemark, sizeof(wchar_t) * (length + 1));
 			ReadProcessMemory(hProcess, (LPCVOID)lpWxFriendAddr->wxRemarkAddr, &bufferaddr, sizeof(DWORD), 0);
 			ReadProcessMemory(hProcess, (LPCVOID)bufferaddr, lpWxFriend->wxRemark, length * sizeof(wchar_t), 0);
-			wstring wswxRemark = wreplace(lpWxFriend->wxRemark,L'\"',L"\\\"");
-			delete[] lpWxFriend->wxRemark;
-			lpWxFriend->wxRemark = new wchar_t[wswxRemark.length() + 1];
-			ZeroMemory(lpWxFriend->wxRemark, sizeof(wchar_t) * (wswxRemark.length() + 1));
-			memcpy(lpWxFriend->wxRemark, wswxRemark.c_str(), wswxRemark.length() * 2);
-			wcout << lpWxFriend->wxRemark << endl;
 		}
 	}
 	else {
@@ -100,7 +94,87 @@ void FreeWxFriend(int index) {
 	};
 }
 
-std::wstring GetFriendList() {
+SAFEARRAY* CreateFriendArray(int FriendCount) {
+	HRESULT hr = S_OK;
+	SAFEARRAY* psaValue;
+	vector<wstring> FriendInfoKey = {
+		L"wxid",
+		L"wxNumber",
+		L"wxNickName",
+		L"wxRemark",
+	};
+	SAFEARRAYBOUND rgsaBound[3] = { {(ULONG)FriendCount,0},{FriendInfoKey.size(),0},{2,0} };
+	psaValue = SafeArrayCreate(VT_VARIANT, 3, rgsaBound);
+	for (long x = 0; x < FriendCount; x++) {
+		vector<wstring> FriendInfoValue = { WxFriendList[x].wxId,WxFriendList[x].wxNumber,WxFriendList[x].wxNickName,WxFriendList[x].wxRemark };
+		for (unsigned long i = 0; i < FriendInfoKey.size(); i++)
+		{
+			long keyIndex[3] = { x,(long)i,0 };
+			hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)FriendInfoKey[i].c_str());
+			long valueIndex[3] = { x,(long)i,1 };
+			hr = SafeArrayPutElement(psaValue, valueIndex, &(_variant_t)FriendInfoValue[i].c_str());
+		}
+		FriendInfoValue.clear();
+	}
+	return psaValue;
+}
+
+SAFEARRAY* GetFriendList() {
+	if (!hProcess)
+		return NULL;
+	DWORD GetFriendListInitAddr = GetWeChatRobotBase() + GetFriendListInitOffset;
+	DWORD GetFriendListRemoteAddr = GetWeChatRobotBase() + GetFriendListRemoteOffset;
+	DWORD GetFriendListFinishAddr = GetWeChatRobotBase() + GetFriendListFinishOffset;
+	DWORD FriendCount = 0;
+	DWORD dwId, dwHandle = 0;
+	// 获取好友列表的长度
+	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListInitAddr, NULL, 0, &dwId);
+	if (hThread) {
+		WaitForSingleObject(hThread, INFINITE);
+		GetExitCodeThread(hThread, &FriendCount);
+		CloseHandle(hThread);
+	}
+	// 获取保存第一个好友的数据指针的结构体首地址
+	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListRemoteAddr, NULL, 0, &dwId);
+	if (hThread) {
+		WaitForSingleObject(hThread, INFINITE);
+		GetExitCodeThread(hThread, &dwHandle);
+		CloseHandle(hThread);
+	}
+
+	WxFriendAddrStruct WxFriendAddr = { 0 };
+	// 根据好友数量初始化全局变量
+	WxFriendList = new WxFriendStruct[FriendCount];
+	if (dwHandle) {
+		for (unsigned int i = 0; i < FriendCount; i++) {
+			WxFriendList[i] = { 0 };
+			ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
+			ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
+			ReadFriendMessageByAddress(&WxFriendAddr, &WxFriendList[i]);
+			// 保存下一个好友数据的结构体
+			dwHandle += sizeof(WxFriendAddrStruct);
+		}
+	}
+	else {
+		return NULL;
+	}
+	// 清除微信进程空间中的缓存
+	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListFinishAddr, NULL, 0, &dwId);
+	if (hThread) {
+		WaitForSingleObject(hThread, INFINITE);
+		CloseHandle(hThread);
+	}
+
+	SAFEARRAY* psaValue = CreateFriendArray(FriendCount);
+	for (unsigned int i = 0; i < FriendCount; i++) {
+		FreeWxFriend(i);
+	}
+	delete[] WxFriendList;
+	WxFriendList = NULL;
+	return psaValue;
+}
+
+std::wstring GetFriendListString() {
 	if (!hProcess)
 		return L"[]";
 	DWORD GetFriendListInitAddr = GetWeChatRobotBase() + GetFriendListInitOffset;

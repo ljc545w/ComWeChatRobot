@@ -8,6 +8,7 @@ struct SelfInfoStruct {
 	DWORD length;
 } ret;
 
+
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {

@@ -2,4 +2,5 @@
 #include<windows.h>
 #include<iostream>
 using namespace std;
-std::wstring GetFriendList();
+SAFEARRAY* GetFriendList();
+std::wstring GetFriendListString();
