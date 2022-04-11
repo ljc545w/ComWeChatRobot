@@ -24,6 +24,9 @@ DWORD ReceiveMessageNextCall = GetWeChatWinBase() + ReceiveMessageNextCallOffset
 DWORD JmpBackAddress = ReceiveMessageHookAddress + 0x5;
 
 VOID ReceiveMessage(DWORD messageAddr) {
+	DWORD isSendMessage = *(DWORD*)(messageAddr + 0x3C);
+	if (isSendMessage)
+		return;
 	messageStruct message = { 0 };
 	message.messagetype = *(DWORD*)(messageAddr + 0x38);
 	
@@ -52,6 +55,9 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	ZeroMemory(message.message, (length + 1) * 2);
 	memcpy(message.message, (wchar_t*)(*(DWORD*)(messageAddr + 0x70)), length * 2);
 	message.l_message = length;
+
+	// FileSavePath:messageAddr + 0x1AC
+
 
 	messageVector.push_back(message);
 }

@@ -149,16 +149,15 @@ class WeChatRobot():
         try:
             return _EnumFriendStatus[status]
         except KeyError:
-            return "未知状态：{}".format(
-                    hex(status).upper().replace('0X','0x'))
+            return "未知状态：{}".format(hex(status).upper().replace('0X','0x'))
         
     def ReceiveMessage(self,CallBackFunc = None):
         comtypes.CoInitialize()
-        ThreadRobot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
-        
+        # 线程中必须新建一个对象，但无需重复注入
+        ThreadRobot = WeChatRobot()
         while self.ReceiveMessageStarted:
             try:
-                message = dict(ThreadRobot.CReceiveMessage())
+                message = dict(ThreadRobot.robot.CReceiveMessage())
                 if CallBackFunc:
                     CallBackFunc(ThreadRobot,message)
             except IndexError:
@@ -187,8 +186,11 @@ class WeChatRobot():
 # 一个示例回调，将收到的文本消息转发给filehelper
 def ReceiveMessageCallBack(robot,message):
     if message['type'] == 1 and message['sender'] != 'filehelper':
-        robot.CSendText('filehelper',message['message'])
-    if message['sender'] != 'filehelper': print(message)
+        robot.robot.CSendText('filehelper',message['message'])
+    if message['sender'] != 'filehelper':
+        wxSender = robot.GetWxUserInfo(message['sender'])
+        sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
+        print("{}：{}".format(sender,message['message']))
     
 def test_SendText():
     import os
