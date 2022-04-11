@@ -162,6 +162,7 @@
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendArticle.h" />
+    <ClInclude Include="SendAtText.h" />
     <ClInclude Include="SendCard.h" />
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendArticle.cpp" />
+    <ClCompile Include="SendAtText.cpp" />
     <ClCompile Include="SendCard.cpp" />
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />

@@ -35,6 +35,11 @@ class ChatSession():
     
     def SendCard(self,sharedwxid,nickname):
         return self.robot.CSendCard(self.chatwith,sharedwxid,nickname)
+    
+    def SendAtText(self,wxid,msg):
+        if '@chatroom' not in self.chatwith:
+            return 1
+        return self.robot.CSendAtText(self.chatwith,wxid,msg)
         
 
 class WeChatRobot():
@@ -158,7 +163,7 @@ class WeChatRobot():
         while self.ReceiveMessageStarted:
             try:
                 message = dict(ThreadRobot.robot.CReceiveMessage())
-                if CallBackFunc:
+                if CallBackFunc and message:
                     CallBackFunc(ThreadRobot,message)
             except IndexError:
                 message = None
@@ -239,7 +244,11 @@ def test_ReceiveMessage():
     wx = WeChatRobot()
     wx.StartService()
     wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
-    input('按Enter可退出')
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        pass
     wx.StopService()
 
 if __name__ == '__main__':

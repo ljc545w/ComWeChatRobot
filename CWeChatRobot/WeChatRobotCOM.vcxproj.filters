@@ -56,6 +56,9 @@
     <Filter Include="接收消息">
       <UniqueIdentifier>{9f0d63f2-46a6-4d9c-83dd-ed19792705d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送艾特">
+      <UniqueIdentifier>{ee92dda5-7326-49ad-a09b-b339eedbb518}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -115,6 +118,9 @@
     <ClInclude Include="ReceiveMessage.h">
       <Filter>接收消息</Filter>
     </ClInclude>
+    <ClInclude Include="SendAtText.h">
+      <Filter>发送消息\发送艾特</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -164,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="ReceiveMessage.cpp">
       <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="SendAtText.cpp">
+      <Filter>发送消息\发送艾特</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

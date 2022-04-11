@@ -130,3 +130,55 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 	}
 	return isSuccess;
 }
+
+wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid) {
+	DWORD WeChatWinBase = GetWeChatWinBase();
+	DWORD WxGetUserInfoCall0 = WeChatWinBase + GetUserInfoCall0Offset;
+	DWORD WxGetUserInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
+	DWORD WxGetUserInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
+	DWORD WxGetUserInfoCall3 = WeChatWinBase + GetUserInfoCall3Offset;
+	DWORD DeleteUserInofCacheCall1 = WeChatWinBase + DeleteUserInfoCacheCall1Offset;
+	DWORD DeleteUserInofCacheCall2 = WeChatWinBase + DeleteUserInfoCacheCall2Offset;
+	char buffer[0x3FC] = { 0 };
+	WxBaseStruct pWxid(wxid);
+	DWORD address = 0;
+	DWORD isSuccess = 0;
+	__asm
+	{
+		pushad;
+		call WxGetUserInfoCall0;
+		mov edi, eax;
+		lea ecx, buffer;
+		call WxGetUserInfoCall1;
+		lea eax, buffer;
+		mov address, eax;
+		push eax;
+		sub esp, 0x14;
+		mov ecx, esp;
+		lea esi, pWxid;
+		push esi;
+		call WxGetUserInfoCall2;
+		mov ecx, edi;
+		call WxGetUserInfoCall3;
+		mov isSuccess, eax;
+		popad;
+	}
+	wchar_t* NickName = NULL;
+	if (isSuccess) {
+		DWORD length = *(DWORD*)(address + 0x6C + 0x4);
+		NickName = new wchar_t[length + 1];
+		ZeroMemory(NickName, (length + 1) * 2);
+		memcpy(NickName, (wchar_t*)(*(DWORD*)(address + 0x6C)), length * 2);
+	}
+	__asm {
+		pushad;
+		lea eax, buffer;
+		push eax;
+		call DeleteUserInofCacheCall1;
+		lea ecx, buffer;
+		mov esi, eax;
+		call DeleteUserInofCacheCall2;
+		popad;
+	}
+	return NickName;
+}

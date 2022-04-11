@@ -15,6 +15,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("SendImage 0x%08X\n", (DWORD)SendImage);
         printf("SendText 0x%08X\n", (DWORD)SendText);
         printf("SendFile 0x%08X\n", (DWORD)SendFile);
+        printf("SendAtText 0x%08X\n", (DWORD)SendAtText);
         printf("GetFriendList 0x%08X\n", (DWORD)GetFriendList);
         printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
         printf("SendArticle 0x%08X\n", (DWORD)SendArticle);

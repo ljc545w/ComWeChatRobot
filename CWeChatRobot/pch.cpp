@@ -8,6 +8,7 @@ DWORD SendTextOffset = 0x0;
 DWORD SendFileOffset = 0x0;
 DWORD SendArticleOffset = 0x0;
 DWORD SendCardOffset = 0x0;
+DWORD SendAtTextOffset = 0x0;
 
 DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
@@ -97,6 +98,8 @@ void GetProcOffset(wchar_t* workPath) {
     SendArticleOffset = SendArticleProcAddr - WeChatBase;
     DWORD SendCardProcAddr = (DWORD)GetProcAddress(hd, SendCardRemote);
     SendCardOffset = SendCardProcAddr - WeChatBase;
+    DWORD SendAtTextProcAddr = (DWORD)GetProcAddress(hd, SendAtTextRemote);
+    SendAtTextOffset = SendAtTextProcAddr - WeChatBase;
 
     DWORD GetFriendListInitProcAddr = (DWORD)GetProcAddress(hd, GetFriendListInit);
     GetFriendListInitOffset = GetFriendListInitProcAddr - WeChatBase;

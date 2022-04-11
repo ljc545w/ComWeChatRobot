@@ -32,6 +32,17 @@ STDMETHODIMP CWeChatRobot::CSendText(BSTR wxid, BSTR wxmsg, int* __result) {
 }
 
 /*
+* 参数1：群聊id
+* 参数2：艾特的人wxid
+* 参数3：文本消息内容
+* 参数4：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, BSTR wxid, BSTR wxmsg, int* __result) {
+    *__result = SendAtText(chatroomid,wxid, wxmsg);
+    return S_OK;
+}
+
+/*
 * 参数1：接收人wxid
 * 参数2：图片绝对路径
 * 参数3：预返回的值，调用时无需提供

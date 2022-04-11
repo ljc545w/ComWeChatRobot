@@ -3,3 +3,4 @@
 BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid);
 extern "C" __declspec(dllexport) DWORD GetWxUserInfoRemote(LPVOID lparamter);
 extern "C" __declspec(dllexport) VOID DeleteUserInfoCacheRemote();
+wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid);

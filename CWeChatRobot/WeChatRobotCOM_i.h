@@ -157,6 +157,12 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStopReceiveMessage( 
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendAtText( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR wxmsg,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -302,6 +308,13 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendAtText )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR wxmsg,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -391,6 +404,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CStopReceiveMessage(This,__result)	\
     ( (This)->lpVtbl -> CStopReceiveMessage(This,__result) ) 
+
+#define IWeChatRobot_CSendAtText(This,chatroomid,wxid,wxmsg,__result)	\
+    ( (This)->lpVtbl -> CSendAtText(This,chatroomid,wxid,wxmsg,__result) ) 
 
 #endif /* COBJMACROS */
 
