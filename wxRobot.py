@@ -190,7 +190,8 @@ def ReceiveMessageCallBack(robot,message):
     if message['sender'] != 'filehelper':
         wxSender = robot.GetWxUserInfo(message['sender'])
         sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
-        print("{}：{}".format(sender,message['message']))
+        print("来自 {}".format(sender))
+        print(message)
     
 def test_SendText():
     import os

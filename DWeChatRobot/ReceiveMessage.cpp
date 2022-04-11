@@ -12,6 +12,8 @@ struct messageStruct {
 	DWORD l_wxid;
 	wchar_t* message;
 	DWORD l_message;
+	wchar_t* filepath;
+	DWORD l_filepath;
 };
 
 vector<messageStruct> messageVector;
@@ -56,8 +58,11 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	memcpy(message.message, (wchar_t*)(*(DWORD*)(messageAddr + 0x70)), length * 2);
 	message.l_message = length;
 
-	// FileSavePath:messageAddr + 0x1AC
-
+	length = *(DWORD*)(messageAddr + 0x1AC + 0x4);
+	message.filepath = new wchar_t[length + 1];
+	ZeroMemory(message.filepath, (length + 1) * 2);
+	memcpy(message.filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
+	message.l_filepath = length;
 
 	messageVector.push_back(message);
 }

@@ -10,6 +10,8 @@ struct GetRemoteMessageStruct {
     DWORD l_wxid;
     DWORD message;
     DWORD l_message;
+    DWORD filepath;
+    DWORD l_filepath;
 };
 
 struct MessageStruct {
@@ -17,6 +19,7 @@ struct MessageStruct {
     wchar_t* sender;
     wchar_t* wxid;
     wchar_t* message;
+    wchar_t* filepath;
 };
 
 BOOL StartReceiveMessage() {
@@ -114,6 +117,10 @@ SAFEARRAY* ReceiveMessage() {
         ReadProcessMemory(hProcess, (LPCVOID)remotemessage.wxid, message.wxid, (remotemessage.l_wxid + 1) * sizeof(wchar_t), 0);
         message.message = new wchar_t[remotemessage.l_message + 1];
         ReadProcessMemory(hProcess, (LPCVOID)remotemessage.message, message.message, (remotemessage.l_message + 1) * sizeof(wchar_t), 0);
+        message.filepath = new wchar_t[remotemessage.l_filepath + 1];
+        ZeroMemory(message.filepath, (remotemessage.l_filepath + 1) * 2);
+        if(remotemessage.l_filepath)
+            ReadProcessMemory(hProcess, (LPCVOID)remotemessage.filepath, message.filepath, (remotemessage.l_filepath + 1) * sizeof(wchar_t), 0);
     }
     else {
         return NULL;
@@ -126,8 +133,9 @@ SAFEARRAY* ReceiveMessage() {
         L"sender",
         L"wxid",
         L"message",
+        L"filepath",
     };
-    SAFEARRAYBOUND rgsaBound[2] = { {4,0},{2,0} };
+    SAFEARRAYBOUND rgsaBound[2] = { {5,0},{2,0} };
     psaValue = SafeArrayCreate(VT_VARIANT, 2, rgsaBound);
     long keyIndex[2] = { 0,0 };
     keyIndex[0] = 0; keyIndex[1] = 0;
@@ -146,5 +154,9 @@ SAFEARRAY* ReceiveMessage() {
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[3].c_str());
     keyIndex[0] = 3; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.message);
+    keyIndex[0] = 4; keyIndex[1] = 0;
+    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[4].c_str());
+    keyIndex[0] = 4; keyIndex[1] = 1;
+    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.filepath);
     return psaValue;
 }
