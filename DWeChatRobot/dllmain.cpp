@@ -20,7 +20,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
         printf("SendCard 0x%08X\n", (DWORD)SendCard);
         printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
-        HookLogMsgInfo();
 #endif
         break;
     }

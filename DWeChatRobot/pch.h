@@ -21,6 +21,7 @@
 #include "SendCard.h"
 #include "CheckFriendStatus.h"
 #include "LogMsgInfo.h"
+#include "ReceiveMessage.h"
 #endif //PCH_H
 
 using namespace std;

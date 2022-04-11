@@ -31,6 +31,9 @@ interface IWeChatRobot : IDispatch
 	[id(13)] HRESULT CCheckFriendStatus([in] BSTR wxid, [out, retval] int* __result);
 	[id(14)] HRESULT CCheckFriendStatusFinish([out, retval] int* __result);
 	[id(15)] HRESULT CGetComWorkPath([out, retval] BSTR* __result);
+	[id(16)] HRESULT CStartReceiveMessage([out, retval] int* __result);
+	[id(17)] HRESULT CReceiveMessage([out, retval] VARIANT* __result);
+	[id(18)] HRESULT CStopReceiveMessage([out, retval] int* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

@@ -9,6 +9,7 @@
 #include "UserInfo.h"
 #include "SelfInfo.h"
 #include "CheckFriendStatus.h"
+#include "ReceiveMessage.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -32,6 +33,11 @@ extern DWORD CheckFriendStatusInitRemoteOffset;
 extern DWORD CheckFriendStatusRemoteOffset;
 extern DWORD CheckFriendStatusFinishRemoteOffset;
 
+extern DWORD HookReceiveMessageRemoteOffset;
+extern DWORD UnHookReceiveMessageRemoteOffset;
+extern DWORD GetHeadMessageRemoteOffset;
+extern DWORD PopHeadMessageRemoteOffset;
+
 
 #define dllname L"DWeChatRobot.dll"
 
@@ -54,3 +60,8 @@ extern DWORD CheckFriendStatusFinishRemoteOffset;
 #define CheckFriendStatusInitRemote "CheckFriendStatusInitRemote"
 #define CheckFriendStatusRemote "CheckFriendStatusRemote"
 #define CheckFriendStatusFinishRemote "CheckFriendStatusFinishRemote"
+
+#define HookReceiveMessageRemote "HookReceiveMessage"
+#define UnHookReceiveMessageRemote "UnHookReceiveMessage"
+#define GetHeadMessageRemote "GetHeadMessage"
+#define PopHeadMessageRemote "PopHeadMessage"

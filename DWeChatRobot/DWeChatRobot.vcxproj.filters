@@ -52,6 +52,9 @@
     <Filter Include="微信日志">
       <UniqueIdentifier>{54c9691e-786d-4279-874d-b1e35673a666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="接收消息">
+      <UniqueIdentifier>{4763248d-1490-48c0-aa63-bf3265cf8178}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -90,6 +93,9 @@
     <ClInclude Include="LogMsgInfo.h">
       <Filter>微信日志</Filter>
     </ClInclude>
+    <ClInclude Include="ReceiveMessage.h">
+      <Filter>接收消息</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -127,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="LogMsgInfo.cpp">
       <Filter>微信日志</Filter>
+    </ClCompile>
+    <ClCompile Include="ReceiveMessage.cpp">
+      <Filter>接收消息</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

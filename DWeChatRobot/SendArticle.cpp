@@ -25,6 +25,22 @@ VOID SendArticleRemote(LPVOID lparameter) {
 	SendArticle(wxid,title,abstract,url);
 }
 
+DWORD GetSelfWxIdAddr() {
+	DWORD baseAddr = GetWeChatWinBase() + 0x222EB3C;
+	char wxidbuffer[0x100] = { 0 };
+	DWORD SelfWxIdAddr = 0x0;
+	sprintf_s(wxidbuffer, "%s", (char*)baseAddr);
+	if (strlen(wxidbuffer) < 0x6 || strlen(wxidbuffer) > 0x14)
+	{
+		SelfWxIdAddr = *(DWORD*)baseAddr;
+	}
+	else
+	{
+		SelfWxIdAddr = baseAddr;
+	}
+	return SelfWxIdAddr;
+}
+
 BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SendArticleCall1 = WeChatWinBase + SendArticleCall1Offset;
@@ -37,7 +53,7 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	DWORD SendArticleClearCacheCall1 = WeChatWinBase + SendArticleClearCacheCall1Offset;
 	DWORD SendArticleClearCacheCall2 = WeChatWinBase + SendArticleClearCacheCall2Offset;
 	// 自己的wxid，发送者
-	char* sselfwxid = (char*)(*(DWORD*)(WeChatWinBase + 0x222EB3C));
+	char* sselfwxid = (char*)GetSelfWxIdAddr();
 	wchar_t* wselfwxid = new wchar_t[strlen(sselfwxid) + 1];
 	MultiByteToWideChar(CP_ACP, MB_COMPOSITE, sselfwxid, -1, wselfwxid, strlen(sselfwxid) + 1);
 	// 构造xml数据

@@ -216,6 +216,7 @@
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="InjertDll.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
     <ClInclude Include="SelfInfo.h" />
@@ -240,6 +241,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendCard.cpp" />

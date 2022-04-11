@@ -66,6 +66,9 @@ public:
 	STDMETHODIMP CCheckFriendStatus(BSTR wxid, int* __result);
 	STDMETHODIMP CCheckFriendStatusFinish(int* __result);
 	STDMETHODIMP CGetComWorkPath(BSTR* __result);
+	STDMETHODIMP CStartReceiveMessage(int* __result);
+	STDMETHODIMP CReceiveMessage(VARIANT* __result);
+	STDMETHODIMP CStopReceiveMessage(int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

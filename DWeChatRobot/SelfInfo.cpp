@@ -12,7 +12,7 @@ struct SelfInfoStruct {
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
-		*(DWORD*)(WeChatWinBase + 0x222EB3C),
+		WeChatWinBase + 0x222EB3C,
 		WeChatWinBase + 0x222ED30,
 		WeChatWinBase + 0x222EBB4,
 		*(DWORD*)(WeChatWinBase + 0x222ECEC),
@@ -50,6 +50,19 @@ DWORD GetSelfInfoRemote() {
 			}
 			else {
 				temp = (*((DWORD*)SelfInfoAddr[i]) != 0) ? (char*)(*(DWORD*)SelfInfoAddr[i]) : (char*)"null";
+			}
+		}
+		else if (!SelfInfoKey[i].compare(L"\"wxId\"")) {
+			char wxidbuffer[0x100] = { 0 };
+			sprintf_s(wxidbuffer, "%s", (char*)SelfInfoAddr[i]);
+			if (strlen(wxidbuffer) < 0x6 || strlen(wxidbuffer) > 0x14)
+			{
+				//新的微信号 微信ID用地址保存
+				temp = (char*)(*(DWORD*)SelfInfoAddr[i]);
+			}
+			else
+			{
+				temp = (char*)SelfInfoAddr[i];
 			}
 		}
 		else {

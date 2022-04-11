@@ -53,6 +53,9 @@
     <Filter Include="好友相关\好友状态">
       <UniqueIdentifier>{2543fa88-031d-42ca-9dd1-ac564ee2f744}</UniqueIdentifier>
     </Filter>
+    <Filter Include="接收消息">
+      <UniqueIdentifier>{9f0d63f2-46a6-4d9c-83dd-ed19792705d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -109,6 +112,9 @@
     <ClInclude Include="CheckFriendStatus.h">
       <Filter>好友相关\好友状态</Filter>
     </ClInclude>
+    <ClInclude Include="ReceiveMessage.h">
+      <Filter>接收消息</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -155,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="CheckFriendStatus.cpp">
       <Filter>好友相关\好友状态</Filter>
+    </ClCompile>
+    <ClCompile Include="ReceiveMessage.cpp">
+      <Filter>接收消息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

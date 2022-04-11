@@ -9,6 +9,8 @@ Created on Thu Feb 24 16:19:48 2022
 # need `pip install comtypes`
 import comtypes.client
 import ast
+import threading
+import time
 
 class ChatSession():
     def __init__(self,robot,wxid):
@@ -41,6 +43,7 @@ class WeChatRobot():
         self.robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
         self.AddressBook = []
         self.myinfo = {}
+        self.ReceiveMessageStarted = False
         
     def StartService(self):
         status = self.robot.CStartRobotService()
@@ -57,6 +60,7 @@ class WeChatRobot():
         return self.myinfo
         
     def StopService(self):
+        self.StopReceiveMessage()
         return self.robot.CStopRobotService()
     
     def GetAddressBook(self):
@@ -147,6 +151,44 @@ class WeChatRobot():
         except KeyError:
             return "未知状态：{}".format(
                     hex(status).upper().replace('0X','0x'))
+        
+    def ReceiveMessage(self,CallBackFunc = None):
+        comtypes.CoInitialize()
+        ThreadRobot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
+        
+        while self.ReceiveMessageStarted:
+            try:
+                message = dict(ThreadRobot.CReceiveMessage())
+                if CallBackFunc:
+                    CallBackFunc(ThreadRobot,message)
+            except IndexError:
+                message = None
+            time.sleep(0.5)
+        comtypes.CoUninitialize()
+    
+    # 接收消息的函数，可以添加一个回调
+    def StartReceiveMessage(self,CallBackFunc = None):
+        self.ReceiveMessageStarted = True
+        status = self.robot.CStartReceiveMessage()
+        self.ReceiveMessageThread = threading.Thread(target = self.ReceiveMessage,args= (CallBackFunc,))
+        self.ReceiveMessageThread.daemon = True
+        self.ReceiveMessageThread.start()
+        return status
+        
+    def StopReceiveMessage(self):
+        self.ReceiveMessageStarted = False
+        try:
+            self.ReceiveMessageThread.join()
+        except:
+            pass
+        status = self.robot.CStopReceiveMessage()
+        return status
+
+# 一个示例回调，将收到的文本消息转发给filehelper
+def ReceiveMessageCallBack(robot,message):
+    if message['type'] == 1 and message['sender'] != 'filehelper':
+        robot.CSendText('filehelper',message['message'])
+    if message['sender'] != 'filehelper': print(message)
     
 def test_SendText():
     import os
@@ -165,13 +207,12 @@ def test_SendText():
     session.SendText('好友信息：{}'.format(str(filehelper.get('wxNickName'))))
     if os.path.exists(imgpath): session.SendImage(imgpath)
     if os.path.exists(filepath): session.SendFile(filepath)
-    session.SendArticle("PC微信逆向--获取通讯录","确定不来看看么?","https://www.ljczero.top/article/2022/3/13/133.html")
+    session.SendArticle("天气预报","点击查看","http://www.baidu.com")
     shared = wx.GetFriendByWxNickName("码农翻身")
     if shared: session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
     wx.StopService()
     
 def test_FriendStatus():
-    import time
     f = open('Friendstatus.txt','wt',encoding = 'utf-8')
     wx = WeChatRobot()
     wx.StartService()
@@ -190,6 +231,13 @@ def test_FriendStatus():
         break
     f.close()
     wx.StopService()
+    
+def test_ReceiveMessage():
+    wx = WeChatRobot()
+    wx.StartService()
+    wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
+    input('按Enter可退出')
+    wx.StopService()
 
 if __name__ == '__main__':
-    test_SendText()
+    test_ReceiveMessage()

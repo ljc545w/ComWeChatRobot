@@ -159,6 +159,7 @@
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="LogMsgInfo.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendArticle.h" />
     <ClInclude Include="SendCard.h" />
@@ -177,6 +178,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendCard.cpp" />
