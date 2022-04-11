@@ -31,8 +31,7 @@ CWeChatRobot.exe /unregserver
 参考[wxRobot.py](/wxRobot.py)  
 **C#：**  
 参考[Program.cs](/wxRobot/Program.cs)
-# 更多功能
-后续会尝试添加发送艾特消息接口    
+# 更多功能 
 已找到如下功能的CALL或HOOK位置：  
 1. 检测好友状态（已添加的功能）  
 2. 接收文本消息和各类xml消息（已添加的功能）  
@@ -41,7 +40,7 @@ CWeChatRobot.exe /unregserver
 5. 语音消息（SILK_V3格式）  
 6. 微信Duilib界面xml文件  
 
-除艾特消息外，暂时没有空闲时间开发上述功能，如果想开发相关功能请发邮件到ljc545w@qq.com  
+暂时没有空闲时间开发上述功能，如果想开发相关功能请发邮件到ljc545w@qq.com  
 **也欢迎您提交PR**  
 # 更新记录
 ## 2022.04.01
@@ -51,6 +50,8 @@ CWeChatRobot.exe /unregserver
 ## 2022.04.11  
 1. 修改获取个人信息接口和发送文章接口，兼容老版wxid（未经测试，如有问题请提ISSUE）  
 2. 添加接收消息的接口，可以写回调对消息进行处理（参考Python示例文件）  
+## 2022.04.12
+1. 添加发送群艾特消息的接口（后续考虑添加根据群ID查询所有群成员接口）  
 # 打赏作者
 请给作者一个star，感谢感谢  
 # 免责声明
