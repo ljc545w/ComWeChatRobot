@@ -76,6 +76,14 @@ DWORD GetHeadMessage() {
 VOID PopHeadMessage() {
 	if (messageVector.size() == 0)
 		return;
+	delete[] messageVector[0].message;
+	messageVector[0].message = NULL;
+	delete[] messageVector[0].sender;
+	messageVector[0].sender = NULL;
+	delete[] messageVector[0].wxid;
+	messageVector[0].wxid = NULL;
+	delete[] messageVector[0].filepath;
+	messageVector[0].filepath = NULL;
 	vector<messageStruct>::iterator k = messageVector.begin();
 	messageVector.erase(k);
 }

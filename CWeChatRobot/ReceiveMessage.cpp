@@ -125,7 +125,6 @@ SAFEARRAY* ReceiveMessage() {
     else {
         return NULL;
     }
-    printf("%ws\n", message.wxid);
     PopHeadMessage();
     SAFEARRAY* psaValue;
     vector<wstring> MessageInfoKey = {
@@ -142,21 +141,34 @@ SAFEARRAY* ReceiveMessage() {
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[0].c_str());
     keyIndex[0] = 0; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.type);
+
     keyIndex[0] = 1; keyIndex[1] = 0;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[1].c_str());
     keyIndex[0] = 1; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.sender);
+    delete[] message.sender;
+    message.sender = NULL;
+
     keyIndex[0] = 2; keyIndex[1] = 0;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[2].c_str());
     keyIndex[0] = 2; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.wxid);
+    delete[] message.wxid;
+    message.wxid = NULL;
+
     keyIndex[0] = 3; keyIndex[1] = 0;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[3].c_str());
     keyIndex[0] = 3; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.message);
+    delete[] message.message;
+    message.message = NULL;
+
     keyIndex[0] = 4; keyIndex[1] = 0;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[4].c_str());
     keyIndex[0] = 4; keyIndex[1] = 1;
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.filepath);
+    delete[] message.filepath;
+    message.filepath = NULL;
+
     return psaValue;
 }
