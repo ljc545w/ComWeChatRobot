@@ -187,3 +187,15 @@ STDMETHODIMP CWeChatRobot::CStopReceiveMessage(int* __result) {
     *__result = StopReceiveMessage();
     return S_OK;
 }
+
+/*
+* 参数1：群聊ID
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(BSTR chatroomid,VARIANT* __result) {
+    VARIANT vsaValue;
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(&vsaValue) = GetChatRoomMembers(chatroomid);
+    *__result = vsaValue;
+    return S_OK;
+}

@@ -70,6 +70,7 @@ public:
 	STDMETHODIMP CStartReceiveMessage(int* __result);
 	STDMETHODIMP CReceiveMessage(VARIANT* __result);
 	STDMETHODIMP CStopReceiveMessage(int* __result);
+	STDMETHODIMP CGetChatRoomMembers(BSTR chatroomid, VARIANT* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

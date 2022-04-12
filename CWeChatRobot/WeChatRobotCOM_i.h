@@ -163,6 +163,10 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetChatRoomMembers( 
+            /* [in] */ BSTR chatroomid,
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
     };
     
     
@@ -315,6 +319,11 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetChatRoomMembers )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [retval][out] */ VARIANT *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -407,6 +416,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CSendAtText(This,chatroomid,wxid,wxmsg,__result)	\
     ( (This)->lpVtbl -> CSendAtText(This,chatroomid,wxid,wxmsg,__result) ) 
+
+#define IWeChatRobot_CGetChatRoomMembers(This,chatroomid,__result)	\
+    ( (This)->lpVtbl -> CGetChatRoomMembers(This,chatroomid,__result) ) 
 
 #endif /* COBJMACROS */
 

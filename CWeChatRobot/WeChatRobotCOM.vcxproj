@@ -214,6 +214,7 @@
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
+    <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="InjertDll.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReceiveMessage.h" />
@@ -235,6 +236,7 @@
   <ItemGroup>
     <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="FriendList.cpp" />
+    <ClCompile Include="GetChatRoomMembers.cpp" />
     <ClCompile Include="InjertDll.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

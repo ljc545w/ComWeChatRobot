@@ -29,6 +29,8 @@ DWORD UnHookReceiveMessageRemoteOffset = 0x0;
 DWORD GetHeadMessageRemoteOffset = 0x0;
 DWORD PopHeadMessageRemoteOffset = 0x0;
 
+DWORD GetChatRoomMembersRemoteOffset = 0x0;
+
 wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
@@ -133,6 +135,9 @@ void GetProcOffset(wchar_t* workPath) {
     GetHeadMessageRemoteOffset = GetHeadMessageRemoteAddr - WeChatBase;
     DWORD PopHeadMessageRemoteAddr = (DWORD)GetProcAddress(hd, PopHeadMessageRemote);
     PopHeadMessageRemoteOffset = PopHeadMessageRemoteAddr - WeChatBase;
+
+    DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
+    GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;

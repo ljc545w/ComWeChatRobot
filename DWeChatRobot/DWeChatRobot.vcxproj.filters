@@ -58,6 +58,12 @@
     <Filter Include="发送消息\发送艾特">
       <UniqueIdentifier>{15310114-64cf-4426-a4ef-3c889824d2de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="群相关">
+      <UniqueIdentifier>{5bb967a4-4dc2-4b95-a3da-2795edc30b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\获取群成员">
+      <UniqueIdentifier>{fabe98aa-4f28-4bc6-b368-68808145a135}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -102,6 +108,9 @@
     <ClInclude Include="SendAtText.h">
       <Filter>发送消息\发送艾特</Filter>
     </ClInclude>
+    <ClInclude Include="GetChatRoomMembers.h">
+      <Filter>群相关\获取群成员</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -145,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="SendAtText.cpp">
       <Filter>发送消息\发送艾特</Filter>
+    </ClCompile>
+    <ClCompile Include="GetChatRoomMemebers.cpp">
+      <Filter>群相关\获取群成员</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -134,6 +134,18 @@ class WeChatRobot():
         userinfo = self.robot.CGetWxUserInfo(wxid).replace('\n','\\n')
         return ast.literal_eval(userinfo)
     
+    def GetChatRoomMembers(self,chatroomid):
+        info = dict(self.robot.CGetChatRoomMembers(chatroomid))
+        if not info:
+            return None
+        members = info['members'].split('^G')
+        data = self.GetWxUserInfo(chatroomid)
+        data['members'] = []
+        for member in members:
+            memberinfo = self.GetWxUserInfo(member)
+            data['members'].append(memberinfo)
+        return data
+        
     def CheckFriendStatusInit(self):
         return self.robot.CCheckFriendStatusInit()
     
@@ -246,7 +258,7 @@ def test_ReceiveMessage():
     wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
     try:
         while True:
-            pass
+            time.sleep(1)
     except KeyboardInterrupt:
         pass
     wx.StopService()

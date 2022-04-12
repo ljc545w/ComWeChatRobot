@@ -59,6 +59,12 @@
     <Filter Include="发送消息\发送艾特">
       <UniqueIdentifier>{ee92dda5-7326-49ad-a09b-b339eedbb518}</UniqueIdentifier>
     </Filter>
+    <Filter Include="群相关">
+      <UniqueIdentifier>{2f19dd43-78d1-4a4b-8aad-fb047f4274e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\获取群成员">
+      <UniqueIdentifier>{dce4ab67-7d14-41b1-8e89-cbf9a8315a3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -121,6 +127,9 @@
     <ClInclude Include="SendAtText.h">
       <Filter>发送消息\发送艾特</Filter>
     </ClInclude>
+    <ClInclude Include="GetChatRoomMembers.h">
+      <Filter>群相关\获取群成员</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -173,6 +182,9 @@
     </ClCompile>
     <ClCompile Include="SendAtText.cpp">
       <Filter>发送消息\发送艾特</Filter>
+    </ClCompile>
+    <ClCompile Include="GetChatRoomMembers.cpp">
+      <Filter>群相关\获取群成员</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
