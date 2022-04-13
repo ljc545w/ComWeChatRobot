@@ -174,15 +174,16 @@ DWORD StartRobotService() {
 }
 
 DWORD StopRobotService() {
+    DWORD cpid = GetCurrentProcessId();
     if (!hProcess)
-        return 1;
+        return cpid;
     DWORD wxPid = GetWeChatPid();
     CheckFriendStatusFinish();
     StopReceiveMessage();
     RemoveDll(wxPid);
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
-    return 0;
+    return cpid;
 }
 
 wstring GetComWorkPath() {

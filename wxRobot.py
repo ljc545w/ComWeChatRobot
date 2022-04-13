@@ -64,19 +64,16 @@ class WeChatRobot():
         self.myinfo = myinfo
         return self.myinfo
     
-    # 这个可以再更新一下，CStopRobotService返回COM组件的pid
     def StopService(self):
         import psutil
         self.StopReceiveMessage()
-        status = self.robot.CStopRobotService()
-        pids = psutil.pids()
-        for pid in pids:
-            p = psutil.Process(pid)
-            process_name = p.name()
-            if process_name == 'CWeChatRobot.exe':
-                p.kill()
-                break
-        return status
+        cpid = self.robot.CStopRobotService()
+        try:
+            cprocess = psutil.Process(cpid)
+            cprocess.kill()
+        except psutil.NoSuchProcess:
+            pass
+        return cpid
     
     def GetAddressBook(self):
         try:
@@ -218,17 +215,19 @@ def ReceiveMessageCallBack(robot,message):
     sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
     if '@chatroom' in message['sender']:
         wxUser = robot.GetWxUserInfo(message['wxid'])
-        print("来自 {} {}".format(sender,wxUser['wxNickName']))
+        print("来自 {} {},type {}".format(sender,wxUser['wxNickName',message['type']]))
     else:
-        print("来自 {}".format(sender))
+        print("来自 {},type {}".format(sender,message['type']))
     if message['type'] == 1:
         print(message['message'])
     elif message['type'] == 3:
+        print(message['message'])
         print(message['filepath'])
     elif message['type'] == 49:
         print(message['message'])
+        if not message['filepath']: print(message['filepath'])
     else:
-        print(message['type'],message['message'])
+        print(message['message'])
     
 def test_SendText():
     import os
