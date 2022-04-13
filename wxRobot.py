@@ -63,10 +63,20 @@ class WeChatRobot():
         myinfo['wxBigAvatar'] = myinfo['wxBigAvatar'].replace("/132","/0")
         self.myinfo = myinfo
         return self.myinfo
-        
+    
+    # 这个可以再更新一下，CStopRobotService返回COM组件的pid
     def StopService(self):
+        import psutil
         self.StopReceiveMessage()
-        return self.robot.CStopRobotService()
+        status = self.robot.CStopRobotService()
+        pids = psutil.pids()
+        for pid in pids:
+            p = psutil.Process(pid)
+            process_name = p.name()
+            if process_name == 'CWeChatRobot.exe':
+                p.kill()
+                break
+        return status
     
     def GetAddressBook(self):
         try:
