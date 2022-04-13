@@ -37,8 +37,15 @@ STDMETHODIMP CWeChatRobot::CSendText(BSTR wxid, BSTR wxmsg, int* __result) {
 * 参数3：文本消息内容
 * 参数4：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, BSTR wxid, BSTR wxmsg, int* __result) {
-    *__result = SendAtText(chatroomid,wxid, wxmsg);
+STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, int* __result) {
+    *__result = 0;
+    if (wxid->vt == VT_BSTR) {
+        *__result = SendAtText(chatroomid,wxid->bstrVal, wxmsg);
+    }
+    else if(wxid->vt == (VT_ARRAY | VT_VARIANT)) {
+        SAFEARRAY* psaValue = wxid->parray;
+        *__result = SendAtText(chatroomid, psaValue, wxmsg);
+    }
     return S_OK;
 }
 

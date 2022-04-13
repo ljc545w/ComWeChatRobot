@@ -36,7 +36,7 @@ class ChatSession():
     def SendCard(self,sharedwxid,nickname):
         return self.robot.CSendCard(self.chatwith,sharedwxid,nickname)
     
-    def SendAtText(self,wxid,msg):
+    def SendAtText(self,wxid:list or str or tuple,msg):
         if '@chatroom' not in self.chatwith:
             return 1
         return self.robot.CSendAtText(self.chatwith,wxid,msg)
@@ -204,11 +204,21 @@ class WeChatRobot():
 def ReceiveMessageCallBack(robot,message):
     if message['type'] == 1 and message['sender'] != 'filehelper':
         robot.robot.CSendText('filehelper',message['message'])
-    if message['sender'] != 'filehelper':
-        wxSender = robot.GetWxUserInfo(message['sender'])
-        sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
+    wxSender = robot.GetWxUserInfo(message['sender'])
+    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
+    if '@chatroom' in message['sender']:
+        wxUser = robot.GetWxUserInfo(message['wxid'])
+        print("来自 {} {}".format(sender,wxUser['wxNickName']))
+    else:
         print("来自 {}".format(sender))
-        print(message)
+    if message['type'] == 1:
+        print(message['message'])
+    elif message['type'] == 3:
+        print(message['filepath'])
+    elif message['type'] == 49:
+        print(message['message'])
+    else:
+        print(message['type'],message['message'])
     
 def test_SendText():
     import os

@@ -48,7 +48,7 @@
 
 #include "WeChatRobotCOM_i.h"
 
-#define TYPE_FORMAT_STRING_SIZE   1221                              
+#define TYPE_FORMAT_STRING_SIZE   1239                              
 #define PROC_FORMAT_STRING_SIZE   835                               
 #define EXPR_FORMAT_STRING_SIZE   1                                 
 #define TRANSMIT_AS_TABLE_SIZE    0            
@@ -774,9 +774,9 @@ static const WeChatRobotCOM_MIDL_PROC_FORMAT_STRING WeChatRobotCOM__MIDL_ProcFor
 
 	/* Parameter wxid */
 
-/* 768 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
+/* 768 */	NdrFcShort( 0x10b ),	/* Flags:  must size, must free, in, simple ref, */
 /* 770 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
-/* 772 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
+/* 772 */	NdrFcShort( 0x4cc ),	/* Type Offset=1228 */
 
 	/* Parameter wxmsg */
 
@@ -1624,6 +1624,18 @@ static const WeChatRobotCOM_MIDL_TYPE_FORMAT_STRING WeChatRobotCOM__MIDL_TypeFor
 /* 1214 */	NdrFcShort( 0x4 ),	/* 4 */
 /* 1216 */	NdrFcShort( 0x0 ),	/* 0 */
 /* 1218 */	NdrFcShort( 0xfcb4 ),	/* Offset= -844 (374) */
+/* 1220 */	
+			0x11, 0x0,	/* FC_RP */
+/* 1222 */	NdrFcShort( 0x6 ),	/* Offset= 6 (1228) */
+/* 1224 */	
+			0x12, 0x0,	/* FC_UP */
+/* 1226 */	NdrFcShort( 0xffce ),	/* Offset= -50 (1176) */
+/* 1228 */	0xb4,		/* FC_USER_MARSHAL */
+			0x83,		/* 131 */
+/* 1230 */	NdrFcShort( 0x1 ),	/* 1 */
+/* 1232 */	NdrFcShort( 0x10 ),	/* 16 */
+/* 1234 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 1236 */	NdrFcShort( 0xfff4 ),	/* Offset= -12 (1224) */
 
 			0x0
         }

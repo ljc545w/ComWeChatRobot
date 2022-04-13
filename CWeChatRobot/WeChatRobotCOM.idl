@@ -34,7 +34,7 @@ interface IWeChatRobot : IDispatch
 	[id(16)] HRESULT CStartReceiveMessage([out, retval] int* __result);
 	[id(17)] HRESULT CReceiveMessage([out, retval] VARIANT* __result);
 	[id(18)] HRESULT CStopReceiveMessage([out, retval] int* __result);
-	[id(19)] HRESULT CSendAtText([in] BSTR chatroomid, [in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
+	[id(19)] HRESULT CSendAtText([in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [out, retval] int* __result);
 	[id(20)] HRESULT CGetChatRoomMembers([in] BSTR chatroomid, [out, retval] VARIANT* __result);
 };
 [

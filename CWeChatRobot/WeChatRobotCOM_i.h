@@ -159,7 +159,7 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendAtText( 
             /* [in] */ BSTR chatroomid,
-            /* [in] */ BSTR wxid,
+            /* [in] */ VARIANT *wxid,
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result) = 0;
         
@@ -315,7 +315,7 @@ EXTERN_C const IID IID_IWeChatRobot;
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendAtText )( 
             IWeChatRobot * This,
             /* [in] */ BSTR chatroomid,
-            /* [in] */ BSTR wxid,
+            /* [in] */ VARIANT *wxid,
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result);
         

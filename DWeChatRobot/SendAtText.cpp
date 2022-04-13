@@ -8,19 +8,11 @@ struct SendAtTextStruct
     DWORD chatroomid;
     DWORD wxid;
     DWORD wxmsg;
-};
-
-struct AtUserStruct {
-    wchar_t* wxid;
-    DWORD Length;
-    DWORD maxLength;
-    DWORD fill1 = 0;
-    DWORD fill2 = 0;
-    DWORD fill3 = 0;
+    DWORD length;
 };
 
 struct AtStruct {
-    AtUserStruct* AtUser = NULL;
+    DWORD AtUser;
     DWORD addr_end1;
     DWORD addr_end2;
 };
@@ -28,29 +20,45 @@ struct AtStruct {
 void SendAtTextRemote(LPVOID lpParameter) {
     SendAtTextStruct* rp = (SendAtTextStruct*)lpParameter;
     wchar_t* wsChatRoomId = (WCHAR*)rp->chatroomid;
-    wchar_t* wsWxId = (WCHAR*)rp->wxid;
     wchar_t* wsTextMsg = (WCHAR*)rp->wxmsg;
-    SendAtText(wsChatRoomId,wsWxId, wsTextMsg);
+    if (rp->length == 0)
+        return;
+    else if(rp->length == 1)
+        SendAtText(wsChatRoomId, (DWORD*)&rp->wxid, wsTextMsg,rp->length);
+    else
+        SendAtText(wsChatRoomId, (DWORD*)rp->wxid, wsTextMsg, rp->length);
 }
 
-void __stdcall SendAtText(wchar_t* wsChatRoomId, wchar_t* wsWxId, wchar_t* wsTextMsg) {
-    wchar_t* NickName = GetUserNickNameByWxId(wsWxId);
-    if (!NickName)
+void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length) {
+    WxString* AtUsers = new WxString[length + 1];
+    wstring AtMessage = L"";
+    int querySuccess = 0;
+    for (int i = 0; i < length; i++) {
+        wchar_t* nickname = NULL;
+        if (!lstrcmpW((wchar_t*)wsWxId[i], (wchar_t*)L"notify@all")) {
+            nickname = (wchar_t*)L"ËùÓÐÈË";
+        }
+        else
+            nickname = GetUserNickNameByWxId((wchar_t*)wsWxId[i]);
+        if (!nickname)
+            continue;
+        WxString temp = { 0 };
+        temp.buffer = (wchar_t*)wsWxId[i];
+        temp.length = wcslen((wchar_t*)wsWxId[i]);
+        temp.maxLength = wcslen((wchar_t*)wsWxId[i]) * 2;
+        memcpy(&AtUsers[querySuccess],&temp,sizeof(WxString));
+        AtMessage = AtMessage + L"@" + nickname + L" ";
+        querySuccess++;
+    }
+    AtMessage += wsTextMsg;
+    if (!querySuccess)
         return;
-    wchar_t* SendTextMsg = new wchar_t[wcslen(wsTextMsg) + wcslen(NickName) + 3];
-    ZeroMemory(SendTextMsg, (wcslen(wsTextMsg) + wcslen(NickName) + 3) * 2);
-    swprintf_s(SendTextMsg, (wcslen(wsTextMsg) + wcslen(NickName) + 2) * 2,L"@%ws %ws",NickName,wsTextMsg);
-
     WxBaseStruct wxChatRoomId(wsChatRoomId);
-    WxBaseStruct wxTextMsg(SendTextMsg);
+    WxBaseStruct wxTextMsg((wchar_t*)AtMessage.c_str());
     AtStruct at = { 0 };
-    AtUserStruct AtUser = { 0 };
-    AtUser.wxid = wsWxId;
-    AtUser.Length = wcslen(wsWxId);
-    AtUser.maxLength = wcslen(wsWxId) * 2;
-    at.AtUser = &AtUser;
-    at.addr_end1 = (DWORD)&AtUser.fill3;
-    at.addr_end2 = (DWORD)&AtUser.fill3;
+    at.AtUser = (DWORD)AtUsers;
+    at.addr_end1 = (DWORD)&AtUsers[querySuccess];
+    at.addr_end2 = (DWORD)&AtUsers[querySuccess];
 
     wchar_t** pWxmsg = &wxTextMsg.buffer;
     char buffer[0x3B0] = { 0 };
@@ -60,7 +68,6 @@ void __stdcall SendAtText(wchar_t* wsChatRoomId, wchar_t* wsWxId, wchar_t* wsTex
     DWORD DeleteTextCacheCall = dllBaseAddress + DeleteAtTextCacheCallOffset;
 
     __asm {
-        pushad;
         lea eax, at;
         push 0x1;
         push eax;
@@ -72,6 +79,7 @@ void __stdcall SendAtText(wchar_t* wsChatRoomId, wchar_t* wsWxId, wchar_t* wsTex
         add esp, 0xC;
         lea ecx, buffer;
         call DeleteTextCacheCall;
-        popad;
     }
+    delete[] AtUsers;
+    AtUsers = NULL;
 }

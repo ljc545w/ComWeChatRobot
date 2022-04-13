@@ -48,9 +48,9 @@ struct WxBaseStruct
 
 struct WxString
 {
-    wchar_t* buffer;
-    DWORD length;
-    DWORD maxLength;
+    wchar_t* buffer = NULL;
+    DWORD length = 0;
+    DWORD maxLength = 0;
     DWORD fill1 = 0;
     DWORD fill2 = 0;
 };
