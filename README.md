@@ -28,7 +28,7 @@ PC微信机器人，实现以下功能：
 `./CWeChatRobot`：COM组件的实现代码  
 `./DWeChatRobot`：注入的DLL实现代码  
 `./wxRobot`:  包含C#的调用示例  
-`./wxRobot.py`：python示例文件  
+`./Python`：python示例和接口测试文件  
 `./Release/CWeChatRobot.exe`：编译的COM组件  
 `./Release/DWeChatRobot.dll`：编译的DLL文件  
 `./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参阅相关代码  
@@ -42,7 +42,7 @@ CWeChatRobot.exe /unregserver
 ```
 # 调用
 **Python：**  
-参考[wxRobot.py](/wxRobot.py)  
+参考[wxRobot.py](/Python/wxRobot.py)  
 **C#：**  
 参考[Program.cs](/wxRobot/Program.cs)
 # 更多功能 
