@@ -31,6 +31,10 @@ DWORD PopHeadMessageRemoteOffset = 0x0;
 
 DWORD GetChatRoomMembersRemoteOffset = 0x0;
 
+DWORD GetDbHandlesRemoteOffset = 0x0;
+DWORD ExecuteSQLRemoteOffset = 0x0;
+DWORD BackupSQLiteDBRemoteOffset = 0x0;
+
 wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
@@ -138,6 +142,13 @@ void GetProcOffset(wchar_t* workPath) {
 
     DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
     GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;
+
+    DWORD GetDbHandlesRemoteAddr = (DWORD)GetProcAddress(hd, GetDbHandlesRemote);
+    GetDbHandlesRemoteOffset = GetDbHandlesRemoteAddr - WeChatBase;
+    DWORD ExecuteSQLRemoteAddr = (DWORD)GetProcAddress(hd, ExecuteSQLRemote);
+    ExecuteSQLRemoteOffset = ExecuteSQLRemoteAddr - WeChatBase;
+    DWORD BackupSQLiteDBRemoteAddr = (DWORD)GetProcAddress(hd, BackupSQLiteDBRemote);
+    BackupSQLiteDBRemoteOffset = BackupSQLiteDBRemoteAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;

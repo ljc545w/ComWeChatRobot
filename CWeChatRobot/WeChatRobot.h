@@ -71,6 +71,9 @@ public:
 	STDMETHODIMP CReceiveMessage(VARIANT* __result);
 	STDMETHODIMP CStopReceiveMessage(int* __result);
 	STDMETHODIMP CGetChatRoomMembers(BSTR chatroomid, VARIANT* __result);
+	STDMETHODIMP CGetDbHandles(VARIANT* __result);
+	STDMETHODIMP CExecuteSQL(DWORD DbHandle, BSTR sql, VARIANT* __result);
+	STDMETHODIMP CBackupSQLiteDB(DWORD DbHandle, BSTR savepath, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

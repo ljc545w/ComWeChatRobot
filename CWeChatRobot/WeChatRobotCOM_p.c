@@ -49,7 +49,7 @@
 #include "WeChatRobotCOM_i.h"
 
 #define TYPE_FORMAT_STRING_SIZE   1239                              
-#define PROC_FORMAT_STRING_SIZE   835                               
+#define PROC_FORMAT_STRING_SIZE   967                               
 #define EXPR_FORMAT_STRING_SIZE   1                                 
 #define TRANSMIT_AS_TABLE_SIZE    0            
 #define WIRE_MARSHAL_TABLE_SIZE   2            
@@ -832,6 +832,123 @@ static const WeChatRobotCOM_MIDL_PROC_FORMAT_STRING WeChatRobotCOM__MIDL_ProcFor
 /* 828 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
 /* 830 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
 /* 832 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Procedure CGetDbHandles */
+
+/* 834 */	0x33,		/* FC_AUTO_HANDLE */
+			0x6c,		/* Old Flags:  object, Oi2 */
+/* 836 */	NdrFcLong( 0x0 ),	/* 0 */
+/* 840 */	NdrFcShort( 0x1b ),	/* 27 */
+/* 842 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
+/* 844 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 846 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 848 */	0x45,		/* Oi2 Flags:  srv must size, has return, has ext, */
+			0x2,		/* 2 */
+/* 850 */	0x8,		/* 8 */
+			0x43,		/* Ext Flags:  new corr desc, clt corr check, has range on conformance */
+/* 852 */	NdrFcShort( 0x1 ),	/* 1 */
+/* 854 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 856 */	NdrFcShort( 0x0 ),	/* 0 */
+
+	/* Parameter __result */
+
+/* 858 */	NdrFcShort( 0x4113 ),	/* Flags:  must size, must free, out, simple ref, srv alloc size=16 */
+/* 860 */	NdrFcShort( 0x4 ),	/* x86 Stack size/offset = 4 */
+/* 862 */	NdrFcShort( 0x4ac ),	/* Type Offset=1196 */
+
+	/* Return value */
+
+/* 864 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
+/* 866 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
+/* 868 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Procedure CExecuteSQL */
+
+/* 870 */	0x33,		/* FC_AUTO_HANDLE */
+			0x6c,		/* Old Flags:  object, Oi2 */
+/* 872 */	NdrFcLong( 0x0 ),	/* 0 */
+/* 876 */	NdrFcShort( 0x1c ),	/* 28 */
+/* 878 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
+/* 880 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 882 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 884 */	0x47,		/* Oi2 Flags:  srv must size, clt must size, has return, has ext, */
+			0x4,		/* 4 */
+/* 886 */	0x8,		/* 8 */
+			0x47,		/* Ext Flags:  new corr desc, clt corr check, srv corr check, has range on conformance */
+/* 888 */	NdrFcShort( 0x1 ),	/* 1 */
+/* 890 */	NdrFcShort( 0x1 ),	/* 1 */
+/* 892 */	NdrFcShort( 0x0 ),	/* 0 */
+
+	/* Parameter DbHandle */
+
+/* 894 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 896 */	NdrFcShort( 0x4 ),	/* x86 Stack size/offset = 4 */
+/* 898 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Parameter sql */
+
+/* 900 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
+/* 902 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
+/* 904 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
+
+	/* Parameter __result */
+
+/* 906 */	NdrFcShort( 0x4113 ),	/* Flags:  must size, must free, out, simple ref, srv alloc size=16 */
+/* 908 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
+/* 910 */	NdrFcShort( 0x4ac ),	/* Type Offset=1196 */
+
+	/* Return value */
+
+/* 912 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
+/* 914 */	NdrFcShort( 0x10 ),	/* x86 Stack size/offset = 16 */
+/* 916 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Procedure CBackupSQLiteDB */
+
+/* 918 */	0x33,		/* FC_AUTO_HANDLE */
+			0x6c,		/* Old Flags:  object, Oi2 */
+/* 920 */	NdrFcLong( 0x0 ),	/* 0 */
+/* 924 */	NdrFcShort( 0x1d ),	/* 29 */
+/* 926 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
+/* 928 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 930 */	NdrFcShort( 0x24 ),	/* 36 */
+/* 932 */	0x46,		/* Oi2 Flags:  clt must size, has return, has ext, */
+			0x4,		/* 4 */
+/* 934 */	0x8,		/* 8 */
+			0x45,		/* Ext Flags:  new corr desc, srv corr check, has range on conformance */
+/* 936 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 938 */	NdrFcShort( 0x1 ),	/* 1 */
+/* 940 */	NdrFcShort( 0x0 ),	/* 0 */
+
+	/* Parameter DbHandle */
+
+/* 942 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 944 */	NdrFcShort( 0x4 ),	/* x86 Stack size/offset = 4 */
+/* 946 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Parameter savepath */
+
+/* 948 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
+/* 950 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
+/* 952 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
+
+	/* Parameter __result */
+
+/* 954 */	NdrFcShort( 0x2150 ),	/* Flags:  out, base type, simple ref, srv alloc size=8 */
+/* 956 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
+/* 958 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Return value */
+
+/* 960 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
+/* 962 */	NdrFcShort( 0x10 ),	/* x86 Stack size/offset = 16 */
+/* 964 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
 			0x0
@@ -1698,7 +1815,10 @@ static const unsigned short IWeChatRobot_FormatStringOffsetTable[] =
     666,
     702,
     738,
-    792
+    792,
+    834,
+    870,
+    918
     };
 
 static const MIDL_STUBLESS_PROXY_INFO IWeChatRobot_ProxyInfo =
@@ -1722,7 +1842,7 @@ static const MIDL_SERVER_INFO IWeChatRobot_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(27) _IWeChatRobotProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(30) _IWeChatRobotProxyVtbl = 
 {
     &IWeChatRobot_ProxyInfo,
     &IID_IWeChatRobot,
@@ -1752,7 +1872,10 @@ CINTERFACE_PROXY_VTABLE(27) _IWeChatRobotProxyVtbl =
     (void *) (INT_PTR) -1 /* IWeChatRobot::CReceiveMessage */ ,
     (void *) (INT_PTR) -1 /* IWeChatRobot::CStopReceiveMessage */ ,
     (void *) (INT_PTR) -1 /* IWeChatRobot::CSendAtText */ ,
-    (void *) (INT_PTR) -1 /* IWeChatRobot::CGetChatRoomMembers */
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CGetChatRoomMembers */ ,
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CGetDbHandles */ ,
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CExecuteSQL */ ,
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CBackupSQLiteDB */
 };
 
 
@@ -1781,6 +1904,9 @@ static const PRPC_STUB_FUNCTION IWeChatRobot_table[] =
     NdrStubCall2,
     NdrStubCall2,
     NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2,
+    NdrStubCall2,
     NdrStubCall2
 };
 
@@ -1788,7 +1914,7 @@ CInterfaceStubVtbl _IWeChatRobotStubVtbl =
 {
     &IID_IWeChatRobot,
     &IWeChatRobot_ServerInfo,
-    27,
+    30,
     &IWeChatRobot_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };

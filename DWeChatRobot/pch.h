@@ -24,6 +24,10 @@
 #include "ReceiveMessage.h"
 #include "SendAtText.h"
 #include "GetChatRoomMembers.h"
+#include "GetDbHandles.h"
+#include "DbExecuteSql.h"
+#include "DbBackup.h"
+#include <vector>
 #endif //PCH_H
 
 using namespace std;
@@ -55,10 +59,10 @@ struct WxString
     DWORD fill2 = 0;
 };
 
-
 BOOL CreateConsole(void);
 DWORD GetWeChatWinBase();
 void Wchar_tToString(std::string& szDst, wchar_t* wchar);
+string UTF8ToGBK(const std::string& strUTF8);
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char* originalRecieveCode);
 void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
 DLLEXPORT void UnHookAll();

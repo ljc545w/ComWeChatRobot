@@ -64,6 +64,18 @@
     <Filter Include="群相关\获取群成员">
       <UniqueIdentifier>{fabe98aa-4f28-4bc6-b368-68808145a135}</UniqueIdentifier>
     </Filter>
+    <Filter Include="数据库">
+      <UniqueIdentifier>{430d3dd8-bbd5-4ec2-85dc-7d853ea0096d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\获取句柄">
+      <UniqueIdentifier>{c7530a89-ce8c-4a36-95c9-b573d2b305f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\执行SQL">
+      <UniqueIdentifier>{af9a0b81-49b3-4029-a4e4-2a5559f26d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\数据库备份">
+      <UniqueIdentifier>{59e555da-03e8-41d4-bd90-53e1b02fb30d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -111,6 +123,15 @@
     <ClInclude Include="GetChatRoomMembers.h">
       <Filter>群相关\获取群成员</Filter>
     </ClInclude>
+    <ClInclude Include="DbExecuteSql.h">
+      <Filter>数据库\执行SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="GetDbHandles.h">
+      <Filter>数据库\获取句柄</Filter>
+    </ClInclude>
+    <ClInclude Include="DbBackup.h">
+      <Filter>数据库\数据库备份</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -157,6 +178,15 @@
     </ClCompile>
     <ClCompile Include="GetChatRoomMemebers.cpp">
       <Filter>群相关\获取群成员</Filter>
+    </ClCompile>
+    <ClCompile Include="DbExecuteSql.cpp">
+      <Filter>数据库\执行SQL</Filter>
+    </ClCompile>
+    <ClCompile Include="GetDbHandles.cpp">
+      <Filter>数据库\获取句柄</Filter>
+    </ClCompile>
+    <ClCompile Include="DbBackup.cpp">
+      <Filter>数据库\数据库备份</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

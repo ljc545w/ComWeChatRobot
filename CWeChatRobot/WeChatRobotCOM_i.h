@@ -167,6 +167,19 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR chatroomid,
             /* [retval][out] */ VARIANT *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetDbHandles( 
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CExecuteSQL( 
+            /* [in] */ DWORD DbHandle,
+            /* [in] */ BSTR sql,
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CBackupSQLiteDB( 
+            /* [in] */ DWORD DbHandle,
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -324,6 +337,22 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR chatroomid,
             /* [retval][out] */ VARIANT *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetDbHandles )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ VARIANT *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CExecuteSQL )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD DbHandle,
+            /* [in] */ BSTR sql,
+            /* [retval][out] */ VARIANT *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CBackupSQLiteDB )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD DbHandle,
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -419,6 +448,15 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetChatRoomMembers(This,chatroomid,__result)	\
     ( (This)->lpVtbl -> CGetChatRoomMembers(This,chatroomid,__result) ) 
+
+#define IWeChatRobot_CGetDbHandles(This,__result)	\
+    ( (This)->lpVtbl -> CGetDbHandles(This,__result) ) 
+
+#define IWeChatRobot_CExecuteSQL(This,DbHandle,sql,__result)	\
+    ( (This)->lpVtbl -> CExecuteSQL(This,DbHandle,sql,__result) ) 
+
+#define IWeChatRobot_CBackupSQLiteDB(This,DbHandle,savepath,__result)	\
+    ( (This)->lpVtbl -> CBackupSQLiteDB(This,DbHandle,savepath,__result) ) 
 
 #endif /* COBJMACROS */
 

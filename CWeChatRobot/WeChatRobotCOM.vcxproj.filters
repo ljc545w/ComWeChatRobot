@@ -65,6 +65,18 @@
     <Filter Include="群相关\获取群成员">
       <UniqueIdentifier>{dce4ab67-7d14-41b1-8e89-cbf9a8315a3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="数据库">
+      <UniqueIdentifier>{c41b73aa-9ccc-4cfe-88e5-6b2849fa1fae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\获取句柄">
+      <UniqueIdentifier>{117e40dc-e3d0-41b7-a215-50e974b3adb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\执行SQL">
+      <UniqueIdentifier>{c619874d-ac89-42cc-b12b-c64662f4951e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据库\数据库备份">
+      <UniqueIdentifier>{f34f7c72-a310-4c23-b153-681307fb6277}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -130,6 +142,15 @@
     <ClInclude Include="GetChatRoomMembers.h">
       <Filter>群相关\获取群成员</Filter>
     </ClInclude>
+    <ClInclude Include="GetDbHandles.h">
+      <Filter>数据库\获取句柄</Filter>
+    </ClInclude>
+    <ClInclude Include="DbExecuteSql.h">
+      <Filter>数据库\执行SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="DbBackup.h">
+      <Filter>数据库\数据库备份</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -185,6 +206,15 @@
     </ClCompile>
     <ClCompile Include="GetChatRoomMembers.cpp">
       <Filter>群相关\获取群成员</Filter>
+    </ClCompile>
+    <ClCompile Include="GetDbHandles.cpp">
+      <Filter>数据库\获取句柄</Filter>
+    </ClCompile>
+    <ClCompile Include="DbExecuteSql.cpp">
+      <Filter>数据库\执行SQL</Filter>
+    </ClCompile>
+    <ClCompile Include="DbBackup.cpp">
+      <Filter>数据库\数据库备份</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

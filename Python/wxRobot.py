@@ -9,6 +9,7 @@ Created on Thu Feb 24 16:19:48 2022
 # need `pip install comtypes`
 import comtypes.client
 import ast
+import os
 import threading
 import time
 
@@ -26,7 +27,6 @@ class ChatSession():
     def SendFile(self,filepath):
         return self.robot.CSendFile(self.chatwith,filepath)
     
-    # 其实发送图片的函数比较智能，也可以发送视频和文件
     def SendMp4(self,mp4path):
         return self.robot.CSendImage(self.chatwith,mp4path)
         
@@ -197,7 +197,32 @@ class WeChatRobot():
         self.ReceiveMessageThread.daemon = True
         self.ReceiveMessageThread.start()
         return status
-        
+    
+    def GetDbHandles(self):
+        tablesTuple = self.robot.CGetDbHandles()
+        tables = [dict(i) for i in tablesTuple]
+        dbs = {}
+        for table in tables:
+            dbname = table['dbname']
+            if dbname not in dbs.keys():
+                dbs[dbname] = {'Handle':table['Handle'],'tables':[]}
+            dbs[dbname]['tables'].append(
+                {'name': table['name'],'tbl_name': table['tbl_name'],
+                 'rootpage': table['rootpage'],'sql': table['sql']}
+                )
+        return dbs
+    
+    def ExecuteSQL(self,handle,sql):
+        result = self.robot.CExecuteSQL(handle,sql)
+        return result
+    
+    def BackupSQLiteDB(self,handle,BackupFile):
+        BackupFile = BackupFile.replace('/','\\')
+        savepath = BackupFile.replace(BackupFile.split('\\')[-1],'')
+        if not os.path.exists(savepath):
+            os.makedirs(savepath)
+        return self.robot.CBackupSQLiteDB(handle,BackupFile)
+
     def StopReceiveMessage(self):
         self.ReceiveMessageStarted = False
         try:
@@ -206,81 +231,3 @@ class WeChatRobot():
             pass
         status = self.robot.CStopReceiveMessage()
         return status
-
-# 一个示例回调，将收到的文本消息转发给filehelper
-def ReceiveMessageCallBack(robot,message):
-    if message['type'] == 1 and message['sender'] != 'filehelper':
-        robot.robot.CSendText('filehelper',message['message'])
-    wxSender = robot.GetWxUserInfo(message['sender'])
-    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
-    if '@chatroom' in message['sender']:
-        wxUser = robot.GetWxUserInfo(message['wxid'])
-        print("来自 {} {},type {}".format(sender,wxUser['wxNickName',message['type']]))
-    else:
-        print("来自 {},type {}".format(sender,message['type']))
-    if message['type'] == 1:
-        print(message['message'])
-    elif message['type'] == 3:
-        print(message['message'])
-        print(message['filepath'])
-    elif message['type'] == 49:
-        print(message['message'])
-        if not message['filepath']: print(message['filepath'])
-    else:
-        print(message['message'])
-    
-def test_SendText():
-    import os
-    path = os.path.split(os.path.realpath(__file__))[0]
-    # image full path
-    imgpath = os.path.join(path,'test\\测试图片.png')
-    # file full path
-    filepath = os.path.join(path,'test\\测试文件')
-    wx = WeChatRobot()
-    wx.StartService()
-    myinfo = wx.GetSelfInfo()
-    chatwith = wx.GetFriendByWxNickName("文件传输助手")
-    session = wx.GetChatSession(chatwith.get('wxid'))
-    filehelper = wx.GetWxUserInfo(chatwith.get('wxid'))
-    session.SendText('个人信息：{}'.format(str(myinfo.get('wxNickName'))))
-    session.SendText('好友信息：{}'.format(str(filehelper.get('wxNickName'))))
-    if os.path.exists(imgpath): session.SendImage(imgpath)
-    if os.path.exists(filepath): session.SendFile(filepath)
-    session.SendArticle("天气预报","点击查看","http://www.baidu.com")
-    shared = wx.GetFriendByWxNickName("码农翻身")
-    if shared: session.SendCard(shared.get('wxid'),shared.get('wxNickName'))
-    wx.StopService()
-    
-def test_FriendStatus():
-    f = open('Friendstatus.txt','wt',encoding = 'utf-8')
-    wx = WeChatRobot()
-    wx.StartService()
-    FriendList = wx.GetFriendList()
-    wx.CheckFriendStatusInit()
-    index = "\t".join(['微信号','昵称','备注','状态','\n'])
-    f.writelines(index)
-    for Friend in FriendList:
-        result = '\t'.join(
-            [Friend.get('wxNumber'),Friend.get('wxNickName'),Friend.get('wxRemark'),
-              wx.CheckFriendStatus(Friend.get('wxid'))])
-        print(result)
-        result += '\n'
-        f.writelines(result)
-        time.sleep(1)
-        break
-    f.close()
-    wx.StopService()
-    
-def test_ReceiveMessage():
-    wx = WeChatRobot()
-    wx.StartService()
-    wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
-    wx.StopService()
-
-if __name__ == '__main__':
-    test_ReceiveMessage()

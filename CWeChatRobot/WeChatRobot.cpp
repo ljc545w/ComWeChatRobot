@@ -206,3 +206,38 @@ STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(BSTR chatroomid,VARIANT* __result
     *__result = vsaValue;
     return S_OK;
 }
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetDbHandles(VARIANT* __result) {
+    VARIANT vsaValue;
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(&vsaValue) = GetDbHandles();
+    *__result = vsaValue;
+    return S_OK;
+}
+
+/*
+* 参数1：数据库句柄
+* 参数2：要执行的SQL语句
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CExecuteSQL(DWORD DbHandle,BSTR sql,VARIANT* __result) {
+    VARIANT vsaValue;
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    vsaValue.intVal = 0;
+    V_ARRAY(&vsaValue) = ExecuteSQL(DbHandle, sql);
+    *__result = vsaValue;
+    return S_OK;
+}
+
+/*
+* 参数1：数据库句柄
+* 参数2：备份保存路径
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CBackupSQLiteDB(DWORD DbHandle, BSTR savepath, int* __result) {
+    *__result = BackupSQLiteDB(DbHandle, savepath);
+    return S_OK;
+}

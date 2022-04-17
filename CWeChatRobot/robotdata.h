@@ -12,6 +12,9 @@
 #include "CheckFriendStatus.h"
 #include "ReceiveMessage.h"
 #include "GetChatRoomMembers.h"
+#include "GetDbHandles.h"
+#include "DbExecuteSql.h"
+#include "DbBackup.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -43,6 +46,10 @@ extern DWORD PopHeadMessageRemoteOffset;
 
 extern DWORD GetChatRoomMembersRemoteOffset;
 
+extern DWORD GetDbHandlesRemoteOffset;
+extern DWORD ExecuteSQLRemoteOffset;
+extern DWORD BackupSQLiteDBRemoteOffset;
+
 
 #define dllname L"DWeChatRobot.dll"
 
@@ -73,3 +80,7 @@ extern DWORD GetChatRoomMembersRemoteOffset;
 #define PopHeadMessageRemote "PopHeadMessage"
 
 #define GetChatRoomMembersRemote "GetChatRoomMembersRemote"
+
+#define GetDbHandlesRemote "GetDbHandlesRemote"
+#define ExecuteSQLRemote "ExecuteSQLRemote"
+#define BackupSQLiteDBRemote "BackupSQLiteDBRemote"
