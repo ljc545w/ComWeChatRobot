@@ -8,14 +8,14 @@ struct BackupParams {
 
 BOOL BackupSQLiteDB(DWORD DbHandle, BSTR savepath) {
 	if (!hProcess)
-		return 0;
+		return 1;
 	DWORD dwHandle = 0x0;
 	DWORD dwId = 0x0;
 	DWORD dwWriteSize = 0x0;
 	LPVOID savepathAddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	BackupParams* paramAndFunc = (BackupParams*)::VirtualAllocEx(hProcess, 0, sizeof(BackupParams), MEM_COMMIT, PAGE_READWRITE);
 	if (!savepathAddr || !paramAndFunc)
-		return 0;
+		return 1;
 	char* a_savepath = _com_util::ConvertBSTRToString(savepath);
 	if (savepathAddr) 
 		WriteProcessMemory(hProcess, savepathAddr, a_savepath, strlen(a_savepath) + 1, &dwWriteSize);
@@ -34,9 +34,9 @@ BOOL BackupSQLiteDB(DWORD DbHandle, BSTR savepath) {
 		CloseHandle(hThread);
 	}
 	else {
-		return 0;
+		return 1;
 	}
 	VirtualFreeEx(hProcess, savepathAddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-	return dwHandle == 1;
+	return dwHandle;
 }

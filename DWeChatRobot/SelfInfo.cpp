@@ -67,7 +67,7 @@ DWORD GetSelfInfoRemote() {
 		}
 		else {
 			temp = (char*)SelfInfoAddr[i];
-			if (strlen(temp) == 0)
+			if (temp == NULL || strlen(temp) == 0)
 				temp = (char*)"null";
 		}
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];

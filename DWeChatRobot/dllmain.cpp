@@ -23,7 +23,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
         printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
         printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
-        printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDB);
+        printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
 #endif
         break;
     }

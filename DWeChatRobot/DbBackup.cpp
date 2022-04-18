@@ -34,6 +34,7 @@
 
 #define IDA_BASE 0x10000000
 BOOL SQLite3_Backup_Init_Patched = FALSE;
+DWORD lpAddressBackupDB = 0x0;
 
 typedef int(__cdecl* Sqlite3_open)(const char*, DWORD*);
 typedef DWORD(__cdecl* Sqlite3_backup_init)(DWORD, const char*, DWORD, const char*);
@@ -44,7 +45,6 @@ typedef int(__cdecl* Sqlite3_sleep)(int);
 typedef int(__cdecl* Sqlite3_backup_finish)(DWORD);
 typedef int(__cdecl* Sqlite3_errcode)(DWORD);
 typedef int(__cdecl* Sqlite3_close)(DWORD);
-
 
 DWORD OffsetFromIdaAddr(DWORD idaAddr) {
 	return idaAddr - IDA_BASE;
@@ -130,8 +130,9 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 {
 	DWORD wxBaseAddress = GetWeChatWinBase();
 	PatchSQLite3_Backup_Init();
-	// 请不要注释掉这一行，也不要对其做任何改动，如果你不希望备份完成后微信崩溃
+#ifdef _DEBUG
 	cout << "开始备份,文件保存至: " << BackupFile << endl;
+#endif
 	DWORD address_sqlite3_open = wxBaseAddress + OffsetFromIdaAddr(0x1138ACD0);
 	DWORD address_sqlite3_backup_init = wxBaseAddress + OffsetFromIdaAddr(0x1131C110);
 	DWORD address_sqlite3_backup_step = wxBaseAddress + OffsetFromIdaAddr(0x1131C510);
@@ -140,7 +141,7 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 	DWORD address_sqlite3_close = wxBaseAddress + OffsetFromIdaAddr(0x113880A0);
 	DWORD address_sqlite3_backup_remaining = wxBaseAddress + OffsetFromIdaAddr(0x1131CC50);
 	DWORD address_sqlite3_backup_pagecount = wxBaseAddress + OffsetFromIdaAddr(0x1131CC60);
-	DWORD address_sqlite3_errcode = wxBaseAddress + OffsetFromIdaAddr(0x11356570);
+	DWORD address_sqlite3_errcode = wxBaseAddress + OffsetFromIdaAddr(0x11389970);
 	const char* myMain = "main";
 	int rc = backupDb(
 		DbHandle,
@@ -156,8 +157,10 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 		address_sqlite3_errcode,
 		address_sqlite3_close,
 		XProgress);
+#ifdef _DEBUG
 	cout << "备份完成: " << BackupFile << endl;
-	return rc == 1;
+#endif
+	return rc;
 }
 
 BOOL BackupSQLiteDBRemote(LPVOID lpParameter) {
