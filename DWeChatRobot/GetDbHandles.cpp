@@ -1,6 +1,9 @@
 #include "pch.h"
 
-#define SqlHandleBaseOffset 0x6704F3FC - 0x64E20000
+// 联系人相关库
+#define SqlHandleMicroMsgOffset 0x222F3FC
+// 公众号相关库
+#define SqlHandlePublicMsgOffset 0x22553D0
 
 vector<DbInfoStruct> dbs;
 
@@ -23,9 +26,10 @@ DWORD GetDbHandlesRemote() {
 void GetDbHandles() {
 	dbs.clear();
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD SqlHandleBaseAddr = WeChatWinBase + SqlHandleBaseOffset;
+	DWORD SqlHandleBaseAddr = WeChatWinBase + SqlHandleMicroMsgOffset;
 	DWORD SqlHandleBeginAddr = 0x0;
 	DWORD SqlHandleEndAddr = 0x0;
+	DWORD SqlHandlePublicMsgAddr = *(DWORD*)(WeChatWinBase + SqlHandlePublicMsgOffset);
 	__asm {
 		mov eax, [SqlHandleBaseAddr];
 		mov ecx, [eax];
@@ -35,9 +39,10 @@ void GetDbHandles() {
 		mov eax, [ecx + 0x4];
 		mov SqlHandleEndAddr, eax;
 	}
+	DWORD dwHandle = 0x0;
 	wstring dbnames = L"";
 	while (SqlHandleBeginAddr < SqlHandleEndAddr) {
-		DWORD dwHandle = *(DWORD*)SqlHandleBeginAddr;
+		dwHandle = *(DWORD*)SqlHandleBeginAddr;
 		SqlHandleBeginAddr += 0x4;
 		if (SqlHandleBeginAddr == SqlHandleEndAddr)
 			break;
@@ -49,6 +54,18 @@ void GetDbHandles() {
 		db.l_dbname = wcslen(db.dbname);
 		db.handle = *(DWORD*)(dwHandle + 0x64);
 		ExecuteSQL(*(DWORD*)(dwHandle + 0x64), "select * from sqlite_master where type=\"table\";",(DWORD)GetDbInfo,&db);
+		dbs.push_back(db);
+	}
+	for (int i = 1; i < 4; i++) {
+		dwHandle = *((DWORD*)(SqlHandlePublicMsgAddr + i * 0x4));
+		if (dbnames.find((wchar_t*)(*(DWORD*)(dwHandle + 0x78)), 0) != wstring::npos)
+			continue;
+		DbInfoStruct db = { 0 };
+		dbnames += (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
+		db.dbname = (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
+		db.l_dbname = wcslen(db.dbname);
+		db.handle = *(DWORD*)(dwHandle + 0x64);
+		ExecuteSQL(*(DWORD*)(dwHandle + 0x64), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
 		dbs.push_back(db);
 	}
 	// 添加一个空结构体，作为读取结束标志

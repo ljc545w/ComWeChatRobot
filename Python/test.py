@@ -112,4 +112,4 @@ def test_BackupDb():
     wx.StopService()
 
 if __name__ == '__main__':
-    test_BackupDb()
+    test_ExecuteSQL()
