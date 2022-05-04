@@ -86,7 +86,6 @@ DWORD GetSelfInfoRemote() {
 	ret.length = selfinfo.length();
 #ifdef _DEBUG
 	wcout << selfinfo << endl;
-	DeleteSelfInfoCacheRemote();
 #endif
 	return (DWORD)&ret;
 }
