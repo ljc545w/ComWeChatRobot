@@ -1,14 +1,23 @@
 #include "pch.h"
 #include <vector>
 
+// 保存个人信息的字符串
 wstring selfinfo = L"";
 
+/*
+* 外部调用时的返回类型
+* message：selfinfo.c_str()
+* length：selfinfo字符串长度
+*/
 struct SelfInfoStruct {
 	DWORD message;
 	DWORD length;
 } ret;
 
-
+/*
+* 供外部调用的获取个人信息接口
+* return：DWORD，ret的首地址
+*/
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
@@ -90,6 +99,10 @@ DWORD GetSelfInfoRemote() {
 	return (DWORD)&ret;
 }
 
+/*
+* 删除个人信息缓存
+* return：void
+*/
 VOID DeleteSelfInfoCacheRemote() {
 	if (ret.length) {
 		ZeroMemory((wchar_t*)ret.message, ret.length*2 + 2);

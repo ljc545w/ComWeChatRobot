@@ -1,14 +1,26 @@
 #include "pch.h"
 
+// 发送文本消息的CALL偏移
 #define SendTextCallOffset 0x6782E7B0 - 0x67370000
+// 清空缓存的CALL偏移
 #define DeleteTextCacheCallOffset 0x67404200 - 0x67370000
 
+/*
+* 外部调用时传递的参数结构
+* wxid：wxid保存地址
+* wxmsg：发送的内容保存地址
+*/
 struct SendTextStruct
 {
     DWORD wxid;
     DWORD wxmsg;
 };
 
+/*
+* 供外部调用的发送文本消息接口
+* lpParameter：SendTextStruct类型结构体指针
+* return：void
+*/
 void SendTextRemote(LPVOID lpParameter) {
     SendTextStruct* rp = (SendTextStruct*)lpParameter;
     wchar_t* wsWxId = (WCHAR*)rp->wxid;
@@ -16,6 +28,12 @@ void SendTextRemote(LPVOID lpParameter) {
     SendText(wsWxId, wsTextMsg);
 }
 
+/*
+* 发送文本消息的具体实现
+* wsWxId：接收人wxid
+* wsTextMsg：发送的消息内容
+* return：void
+*/
 void __stdcall SendText(wchar_t* wsWxId, wchar_t* wsTextMsg) {
     WxBaseStruct wxWxid(wsWxId);
     WxBaseStruct wxTextMsg(wsTextMsg);

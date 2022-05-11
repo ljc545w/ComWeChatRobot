@@ -31,8 +31,18 @@
 #endif //PCH_H
 
 using namespace std;
+// 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
+/*
+* 微信中的基础数据结构
+* buffer：UNICODE字符串
+* length：`buffer`字符数
+* maxLength：`buffer`最大字符数
+* fill1：占位成员1，默认为0
+* fill2：占位成员2，默认为0
+* WxBaseStruct：默认构造函数
+*/
 struct WxBaseStruct
 {
     wchar_t* buffer;
@@ -50,6 +60,9 @@ struct WxBaseStruct
     }
 };
 
+/*
+* 不使用构造函数的微信基础数据结构，使用频率较低
+*/
 struct WxString
 {
     wchar_t* buffer = NULL;

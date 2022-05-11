@@ -1,17 +1,34 @@
 #include "pch.h"
 
+// 获取群成员CALL1偏移
 #define GetChatRoomMembersCall1Offset 0x6246BBB0 - 0x61E20000
+// 获取群成员CALL2偏移
 #define GetChatRoomMembersCall2Offset 0x61EDF550 - 0x61E20000
+// 获取群成员CALL3偏移
 #define GetChatRoomMembersCall3Offset 0x622046D0 - 0x61E20000
+// 清空缓存CALL偏移
 #define DeleteGetChatRoomMembersCacheCallOffset 0x6246BDD0 - 0x61E20000
 
+/*
+* 外部调用的返回类型
+* members：群成员wxid字符串，以`^`分隔
+* length：members字符串长度
+*/
 struct ChatRoomInfoStruct {
 	wchar_t* members = NULL;
 	DWORD length = 0;
 };
 
+/*
+* 外部调用时的具体返回对象
+*/
 ChatRoomInfoStruct chatroominfo = { 0 };
 
+/*
+* 供外部调用的获取群成员列表接口
+* lparameter：保存群聊ID的地址
+* return：DWORD，调用成功且群成员数量不为0，返回`chatroominfo`首地址，否则返回0
+*/
 DWORD GetChatRoomMembersRemote(LPVOID lparameter) {
 	wchar_t* chatroomid = (WCHAR*)lparameter;
 	if (chatroominfo.members != NULL) {
@@ -31,6 +48,11 @@ DWORD GetChatRoomMembersRemote(LPVOID lparameter) {
 	return 0;
 }
 
+/*
+* 获取群成员列表的具体实现
+* chatroomid：群聊ID
+* return：BOOL，成功返回`1`，失败返回`0`
+*/
 BOOL __stdcall GetChatRoomMembers(wchar_t* chatroomid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD GetChatRoomMembersCall1 = WeChatWinBase + GetChatRoomMembersCall1Offset;

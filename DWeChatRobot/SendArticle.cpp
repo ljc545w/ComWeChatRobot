@@ -1,14 +1,28 @@
 #include "pch.h"
 
+// 发送文章CALL1偏移
 #define SendArticleCall1Offset 0x0F7454F0 - 0x0F6B0000
+// 发送文章CALL2偏移
 #define SendArticleCall2Offset 0x0FA41F80 - 0x0F6B0000
+// 发送文章CALL3偏移
 #define SendArticleCall3Offset 0x0F7794A0 - 0x0F6B0000
+// 发送文章CALL4偏移
 #define SendArticleCall4Offset 0x0FA42150 - 0x0F6B0000
+// 发送文章CALL参数偏移
 #define SendArticleParamOffset 0x118EEC34 - 0x0F6B0000
 
+// 清空缓存CALL1偏移
 #define SendArticleClearCacheCall1Offset 0x0FCEB4F0 - 0x0F6B0000
+// 清空缓存CALL2偏移
 #define SendArticleClearCacheCall2Offset 0x0F744200 - 0x0F6B0000
 
+/*
+* 外部调用时传递的参数结构
+* wxid：接收人的保存地址
+* title：文章标题的保存地址
+* abstract：文章摘要的保存地址
+* url：文章链接的保存地址
+*/
 struct SendArticleStruct {
 	DWORD wxid;
 	DWORD title;
@@ -16,6 +30,11 @@ struct SendArticleStruct {
 	DWORD url;
 };
 
+/*
+* 供外部调用的发送文章消息接口
+* lparameter：SendArticleStruct类型结构体指针
+* return：void
+*/
 VOID SendArticleRemote(LPVOID lparameter) {
 	SendArticleStruct* sas = (SendArticleStruct*)lparameter;
 	wchar_t* wxid = (wchar_t*)sas->wxid;
@@ -25,6 +44,10 @@ VOID SendArticleRemote(LPVOID lparameter) {
 	SendArticle(wxid,title,abstract,url);
 }
 
+/*
+* 获取自己的wxid保存地址
+* return：DWORD，个人wxid保存地址
+*/
 DWORD GetSelfWxIdAddr() {
 	DWORD baseAddr = GetWeChatWinBase() + 0x222EB3C;
 	char wxidbuffer[0x100] = { 0 };
@@ -41,6 +64,14 @@ DWORD GetSelfWxIdAddr() {
 	return SelfWxIdAddr;
 }
 
+/*
+* 发送文章消息的具体实现
+* wxid：消息接收人wxid
+* title：文章标题
+* abstract：文章摘要
+* url：文章链接
+* return：BOOL，成功返回`1`，失败返回`0`
+*/
 BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SendArticleCall1 = WeChatWinBase + SendArticleCall1Offset;

@@ -1,23 +1,38 @@
 #include "pch.h"
 
+// 检查好友状态CALL1偏移
 #define CheckFriendStatusCall1Offset 0x78861210 - 0x787A0000
+// 检查好友状态CALL2偏移
 #define CheckFriendStatusCall2Offset 0x03521CD0 - 0x02E20000
+// 检查好友状态CALL3偏移
 #define CheckFriendStatusCall3Offset 0x03521DC0 - 0x02E20000
+// 检查好友状态CALL4偏移
 #define CheckFriendStatusCall4Offset 0x0321FB90 - 0x02E20000
-
+// 检查好友状态参数偏移
 #define CheckFriendStatusParamOffset 0x0504F3BC - 0x02E20000
 
+// 好友状态码HOOK地址偏移
 #define CheckFriendStatusHookOffset 0x5E0830B3 - 0x5DB60000
+// HOOK的CALL偏移
 #define CheckFriendStatusNextCallOffset 0x5E083150 - 0x5DB60000
+// HOOK跳转的地址偏移
 #define CheckFriendStatusHookJmpBackOffset 0x5E0830B8 - 0x5DB60000
 
+// HOOK的CALL地址
 DWORD CheckFriendStatusNextCallAddress = GetWeChatWinBase() + CheckFriendStatusNextCallOffset;
+// HOOK跳转的地址
 DWORD CheckFriendStatusHookJmpBackAddress = GetWeChatWinBase() + CheckFriendStatusHookJmpBackOffset;
 
+// 保存HOOK前的字节码，用于恢复
 char OldAsmCode[5] = { 0 };
+// 是否HOOK标志
 BOOL CheckFriendStatusHooked = false;
+// 保存好友状态码并作为调用返回
 DWORD LocalFriendStatus = 0x0;
 
+/*
+* 用于内存中平衡堆栈
+*/
 struct FriendStatusParamStruct {
 	DWORD fill0 = 0x0;
 	DWORD fill1 = 0x0;
@@ -28,12 +43,20 @@ struct FriendStatusParamStruct {
 	char nullbuffer[0xC] = { 0 };
 };
 
+/*
+* 处理函数，参数不在状态码范围则不处理
+* result：好友状态码
+* return：void
+*/
 void dealVerifyUserResult(DWORD result) {
 	if (result < 0xB0 || result > 0xB5)
 		return;
 	LocalFriendStatus = result;
 }
 
+/*
+* HOOK的具体实现，记录状态码并跳转到处理函数
+*/
 __declspec(naked) void doHookVerifyUserResult() {
 	__asm {
 		pushfd;
@@ -49,6 +72,10 @@ __declspec(naked) void doHookVerifyUserResult() {
 	}
 }
 
+/*
+* 开始HOOK好友状态
+* return：void
+*/
 VOID HookFriendStatusCode(){
 	if (CheckFriendStatusHooked)
 		return;
@@ -58,6 +85,10 @@ VOID HookFriendStatusCode(){
 	CheckFriendStatusHooked = true;
 }
 
+/*
+* 取消HOOK好友状态
+* return：void
+*/
 VOID UnHookFriendStatusCode() {
 	if (!CheckFriendStatusHooked)
 		return;
@@ -67,19 +98,37 @@ VOID UnHookFriendStatusCode() {
 	CheckFriendStatusHooked = false;
 }
 
+/*
+* 供外部调用的检查好友状态接口1，启动HOOK
+* return：void
+*/
 VOID CheckFriendStatusInitRemote() {
 	HookFriendStatusCode();
 }
 
+/*
+* 供外部调用的检查好友状态接口2，检查并返回状态码
+* lparameter：要检查的联系人wxid保存地址
+* return：DWORD，好友状态码
+*/
 DWORD CheckFriendStatusRemote(LPVOID lparameter) {
 	CheckFriendStatus((wchar_t*)lparameter);
 	return LocalFriendStatus;
 }
 
+/*
+* 供外部调用的检查好友状态接口3，取消HOOK
+* return：void
+*/
 VOID CheckFriendStatusFinishRemote() {
 	UnHookFriendStatusCode();
 }
 
+/*
+* 检查好友状态的具体实现
+* wxid：要检查的联系人wxid
+* return：void
+*/
 VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
 	LocalFriendStatus = 0x0;
 	DWORD WeChatWinBase = GetWeChatWinBase();

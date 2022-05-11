@@ -3,6 +3,11 @@
 #include "pch.h"
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
+
+/*
+* 创建一个控制台窗口
+* return：BOOL，成功返回`0`，失败返回`1`
+*/
 BOOL CreateConsole(void) {
     if (AllocConsole()) {
         AttachConsole(GetCurrentProcessId());
@@ -16,10 +21,17 @@ BOOL CreateConsole(void) {
     return 1;
 }
 
+/*
+* 获取`WeChatWin.dll`基址
+* return：DWORD，`WeChatWin.dll`模块基址
+*/
 DWORD GetWeChatWinBase() {
     return (DWORD)GetModuleHandleA("WeChatWin.dll");
 }
 
+/*
+* 将宽字节字符串转换成`std::string`
+*/
 void Wchar_tToString(std::string& szDst, wchar_t* wchar)
 {
     wchar_t* wText = wchar;
@@ -31,6 +43,9 @@ void Wchar_tToString(std::string& szDst, wchar_t* wchar)
     delete[]psText;// psText的清除
 }
 
+/*
+* 将UTF8编码数据转换为GBK编码
+*/
 string UTF8ToGBK(const std::string& strUTF8)
 {
     int len = MultiByteToWideChar(CP_UTF8, 0, strUTF8.c_str(), -1, NULL, 0);
@@ -49,6 +64,13 @@ string UTF8ToGBK(const std::string& strUTF8)
     return strTemp;
 }
 
+/*
+* 对任意地址添加HOOK
+* dwHookAddr：HOOK的目标地址
+* dwJmpAddress：跳转到的地址
+* originalRecieveCode：保存旧指令的数组
+* return：void
+*/
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress,char* originalRecieveCode)
 {
     //组装跳转数据
@@ -72,6 +94,12 @@ void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress,char* originalRecieveC
     VirtualProtect((LPVOID)dwHookAddr, 5, OldProtext, &OldProtext);
 }
 
+/*
+* 对任意地址取消HOOK
+* dwHookAddr：HOOK的目标地址
+* originalRecieveCode：保存旧指令的数组
+* return：void
+*/
 void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 {
     DWORD OldProtext = 0;
@@ -80,11 +108,23 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
     VirtualProtect((LPVOID)dwHookAddr, 5, OldProtext, &OldProtext);
 }
 
+/*
+* 取消所有HOOK
+* return：void
+*/
 void UnHookAll() {
     UnHookLogMsgInfo();
+    UnHookReceiveMessage();
     return;
 }
 
+/*
+* 将单字符替换为指定的字符串
+* source：源字符串
+* replaced：被替换的单字符
+* replaceto：替换成的字符串
+* return：std::wstring，替换后的字符串
+*/
 wstring wreplace(wstring source, wchar_t replaced, wstring replaceto) {
     wstring temp = L"";
     wchar_t* buffer = (wchar_t*)source.c_str();

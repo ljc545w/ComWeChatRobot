@@ -1,22 +1,44 @@
 #include "pch.h"
 
+// 发送艾特消息CALL偏移
 #define SendAtTextCallOffset 0x6782E7B0 - 0x67370000
+// 清空缓存CALL偏移
 #define DeleteAtTextCacheCallOffset 0x67404200 - 0x67370000
 
+/*
+* 外部调用时传递的参数结构
+* chatroomid：群聊ID的保存地址
+* wxidlist：艾特列表的保存地址，真实类型应当是`wchar_t**`
+* wxmsg：发送的内容保存地址
+* length：艾特的人数量，用于指示wxidlist长度
+*/
 struct SendAtTextStruct
 {
     DWORD chatroomid;
-    DWORD wxid;
+    DWORD wxidlist;
     DWORD wxmsg;
     DWORD length;
 };
 
+/*
+* 内存中使用的参数结构
+* 构造与Release版本vector动态数组相仿
+* 成员类型：`WxString`
+* AtUser：类似`vector`的`data`方法，保存数组首个成员的地址
+* addr_end1：数组尾地址
+* addr_end2：数组尾地址
+*/
 struct AtStruct {
     DWORD AtUser;
     DWORD addr_end1;
     DWORD addr_end2;
 };
 
+/*
+* 供外部调用的发送艾特消息接口
+* lpParameter：SendAtTextStruct类型结构体指针
+* return：void
+*/
 void SendAtTextRemote(LPVOID lpParameter) {
     SendAtTextStruct* rp = (SendAtTextStruct*)lpParameter;
     wchar_t* wsChatRoomId = (WCHAR*)rp->chatroomid;
@@ -24,12 +46,21 @@ void SendAtTextRemote(LPVOID lpParameter) {
     if (rp->length == 0)
         return;
     else if(rp->length == 1)
-        SendAtText(wsChatRoomId, (DWORD*)&rp->wxid, wsTextMsg,rp->length);
+        SendAtText(wsChatRoomId, (DWORD*)&rp->wxidlist, wsTextMsg,rp->length);
     else
-        SendAtText(wsChatRoomId, (DWORD*)rp->wxid, wsTextMsg, rp->length);
+        SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length);
 }
 
+/*
+* 发送艾特消息的具体实现
+* wsChatRoomId：群聊ID
+* wsWxId：艾特的人列表
+* wsTextMsg：发送的消息内容
+* length：艾特的人数量
+* return：void
+*/
 void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length) {
+    // +1的作用是补充一个空结构体，将`AtStruct`尾地址设定为空结构的首地址即可
     WxString* AtUsers = new WxString[length + 1];
     wstring AtMessage = L"";
     int querySuccess = 0;

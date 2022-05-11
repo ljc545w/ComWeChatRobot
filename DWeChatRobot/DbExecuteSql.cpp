@@ -1,7 +1,9 @@
 #include "pch.h"
 
+// sqlite3_exec函数偏移
 #define sqlite3_execOffset 0x66176570 - 0x64E20000
 
+// sqlite3_callback函数指针
 typedef int(*sqlite3_callback)(
 	void*,
 	int,
@@ -9,6 +11,7 @@ typedef int(*sqlite3_callback)(
 	char**
 );
 
+// sqlite3_exec函数指针
 typedef int(__cdecl* Sqlite3_exec)(
 	DWORD,					/* The database on which the SQL executes */
 	const char*,            /* The SQL to be executed */
@@ -18,13 +21,24 @@ typedef int(__cdecl* Sqlite3_exec)(
 );
 
 DWORD WeChatWinBase = GetWeChatWinBase();
+// sqlite3_exec函数地址
 DWORD sqlite3_execAddr = WeChatWinBase + sqlite3_execOffset;
 
+/*
+* 外部调用时传递的参数结构
+* ptrDb：数据库句柄
+* ptrSql：保存sql的地址
+*/
 struct executeParams {
 	DWORD ptrDb;
 	DWORD ptrSql;
 };
 
+/*
+* 保存查询结果的结构
+* ColName：字段名；l_ColName：`ColName`字符数
+* content：字段值；l_content：`content`字符数
+*/
 struct SQLResultStruct {
 	char* ColName;
 	DWORD l_ColName;
@@ -32,14 +46,24 @@ struct SQLResultStruct {
 	DWORD l_content;
 };
 
+/*
+* 外部调用时的返回类型
+* SQLResultAddr：`SQLResult`首成员地址
+* length：查询结果条数
+*/
 struct executeResult {
 	DWORD SQLResultAddr;
 	DWORD length;
 };
 
+// 外部调用时的具体返回对象
 executeResult result = { 0 };
+// 保存查询结果的二维动态数组
 vector <vector<SQLResultStruct>> SQLResult;
 
+/*
+* 获取数据库信息的回调函数
+*/
 int GetDbInfo(void* data,int argc,char** argv,char** azColName) {
 	DbInfoStruct* pdata = (DbInfoStruct*)data;
 	TableInfoStruct tb = { 0 };
@@ -84,6 +108,9 @@ int GetDbInfo(void* data,int argc,char** argv,char** azColName) {
 	return 0;
 }
 
+/*
+* DLL内部查询用的回调函数，直接显示查询结果，用处不大
+*/
 int query(void* data, int argc, char** argv, char** azColName) {
 	for (int i = 0; i < argc; i++) {
 		string content = argv[i] ? UTF8ToGBK(argv[i]) : "NULL";
@@ -93,6 +120,10 @@ int query(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+/*
+* 外部调用时使用的回调函数，将结果存入`SQLResult`中
+* return：int，执行成功返回`0`，执行失败返回非0值
+*/
 int select(void* data, int argc, char** argv, char** azColName) {
 	executeResult* pdata = (executeResult*)data;
 	vector<SQLResultStruct> tempStruct;
@@ -118,6 +149,10 @@ int select(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+/*
+* 清空查询结果，释放内存
+* return：void
+*/
 void ClearResultArray() {
 	if (SQLResult.size() == 0)
 		return;
@@ -140,12 +175,25 @@ void ClearResultArray() {
 	result.length = 0;
 }
 
+/*
+* 执行SQL的入口函数
+* ptrDb：数据库句柄
+* sql：要执行的SQL
+* callback：回调函数地址
+* data：传递给回调函数的参数
+* return：BOOL，执行成功返回`1`，执行失败返回`0`
+*/
 BOOL ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
 	Sqlite3_exec p_Sqlite3_exec = (Sqlite3_exec)sqlite3_execAddr;
 	int status = p_Sqlite3_exec(ptrDb,sql, (sqlite3_callback)callback,data,0);
 	return status == 0;
 }
 
+/*
+* 供外部调用的执行SQL接口
+* lpParameter：`executeParams`类型结构体指针
+* return：DWORD，如果SQL执行成功，返回`SQLResult`首成员地址，否则返回0
+*/
 DWORD ExecuteSQLRemote(LPVOID lpParameter){
 	ClearResultArray();
 	executeParams* sqlparam = (executeParams*)lpParameter;

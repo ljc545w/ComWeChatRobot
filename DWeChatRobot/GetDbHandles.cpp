@@ -1,12 +1,18 @@
 #include "pch.h"
 
-// 联系人相关库
+// 联系人相关库偏移
 #define SqlHandleMicroMsgOffset 0x222F3FC
-// 公众号相关库
+// 公众号相关库偏移
 #define SqlHandlePublicMsgOffset 0x22553D0
 
+// 保存数据库信息的容器
 vector<DbInfoStruct> dbs;
 
+/*
+* 根据数据库名从`dbs`中检索数据库句柄
+* dbname：数据库名
+* return：DWORD，如果检索成功，返回数据库句柄，否则返回`0`
+*/
 DWORD GetDbHandleByDbName(wchar_t* dbname) {
 	if (dbs.size() == 0)
 		GetDbHandles();
@@ -17,12 +23,20 @@ DWORD GetDbHandleByDbName(wchar_t* dbname) {
 	return 0;
 }
 
+/*
+* 供外部调用的获取数据库信息接口
+* return：DWORD，`dbs`首个成员地址
+*/
 DWORD GetDbHandlesRemote() {
 	if (dbs.size() == 0)
 		GetDbHandles();
 	return (DWORD)dbs.data() ;
 }
 
+/*
+* 获取数据库信息的具体实现
+* return：void
+*/
 void GetDbHandles() {
 	dbs.clear();
 	DWORD WeChatWinBase = GetWeChatWinBase();

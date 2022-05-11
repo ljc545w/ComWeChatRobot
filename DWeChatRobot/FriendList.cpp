@@ -1,9 +1,17 @@
 #include "pch.h"
 #include <vector> 
-using namespace std;
+
+// 通讯录左树偏移
 #define LeftTreeOffset 0x222F3BC
 
-
+/*
+* 保存单个好友信息的结构体
+* wxIdAddr：wxid保存地址
+* wxNumberAddr：微信号保存地址
+* wxNickNameAddr：昵称保存地址
+* wxRemarkAddr：备注保存地址
+* WxFriendStructW：默认构造函数
+*/
 struct WxFriendStructW {
 	DWORD wxIdAddr;
 	DWORD wxNumberAddr;
@@ -17,8 +25,13 @@ struct WxFriendStructW {
 	}
 };
 
+// 保存所有好友信息的动态数组
 vector<WxFriendStructW> WxFriendList;
 
+/*
+* 供外部调用的获取好友列表接口1
+* return：int，联系人数量
+*/
 int GetFriendListInit() {
 	GetFriendList();
 #ifdef _DEBUG
@@ -27,6 +40,10 @@ int GetFriendListInit() {
 	return WxFriendList.size();
 }
 
+/*
+* 供外部调用的获取好友列表接口2
+* return：DWORD，WxFriendList第一个成员地址
+*/
 DWORD GetFriendListRemote() {
 	if (WxFriendList.size() == 0)
 		return 0;
@@ -37,11 +54,19 @@ DWORD GetFriendListRemote() {
 	return (DWORD)&WxFriendList[0].wxIdAddr;
 }
 
+/*
+* 供外部调用的获取好友列表接口3，清空缓存
+* return：void
+*/
 void GetFriendListFinish() {
 	WxFriendList.clear();
 	cout << WxFriendList.size() << endl;
 }
 
+/*
+* 获取好友列表的具体实现
+* return：void
+*/
 void __stdcall GetFriendList() {
 #ifdef _DEBUG
 	wcout.imbue(locale("chs"));

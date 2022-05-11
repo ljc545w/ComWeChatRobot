@@ -3,22 +3,40 @@
 #include <string>
 #include <vector>
 
+// 获取好友信息CALL0偏移
 #define GetUserInfoCall0Offset 0x6740A000 - 0x67370000
+// 获取好友信息CALL1偏移
 #define GetUserInfoCall1Offset 0x679C9840 - 0x67370000
+// 获取好友信息CALL2偏移
 #define GetUserInfoCall2Offset 0x67A71DC0 - 0x67370000
+// 获取好友信息CALL3偏移
 #define GetUserInfoCall3Offset 0x677724A0 - 0x67370000
 
+// 清空缓存CALL1偏移
 #define DeleteUserInfoCacheCall1Offset 0x67775990 - 0x67370000
+// 清空缓存CALL2偏移
 #define DeleteUserInfoCacheCall2Offset 0x679CA340 - 0x67370000
 
+/*
+* 外部调用时的返回类型
+* message：wUserInfo.c_str()
+* length：wUserInfo字符串长度
+*/
 struct GetUserInfoStruct {
 	DWORD message;
 	DWORD length;
 };
 
+// 保存好友信息的字符串
 wstring wUserInfo = L"";
+// 外部调用时的具体返回对象
 GetUserInfoStruct ret = { 0 };
 
+/*
+* 根据缓冲区内容拼接好友信息
+* address：缓冲区地址
+* return：void
+*/
 VOID WxUserInfo(DWORD address) {
 	vector<DWORD> InfoType{
 		address + 0x10,
@@ -64,7 +82,11 @@ VOID WxUserInfo(DWORD address) {
 #endif
 }
 
-
+/*
+* 供外部调用的获取好友信息接口
+* lparamter：保存好友wxid的地址
+* return：DWORD，`ret`的首地址
+*/
 DWORD GetWxUserInfoRemote(LPVOID lparamter) {
 	wchar_t* userwxid = (wchar_t*)lparamter;
 	
@@ -76,6 +98,10 @@ DWORD GetWxUserInfoRemote(LPVOID lparamter) {
 	return (DWORD)&ret;
 }
 
+/*
+* 供外部调用的清空好友信息缓存的接口
+* return：void
+*/
 VOID DeleteUserInfoCacheRemote() {
 	if (ret.length) {
 		ZeroMemory((wchar_t*)ret.message, ret.length * 2 + 2);
@@ -84,6 +110,11 @@ VOID DeleteUserInfoCacheRemote() {
 	}
 }
 
+/*
+* 根据wxid获取好友信息的具体实现
+* wxid：好友wxid
+* return：BOOL，成功返回`1`，失败返回`0`
+*/
 BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD WxGetUserInfoCall0 = WeChatWinBase + GetUserInfoCall0Offset;
@@ -131,6 +162,11 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 	return isSuccess;
 }
 
+/*
+* 根据wxid获取联系人昵称，主要用于发送艾特消息接口
+* wxid：联系人wxid
+* return：wchar_t*，获取到的wxid
+*/
 wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD WxGetUserInfoCall0 = WeChatWinBase + GetUserInfoCall0Offset;

@@ -34,7 +34,6 @@
 
 #define IDA_BASE 0x10000000
 BOOL SQLite3_Backup_Init_Patched = FALSE;
-DWORD lpAddressBackupDB = 0x0;
 
 typedef int(__cdecl* Sqlite3_open)(const char*, DWORD*);
 typedef DWORD(__cdecl* Sqlite3_backup_init)(DWORD, const char*, DWORD, const char*);
@@ -50,6 +49,10 @@ DWORD OffsetFromIdaAddr(DWORD idaAddr) {
 	return idaAddr - IDA_BASE;
 }
 
+/*
+* 数据库备份函数
+* return：int，无异常返回`0`，有异常返回非0值
+*/
 int __cdecl backupDb(
 	DWORD pDb,					/* Database to back up */
 	const char* zFilename,      /* Name of file to back up to */
@@ -102,6 +105,9 @@ int __cdecl backupDb(
 	return rc;
 }
 
+/*
+* 绕过加密数据库备份限制
+*/
 VOID PatchSQLite3_Backup_Init() {
 	if (SQLite3_Backup_Init_Patched)
 		return;
@@ -118,6 +124,9 @@ VOID PatchSQLite3_Backup_Init() {
 	return;
 }
 
+/*
+* 备份回调函数
+*/
 void XProgress(int a, int b)
 {
 #ifdef _DEBUG
@@ -126,6 +135,12 @@ void XProgress(int a, int b)
 	return;
 }
 
+/*
+* 数据库在线备份入口
+* DbHandle：要备份的数据库句柄
+* BackupFile：备份保存位置
+* return：int，无异常返回`0`，有异常返回非0值
+*/
 int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 {
 	DWORD wxBaseAddress = GetWeChatWinBase();
@@ -163,7 +178,12 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 	return rc;
 }
 
-BOOL BackupSQLiteDBRemote(LPVOID lpParameter) {
+/*
+* 供外部调用的数据库在线备份接口
+* lpParameter：`BackupStruct`类型结构体指针
+* return：int，无异常返回`0`，有异常返回非0值
+*/
+int BackupSQLiteDBRemote(LPVOID lpParameter) {
 	BackupStruct* param = (BackupStruct*)lpParameter;
 	int rc = BackupSQLiteDB(param->DbHandle,(const char*)param->BackupFile);
 	return rc;
