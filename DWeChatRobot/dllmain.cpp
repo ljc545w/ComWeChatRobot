@@ -24,12 +24,16 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
         printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
         printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
+        HookLogMsgInfo();
 #endif
         break;
     }
     case DLL_THREAD_ATTACH:
+        break;
     case DLL_THREAD_DETACH:
+        break;
     case DLL_PROCESS_DETACH: {
+        UnHookAll();
         break;
     }
     }

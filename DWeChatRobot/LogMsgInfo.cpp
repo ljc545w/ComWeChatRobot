@@ -27,8 +27,20 @@ char LogOldAsmCode[5] = { 0 };
 VOID PrintMsg(DWORD msg) {
 	if (!msg)
 		return;
-	string message = (char*)msg;
+	char* utf8_message = (char*)msg;
+	int c_size = MultiByteToWideChar(CP_UTF8, 0, utf8_message, -1, 0, 0);
+	wchar_t* wmessage = new wchar_t[c_size + 1];
+	memset(wmessage, 0, (c_size + 1) * 2);
+	MultiByteToWideChar(CP_UTF8, 0, utf8_message, -1, wmessage, c_size);
+	c_size = WideCharToMultiByte(CP_ACP, 0, wmessage, -1, 0, 0, 0, 0);
+	char* message = new char[c_size + 1];
+	memset(message, 0, c_size + 1);
+	WideCharToMultiByte(CP_ACP, 0, wmessage, -1, message, c_size, 0, 0);
+	delete[] wmessage;
+	wmessage = NULL;
 	cout << message;
+	delete[] message;
+	message = NULL;
 	return;
 }
 
