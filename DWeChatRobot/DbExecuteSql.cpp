@@ -1,7 +1,7 @@
 #include "pch.h"
 
 // sqlite3_execº¯ÊıÆ«ÒÆ
-#define sqlite3_execOffset 0x66176570 - 0x64E20000
+#define sqlite3_execOffset 0x141A8C0
 
 // sqlite3_callbackº¯ÊıÖ¸Õë
 typedef int(*sqlite3_callback)(

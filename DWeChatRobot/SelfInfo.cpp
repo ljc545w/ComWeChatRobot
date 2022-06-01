@@ -21,16 +21,16 @@ struct SelfInfoStruct {
 DWORD GetSelfInfoRemote() {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
-		WeChatWinBase + 0x222EB3C,
-		WeChatWinBase + 0x222ED30,
-		WeChatWinBase + 0x222EBB4,
-		*(DWORD*)(WeChatWinBase + 0x222ECEC),
-		*(DWORD*)(WeChatWinBase + 0x222EE94),
-		*(DWORD*)(WeChatWinBase + 0x222EEAC),
-		WeChatWinBase + 0x222EF30,
-		WeChatWinBase + 0x222ECBC,
-		WeChatWinBase + 0x222ECD4,
-		WeChatWinBase + 0x222EBE8
+		WeChatWinBase + 0x236307C,
+		WeChatWinBase + 0x2363548,
+		WeChatWinBase + 0x23630F4,
+		*(DWORD*)(WeChatWinBase + 0x236322C),
+		*(DWORD*)(WeChatWinBase + 0x239E11C),
+		*(DWORD*)(WeChatWinBase + 0x23633D4),
+		WeChatWinBase + 0x23632E8,
+		WeChatWinBase + 0x23631FC,
+		WeChatWinBase + 0x2363214,
+		WeChatWinBase + 0x2363128
 	};
 
 	vector<wstring> SelfInfoKey = {

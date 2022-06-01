@@ -1,13 +1,13 @@
 #include "pch.h"
 
 // 获取群成员CALL1偏移
-#define GetChatRoomMembersCall1Offset 0x6246BBB0 - 0x61E20000
+#define GetChatRoomMembersCall1Offset 0x54926F80 - 0x54270000
 // 获取群成员CALL2偏移
-#define GetChatRoomMembersCall2Offset 0x61EDF550 - 0x61E20000
+#define GetChatRoomMembersCall2Offset 0x54352990 - 0x54270000
 // 获取群成员CALL3偏移
-#define GetChatRoomMembersCall3Offset 0x622046D0 - 0x61E20000
+#define GetChatRoomMembersCall3Offset 0x546B88C0 - 0x54270000
 // 清空缓存CALL偏移
-#define DeleteGetChatRoomMembersCacheCallOffset 0x6246BDD0 - 0x61E20000
+#define DeleteGetChatRoomMembersCacheCallOffset 0x549271A0 - 0x54270000
 
 /*
 * 外部调用的返回类型
@@ -61,7 +61,7 @@ BOOL __stdcall GetChatRoomMembers(wchar_t* chatroomid) {
 	DWORD DeleteGetChatRoomMembersCacheCall = WeChatWinBase + DeleteGetChatRoomMembersCacheCallOffset;
 
 	WxBaseStruct wsChatRoomId(chatroomid);
-	char buffer[0x1B0] = { 0 };
+	char buffer[0x1E0] = { 0 };
 	DWORD isSuccess = 0x0;
 	DWORD DataAddr = 0x0;
 
@@ -83,6 +83,9 @@ BOOL __stdcall GetChatRoomMembers(wchar_t* chatroomid) {
 	}
 	if (isSuccess) {
 		char* members = (char*)(*(DWORD*)(DataAddr + 0x1C));
+#ifdef _DEBUG
+		cout << members << endl;
+#endif
 		wchar_t* wmembers = new wchar_t[strlen(members) + 1];
 		ZeroMemory(wmembers, (strlen(members) + 1) * 2);
 		MultiByteToWideChar(CP_ACP,0,members,-1,wmembers, strlen(members) + 1);

@@ -1,9 +1,9 @@
 #include "pch.h"
 
 // 联系人相关库偏移
-#define SqlHandleMicroMsgOffset 0x222F3FC
+#define SqlHandleMicroMsgOffset 0x2363934
 // 公众号相关库偏移
-#define SqlHandlePublicMsgOffset 0x22553D0
+#define SqlHandlePublicMsgOffset 0x239B3C8
 
 // 保存数据库信息的容器
 vector<DbInfoStruct> dbs;
@@ -47,7 +47,7 @@ void GetDbHandles() {
 	__asm {
 		mov eax, [SqlHandleBaseAddr];
 		mov ecx, [eax];
-		add ecx, 0x1888;
+		add ecx, 0x1428;
 		mov eax, [ecx];
 		mov SqlHandleBeginAddr, eax;
 		mov eax, [ecx + 0x4];
@@ -60,26 +60,26 @@ void GetDbHandles() {
 		SqlHandleBeginAddr += 0x4;
 		if (SqlHandleBeginAddr == SqlHandleEndAddr)
 			break;
-		if(dbnames.find((wchar_t*)(*(DWORD*)(dwHandle + 0x78)),0) != wstring::npos)
+		if(dbnames.find((wchar_t*)(*(DWORD*)(dwHandle + 0x50)),0) != wstring::npos)
 			continue;
 		DbInfoStruct db = { 0 };
-		dbnames += (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
-		db.dbname = (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
+		dbnames += (wchar_t*)(*(DWORD*)(dwHandle + 0x50));
+		db.dbname = (wchar_t*)(*(DWORD*)(dwHandle + 0x50));
 		db.l_dbname = wcslen(db.dbname);
-		db.handle = *(DWORD*)(dwHandle + 0x64);
-		ExecuteSQL(*(DWORD*)(dwHandle + 0x64), "select * from sqlite_master where type=\"table\";",(DWORD)GetDbInfo,&db);
+		db.handle = *(DWORD*)(dwHandle + 0x3C);
+		ExecuteSQL(*(DWORD*)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";",(DWORD)GetDbInfo,&db);
 		dbs.push_back(db);
 	}
 	for (int i = 1; i < 4; i++) {
 		dwHandle = *((DWORD*)(SqlHandlePublicMsgAddr + i * 0x4));
-		if (dbnames.find((wchar_t*)(*(DWORD*)(dwHandle + 0x78)), 0) != wstring::npos)
+		if (dbnames.find((wchar_t*)(*(DWORD*)(dwHandle + 0x50)), 0) != wstring::npos)
 			continue;
 		DbInfoStruct db = { 0 };
-		dbnames += (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
-		db.dbname = (wchar_t*)(*(DWORD*)(dwHandle + 0x78));
+		dbnames += (wchar_t*)(*(DWORD*)(dwHandle + 0x50));
+		db.dbname = (wchar_t*)(*(DWORD*)(dwHandle + 0x50));
 		db.l_dbname = wcslen(db.dbname);
-		db.handle = *(DWORD*)(dwHandle + 0x64);
-		ExecuteSQL(*(DWORD*)(dwHandle + 0x64), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
+		db.handle = *(DWORD*)(dwHandle + 0x3C);
+		ExecuteSQL(*(DWORD*)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
 		dbs.push_back(db);
 	}
 	// 添加一个空结构体，作为读取结束标志
