@@ -112,7 +112,7 @@ VOID PatchSQLite3_Backup_Init() {
 	if (SQLite3_Backup_Init_Patched)
 		return;
 	// patch掉这块指令，绕过`backup is not supported with encrypted databases`
-	DWORD address_sqlite3_backup_init_patch_offset = OffsetFromIdaAddr(0x1131C110 + 0x52);
+	DWORD address_sqlite3_backup_init_patch_offset = OffsetFromIdaAddr(0x113E0470 + 0x52);
 	DWORD patchAddress = GetWeChatWinBase() + address_sqlite3_backup_init_patch_offset;
 	const int nopLen = 22;
 	BYTE nopData[nopLen];
@@ -148,15 +148,15 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 #ifdef _DEBUG
 	cout << "开始备份,文件保存至: " << BackupFile << endl;
 #endif
-	DWORD address_sqlite3_open = wxBaseAddress + OffsetFromIdaAddr(0x1138ACD0);
-	DWORD address_sqlite3_backup_init = wxBaseAddress + OffsetFromIdaAddr(0x1131C110);
-	DWORD address_sqlite3_backup_step = wxBaseAddress + OffsetFromIdaAddr(0x1131C510);
-	DWORD address_sqlite3_sleep = wxBaseAddress + OffsetFromIdaAddr(0x1138B510);
-	DWORD address_sqlite3_backup_finish = wxBaseAddress + OffsetFromIdaAddr(0x1131CB50);
-	DWORD address_sqlite3_close = wxBaseAddress + OffsetFromIdaAddr(0x113880A0);
-	DWORD address_sqlite3_backup_remaining = wxBaseAddress + OffsetFromIdaAddr(0x1131CC50);
-	DWORD address_sqlite3_backup_pagecount = wxBaseAddress + OffsetFromIdaAddr(0x1131CC60);
-	DWORD address_sqlite3_errcode = wxBaseAddress + OffsetFromIdaAddr(0x11389970);
+	DWORD address_sqlite3_open = wxBaseAddress + OffsetFromIdaAddr(0x1144F000);
+	DWORD address_sqlite3_backup_init = wxBaseAddress + OffsetFromIdaAddr(0x113E0470);
+	DWORD address_sqlite3_backup_step = wxBaseAddress + OffsetFromIdaAddr(0x113E0870);
+	DWORD address_sqlite3_sleep = wxBaseAddress + OffsetFromIdaAddr(0x1144F840);
+	DWORD address_sqlite3_backup_finish = wxBaseAddress + OffsetFromIdaAddr(0x113E0EB0);
+	DWORD address_sqlite3_close = wxBaseAddress + OffsetFromIdaAddr(0x1144C3D0);
+	DWORD address_sqlite3_backup_remaining = wxBaseAddress + OffsetFromIdaAddr(0x113E0FB0);
+	DWORD address_sqlite3_backup_pagecount = wxBaseAddress + OffsetFromIdaAddr(0x113E0FC0);
+	DWORD address_sqlite3_errcode = wxBaseAddress + OffsetFromIdaAddr(0x1144DCA0);
 	const char* myMain = "main";
 	int rc = backupDb(
 		DbHandle,

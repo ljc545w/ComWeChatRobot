@@ -2,9 +2,9 @@
 #include <vector>
 
 // 接收消息的HOOK地址偏移
-#define ReceiveMessageHookOffset 0x034A4F60 - 0x02FE0000
+#define ReceiveMessageHookOffset 0x547C0F4C - 0x54270000
 // HOOK的CALL偏移
-#define ReceiveMessageNextCallOffset 0x034A0CE0 - 0x02FE0000
+#define ReceiveMessageNextCallOffset 0x54D04E60 - 0x54270000
 
 /*
 * 保存单条信息的结构
@@ -47,9 +47,6 @@ DWORD JmpBackAddress = ReceiveMessageHookAddress + 0x5;
 */
 VOID ReceiveMessage(DWORD messageAddr) {
 	// 此处用于区别是发送的还是接收的消息，发送的消息会被过滤
-	DWORD isSendMessage = *(DWORD*)(messageAddr + 0x3C);
-	if (isSendMessage)
-		return;
 	messageStruct message = { 0 };
 	message.messagetype = *(DWORD*)(messageAddr + 0x38);
 	
@@ -124,8 +121,8 @@ _declspec(naked) void dealReceiveMessage() {
 	__asm {
 		pushad;
 		pushfd;
-		mov edi, [eax];
-		push edi;
+		mov eax, [edi];
+		push eax;
 		call ReceiveMessage;
 		add esp, 0x4;
 		popfd;

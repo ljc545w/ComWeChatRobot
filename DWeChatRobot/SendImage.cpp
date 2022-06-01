@@ -1,13 +1,13 @@
 #include "pch.h"
 
 // 发送图片CALL1偏移
-#define SendImageCall1Offset (0x6740A1C0 - 0x67370000)
+#define SendImageCall1Offset (0x5432D730 - 0x54270000)
 // 发送图片CALL2偏移
-#define SendImageCall2Offset (0x67A71DC0 - 0x67370000)
+#define SendImageCall2Offset (0x549E0980 - 0x54270000)
 // 发送图片CALL3偏移
-#define SendImageCall3Offset (0x6782E160 - 0x67370000)
+#define SendImageCall3Offset (0x54791640 - 0x54270000)
 // 清空缓存的CALL偏移
-#define DeleteSendImageCacheCallOffset (0x67404200 - 0x67370000)
+#define DeleteSendImageCacheCallOffset (0x54327720 - 0x54270000)
 
 /*
 * 外部调用时传递的参数结构

@@ -60,7 +60,6 @@ class WeChatRobot():
             myinfo = ast.literal_eval(myinfo)
         except SyntaxError:
             return {}
-        myinfo['wxBigAvatar'] = myinfo['wxBigAvatar'].replace("/132","/0")
         self.myinfo = myinfo
         return self.myinfo
     

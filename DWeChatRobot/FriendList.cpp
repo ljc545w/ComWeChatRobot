@@ -2,7 +2,7 @@
 #include <vector> 
 
 // 通讯录左树偏移
-#define LeftTreeOffset 0x222F3BC
+#define LeftTreeOffset 0x23638F4
 
 /*
 * 保存单个好友信息的结构体

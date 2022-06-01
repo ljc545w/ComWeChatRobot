@@ -1,20 +1,20 @@
 #include "pch.h"
 
 // 发送文章CALL1偏移
-#define SendArticleCall1Offset 0x0F7454F0 - 0x0F6B0000
+#define SendArticleCall1Offset 0x54328A10 - 0x54270000
 // 发送文章CALL2偏移
-#define SendArticleCall2Offset 0x0FA41F80 - 0x0F6B0000
+#define SendArticleCall2Offset 0x5465D5E0 - 0x54270000
 // 发送文章CALL3偏移
-#define SendArticleCall3Offset 0x0F7794A0 - 0x0F6B0000
+#define SendArticleCall3Offset 0x54377EB0 - 0x54270000
 // 发送文章CALL4偏移
-#define SendArticleCall4Offset 0x0FA42150 - 0x0F6B0000
+#define SendArticleCall4Offset 0x5465D7B0 - 0x54270000
 // 发送文章CALL参数偏移
-#define SendArticleParamOffset 0x118EEC34 - 0x0F6B0000
+#define SendArticleParamOffset 0x565F3FE4 - 0x54270000
 
 // 清空缓存CALL1偏移
-#define SendArticleClearCacheCall1Offset 0x0FCEB4F0 - 0x0F6B0000
+#define SendArticleClearCacheCall1Offset 0x54916450 - 0x54270000
 // 清空缓存CALL2偏移
-#define SendArticleClearCacheCall2Offset 0x0F744200 - 0x0F6B0000
+#define SendArticleClearCacheCall2Offset 0x54327720 - 0x54270000
 
 /*
 * 外部调用时传递的参数结构
@@ -49,7 +49,7 @@ VOID SendArticleRemote(LPVOID lparameter) {
 * return：DWORD，个人wxid保存地址
 */
 DWORD GetSelfWxIdAddr() {
-	DWORD baseAddr = GetWeChatWinBase() + 0x222EB3C;
+	DWORD baseAddr = GetWeChatWinBase() + 0x236307C;
 	char wxidbuffer[0x100] = { 0 };
 	DWORD SelfWxIdAddr = 0x0;
 	sprintf_s(wxidbuffer, "%s", (char*)baseAddr);
@@ -86,7 +86,7 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	// 自己的wxid，发送者
 	char* sselfwxid = (char*)GetSelfWxIdAddr();
 	wchar_t* wselfwxid = new wchar_t[strlen(sselfwxid) + 1];
-	MultiByteToWideChar(CP_ACP, MB_COMPOSITE, sselfwxid, -1, wselfwxid, strlen(sselfwxid) + 1);
+	MultiByteToWideChar(CP_ACP, 0, sselfwxid, -1, wselfwxid, strlen(sselfwxid) + 1);
 	// 构造xml数据
 	wchar_t* xmlbuffer = new wchar_t[0x2000];
 	ZeroMemory(xmlbuffer, 0x2000 * 2);
@@ -100,7 +100,7 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	WxBaseStruct pReceiver(wxid);
 	WxString imgbuffer = { 0 };
 	WxString nullStruct = { 0 };
-	char buffer[0xF90] = { 0 };
+	char buffer[0xFF0] = { 0 };
 	DWORD isSuccess = 0x0;
 	__asm {
 		pushad;

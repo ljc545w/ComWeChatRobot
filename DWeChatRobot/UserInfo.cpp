@@ -3,19 +3,16 @@
 #include <string>
 #include <vector>
 
-// 获取好友信息CALL0偏移
-#define GetUserInfoCall0Offset 0x6740A000 - 0x67370000
 // 获取好友信息CALL1偏移
-#define GetUserInfoCall1Offset 0x679C9840 - 0x67370000
+#define GetUserInfoCall1Offset 0x5946D570 - 0x593B0000
 // 获取好友信息CALL2偏移
-#define GetUserInfoCall2Offset 0x67A71DC0 - 0x67370000
+#define GetUserInfoCall2Offset 0x59B20980 - 0x593B0000
 // 获取好友信息CALL3偏移
-#define GetUserInfoCall3Offset 0x677724A0 - 0x67370000
-
-// 清空缓存CALL1偏移
-#define DeleteUserInfoCacheCall1Offset 0x67775990 - 0x67370000
-// 清空缓存CALL2偏移
-#define DeleteUserInfoCacheCall2Offset 0x679CA340 - 0x67370000
+#define GetUserInfoCall3Offset 0x59816270 - 0x593B0000
+// 清理好友信息缓存参数
+#define DeleteUserInfoCacheCall1Offset 0x59A752B0 - 0x593B0000
+// 清理好友信息缓存CALL2
+#define DeleteUserInfoCacheCall2Offset 0x5946E680 - 0x593B0000
 
 /*
 * 外部调用时的返回类型
@@ -117,12 +114,11 @@ VOID DeleteUserInfoCacheRemote() {
 */
 BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD WxGetUserInfoCall0 = WeChatWinBase + GetUserInfoCall0Offset;
 	DWORD WxGetUserInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
 	DWORD WxGetUserInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
 	DWORD WxGetUserInfoCall3 = WeChatWinBase + GetUserInfoCall3Offset;
-	DWORD DeleteUserInofCacheCall1 = WeChatWinBase + DeleteUserInfoCacheCall1Offset;
-	DWORD DeleteUserInofCacheCall2 = WeChatWinBase + DeleteUserInfoCacheCall2Offset;
+	DWORD DeleteUserInfoCacheCall1 = WeChatWinBase + DeleteUserInfoCacheCall1Offset;
+	DWORD DeleteUserInfoCacheCall2 = WeChatWinBase + DeleteUserInfoCacheCall2Offset;
 	char buffer[0x3FC] = { 0 };
 	WxBaseStruct pWxid(wxid);
 	DWORD address = 0;
@@ -130,33 +126,32 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 	__asm
 	{
 		pushad;
-		call WxGetUserInfoCall0;
-		mov edi, eax;
-		lea ecx, buffer;
 		call WxGetUserInfoCall1;
-		lea eax, buffer;
-		mov address, eax;
-		push eax;
+		lea ebx, buffer;
+		push ebx;
 		sub esp, 0x14;
+		mov esi, eax;
+		lea eax, pWxid;
 		mov ecx, esp;
-		lea esi, pWxid;
-		push esi;
+		push eax;
 		call WxGetUserInfoCall2;
-		mov ecx, edi;
+		mov ecx, esi;
 		call WxGetUserInfoCall3;
 		mov isSuccess, eax;
+		mov address, ebx;
 		popad;
 	}
 	if(isSuccess)
 		WxUserInfo(address);
+	char deletebuffer[0x410] = { 0 };
 	__asm {
 		pushad;
-		lea eax, buffer;
+		lea ecx, deletebuffer;
+		call DeleteUserInfoCacheCall1;
 		push eax;
-		call DeleteUserInofCacheCall1;
-		lea ecx, buffer;
-		mov esi, eax;
-		call DeleteUserInofCacheCall2;
+		lea ebx,buffer;
+		mov ecx, ebx;
+		call DeleteUserInfoCacheCall2;
 		popad;
 	}
 	return isSuccess;
@@ -169,12 +164,11 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 */
 wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD WxGetUserInfoCall0 = WeChatWinBase + GetUserInfoCall0Offset;
 	DWORD WxGetUserInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
 	DWORD WxGetUserInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
 	DWORD WxGetUserInfoCall3 = WeChatWinBase + GetUserInfoCall3Offset;
-	DWORD DeleteUserInofCacheCall1 = WeChatWinBase + DeleteUserInfoCacheCall1Offset;
-	DWORD DeleteUserInofCacheCall2 = WeChatWinBase + DeleteUserInfoCacheCall2Offset;
+	DWORD DeleteUserInfoCacheCall1 = WeChatWinBase + DeleteUserInfoCacheCall1Offset;
+	DWORD DeleteUserInfoCacheCall2 = WeChatWinBase + DeleteUserInfoCacheCall2Offset;
 	char buffer[0x3FC] = { 0 };
 	WxBaseStruct pWxid(wxid);
 	DWORD address = 0;
@@ -182,21 +176,19 @@ wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid) {
 	__asm
 	{
 		pushad;
-		call WxGetUserInfoCall0;
-		mov edi, eax;
-		lea ecx, buffer;
 		call WxGetUserInfoCall1;
-		lea eax, buffer;
-		mov address, eax;
-		push eax;
+		lea ebx, buffer;
+		push ebx;
 		sub esp, 0x14;
+		mov esi, eax;
+		lea eax, pWxid;
 		mov ecx, esp;
-		lea esi, pWxid;
-		push esi;
+		push eax;
 		call WxGetUserInfoCall2;
-		mov ecx, edi;
+		mov ecx, esi;
 		call WxGetUserInfoCall3;
 		mov isSuccess, eax;
+		mov address, ebx;
 		popad;
 	}
 	wchar_t* NickName = NULL;
@@ -206,14 +198,15 @@ wchar_t* __stdcall GetUserNickNameByWxId(wchar_t* wxid) {
 		ZeroMemory(NickName, (length + 1) * 2);
 		memcpy(NickName, (wchar_t*)(*(DWORD*)(address + 0x6C)), length * 2);
 	}
+	char deletebuffer[0x410] = { 0 };
 	__asm {
 		pushad;
-		lea eax, buffer;
+		lea ecx, deletebuffer;
+		call DeleteUserInfoCacheCall1;
 		push eax;
-		call DeleteUserInofCacheCall1;
-		lea ecx, buffer;
-		mov esi, eax;
-		call DeleteUserInofCacheCall2;
+		lea ebx, buffer;
+		mov ecx, ebx;
+		call DeleteUserInfoCacheCall2;
 		popad;
 	}
 	return NickName;
