@@ -241,3 +241,13 @@ STDMETHODIMP CWeChatRobot::CBackupSQLiteDB(DWORD DbHandle, BSTR savepath, int* _
     *__result = BackupSQLiteDB(DbHandle, savepath);
     return S_OK;
 }
+
+/*
+* 参数1：v3数据
+* 参数2：v4数据
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CVerifyFriendApply(BSTR v3, BSTR v4, int* __result) {
+    *__result = VerifyFriendApply(v3, v4);
+    return S_OK;
+}

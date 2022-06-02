@@ -20,6 +20,8 @@ DWORD DeleteUserInfoCacheOffset = 0x0;
 DWORD GetSelfInfoOffset = 0x0;
 DWORD DeleteSelfInfoCacheOffset = 0x0;
 
+DWORD VerifyFriendApplyOffset = 0x0;
+
 DWORD CheckFriendStatusInitRemoteOffset = 0x0;
 DWORD CheckFriendStatusRemoteOffset = 0x0;
 DWORD CheckFriendStatusFinishRemoteOffset = 0x0;
@@ -119,6 +121,9 @@ void GetProcOffset(wchar_t* workPath) {
     DWORD DeleteUserInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteUserInfoCacheRemote);
     DeleteUserInfoCacheOffset = DeleteUserInfoCacheProcAddr - WeChatBase;
 
+    DWORD VerifyFriendApplyProcAddr = (DWORD)GetProcAddress(hd, VerifyFriendApplyRemote);
+    VerifyFriendApplyOffset = VerifyFriendApplyProcAddr - WeChatBase;
+
     DWORD GetSelfInfoProcAddr = (DWORD)GetProcAddress(hd, GetSelfInfoRemote);
     GetSelfInfoOffset = GetSelfInfoProcAddr - WeChatBase;
     DWORD DeleteSelfInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteSelfInfoCacheRemote);
@@ -174,7 +179,8 @@ DWORD StartRobotService() {
     }
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
-    hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
+    if(!hProcess)
+        hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Injert(wxPid, workPath);
     if (status == 1) {
         CloseHandle(hProcess);

@@ -6,7 +6,7 @@ bool InjectDll(DWORD dwId, WCHAR* szPath)//参数1：目标进程PID  参数2：DLL路径
     if (!hProcess)
         return 1;
     if (GetWeChatRobotBase() != 0) {
-        return 1;
+        return 0;
     }
 
     LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
@@ -24,6 +24,7 @@ bool InjectDll(DWORD dwId, WCHAR* szPath)//参数1：目标进程PID  参数2：DLL路径
         WaitForSingleObject(hThread, -1);
     }
     else {
+        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
         return 1;
     }
     CloseHandle(hThread);

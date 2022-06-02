@@ -24,6 +24,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
         printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
         printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
         printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
+        printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
 #endif
         break;
     }

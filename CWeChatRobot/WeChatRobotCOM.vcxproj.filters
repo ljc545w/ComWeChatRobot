@@ -77,6 +77,9 @@
     <Filter Include="数据库\数据库备份">
       <UniqueIdentifier>{f34f7c72-a310-4c23-b153-681307fb6277}</UniqueIdentifier>
     </Filter>
+    <Filter Include="好友相关\通过好友请求">
+      <UniqueIdentifier>{ed2746cb-8d2d-4ad9-865d-d06563766571}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -151,6 +154,9 @@
     <ClInclude Include="DbBackup.h">
       <Filter>数据库\数据库备份</Filter>
     </ClInclude>
+    <ClInclude Include="VerifyFriendApply.h">
+      <Filter>好友相关\通过好友请求</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -215,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="DbBackup.cpp">
       <Filter>数据库\数据库备份</Filter>
+    </ClCompile>
+    <ClCompile Include="VerifyFriendApply.cpp">
+      <Filter>好友相关\通过好友请求</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

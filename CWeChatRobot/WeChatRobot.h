@@ -74,6 +74,7 @@ public:
 	STDMETHODIMP CGetDbHandles(VARIANT* __result);
 	STDMETHODIMP CExecuteSQL(DWORD DbHandle, BSTR sql, VARIANT* __result);
 	STDMETHODIMP CBackupSQLiteDB(DWORD DbHandle, BSTR savepath, int* __result);
+	STDMETHODIMP CVerifyFriendApply(BSTR v3, BSTR v4, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

@@ -230,3 +230,6 @@ class WeChatRobot():
             pass
         status = self.robot.CStopReceiveMessage()
         return status
+        
+    def VerifyFriendApply(self,v3,v4):
+        return self.robot.CVerifyFriendApply(v3,v4)

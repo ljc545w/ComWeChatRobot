@@ -27,6 +27,7 @@
 #include "GetDbHandles.h"
 #include "DbExecuteSql.h"
 #include "DbBackup.h"
+#include "VerifyFriendApply.h"
 #include <vector>
 #endif //PCH_H
 

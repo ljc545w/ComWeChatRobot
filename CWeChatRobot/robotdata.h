@@ -15,6 +15,7 @@
 #include "GetDbHandles.h"
 #include "DbExecuteSql.h"
 #include "DbBackup.h"
+#include "VerifyFriendApply.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -30,6 +31,8 @@ extern DWORD GetFriendListFinishOffset;
 
 extern DWORD GetWxUserInfoOffset;
 extern DWORD DeleteUserInfoCacheOffset;
+
+extern DWORD VerifyFriendApplyOffset;
 
 extern DWORD GetSelfInfoOffset;
 extern DWORD DeleteSelfInfoCacheOffset;
@@ -69,6 +72,8 @@ extern DWORD BackupSQLiteDBRemoteOffset;
 
 #define GetSelfInfoRemote "GetSelfInfoRemote"
 #define DeleteSelfInfoCacheRemote "DeleteSelfInfoCacheRemote"
+
+#define VerifyFriendApplyRemote "VerifyFriendApplyRemote"
 
 #define CheckFriendStatusInitRemote "CheckFriendStatusInitRemote"
 #define CheckFriendStatusRemote "CheckFriendStatusRemote"
