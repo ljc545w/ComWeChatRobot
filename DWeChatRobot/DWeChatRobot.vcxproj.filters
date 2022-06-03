@@ -34,9 +34,6 @@
     <Filter Include="好友相关\好友列表">
       <UniqueIdentifier>{24dc11dd-cb6a-4c63-bf21-35823cd389ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="好友相关\好友信息">
-      <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
-    </Filter>
     <Filter Include="个人信息">
       <UniqueIdentifier>{722c02ee-dda5-4a6a-9443-f1ed3c112709}</UniqueIdentifier>
     </Filter>
@@ -79,6 +76,12 @@
     <Filter Include="好友相关\通过好友请求">
       <UniqueIdentifier>{350447a5-87e5-438c-b54d-504bbb15b201}</UniqueIdentifier>
     </Filter>
+    <Filter Include="好友相关\添加好友">
+      <UniqueIdentifier>{b6326361-658a-45dc-95da-64943e87d9ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\搜索好友">
+      <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -99,8 +102,8 @@
     <ClInclude Include="FriendList.h">
       <Filter>好友相关\好友列表</Filter>
     </ClInclude>
-    <ClInclude Include="UserInfo.h">
-      <Filter>好友相关\好友信息</Filter>
+    <ClInclude Include="SearchContact.h">
+      <Filter>好友相关\搜索好友</Filter>
     </ClInclude>
     <ClInclude Include="SelfInfo.h">
       <Filter>个人信息</Filter>
@@ -138,6 +141,9 @@
     <ClInclude Include="VerifyFriendApply.h">
       <Filter>好友相关\通过好友请求</Filter>
     </ClInclude>
+    <ClInclude Include="AddFriend.h">
+      <Filter>好友相关\添加好友</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -158,8 +164,8 @@
     <ClCompile Include="FriendList.cpp">
       <Filter>好友相关\好友列表</Filter>
     </ClCompile>
-    <ClCompile Include="UserInfo.cpp">
-      <Filter>好友相关\好友信息</Filter>
+    <ClCompile Include="SearchContactByCache.cpp">
+      <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
     <ClCompile Include="SelfInfo.cpp">
       <Filter>个人信息</Filter>
@@ -196,6 +202,15 @@
     </ClCompile>
     <ClCompile Include="VerifyFriendApply.cpp">
       <Filter>好友相关\通过好友请求</Filter>
+    </ClCompile>
+    <ClCompile Include="AddFriendByWxid.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="AddFriendByV3.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchContactByNet.cpp">
+      <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

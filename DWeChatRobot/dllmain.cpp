@@ -11,21 +11,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_ATTACH:
     {
 #ifdef _DEBUG
-        CreateConsole();
-        printf("SendImage 0x%08X\n", (DWORD)SendImage);
-        printf("SendText 0x%08X\n", (DWORD)SendText);
-        printf("SendFile 0x%08X\n", (DWORD)SendFile);
-        printf("SendAtText 0x%08X\n", (DWORD)SendAtText);
-        printf("GetFriendList 0x%08X\n", (DWORD)GetFriendList);
-        printf("GetUserInfoByWxId 0x%08X\n", (DWORD)GetUserInfoByWxId);
-        printf("SendArticle 0x%08X\n", (DWORD)SendArticle);
-        printf("SendCard 0x%08X\n", (DWORD)SendCard);
-        printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
-        printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
-        printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
-        printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
-        printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
+        PrintProcAddr();
 #endif
+        SearchContactByNet((wchar_t*)L"ljc545w");
         break;
     }
     case DLL_THREAD_ATTACH:

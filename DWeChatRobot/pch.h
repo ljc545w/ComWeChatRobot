@@ -16,7 +16,7 @@
 #include "SendFile.h"
 #include "SendArticle.h"
 #include "FriendList.h"
-#include "UserInfo.h"
+#include "SearchContact.h"
 #include "SelfInfo.h"
 #include "SendCard.h"
 #include "CheckFriendStatus.h"
@@ -28,6 +28,7 @@
 #include "DbExecuteSql.h"
 #include "DbBackup.h"
 #include "VerifyFriendApply.h"
+#include "AddFriend.h"
 #include <vector>
 #endif //PCH_H
 
@@ -81,3 +82,4 @@ void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char* originalRecieve
 void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
 DLLEXPORT void UnHookAll();
 wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
+void PrintProcAddr();

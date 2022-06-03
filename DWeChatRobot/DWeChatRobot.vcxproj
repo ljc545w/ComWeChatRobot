@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddFriend.h" />
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="DbBackup.h" />
     <ClInclude Include="DbExecuteSql.h" />
@@ -171,10 +172,12 @@
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
-    <ClInclude Include="UserInfo.h" />
+    <ClInclude Include="SearchContact.h" />
     <ClInclude Include="VerifyFriendApply.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddFriendByV3.cpp" />
+    <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="DbBackup.cpp" />
     <ClCompile Include="DbExecuteSql.cpp" />
@@ -189,6 +192,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ReceiveMessage.cpp" />
+    <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendAtText.cpp" />
@@ -196,7 +200,7 @@
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
-    <ClCompile Include="UserInfo.cpp" />
+    <ClCompile Include="SearchContactByCache.cpp" />
     <ClCompile Include="LogMsgInfo.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
   </ItemGroup>
