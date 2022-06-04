@@ -81,17 +81,21 @@ DWORD GetWeChatRobotBase() {
     return dwHandle;
 }
 
-void GetProcOffset(wchar_t* workPath) {
+BOOL GetProcOffset(wchar_t* workPath) {
     wchar_t* dllpath = new wchar_t[MAX_PATH];
     swprintf_s(dllpath, MAX_PATH, L"%ws%ws%ws", workPath, L"\\", dllname);
     string name = _com_util::ConvertBSTRToString((BSTR)dllpath);
     if (!isFileExists_stat(name)) {
         MessageBoxA(NULL, name.c_str(), "文件不存在", MB_ICONWARNING);
-        return;
+        return 1;
     }
     HMODULE hd = LoadLibraryW(dllpath);
-    if (!hd)
-        return;
+    if (!hd) {
+        wchar_t info[MAX_PATH] = { 0 };
+        swprintf_s(info, MAX_PATH, L"无法加载位于%ws的%ws", workPath, dllname);
+        MessageBox(NULL, info, L"致命错误", MB_ICONWARNING);
+        return 1;
+    }
     DWORD WeChatBase = (DWORD)GetModuleHandleW(dllname);
 
     DWORD SendImageProcAddr = (DWORD)GetProcAddress(hd, SendImageRemote);
@@ -153,6 +157,7 @@ void GetProcOffset(wchar_t* workPath) {
     FreeLibrary(hd);
     delete[] dllpath;
     dllpath = NULL;
+    return 0;
 }
 
 DWORD GetWeChatPid() {
@@ -174,13 +179,16 @@ DWORD StartRobotService() {
     }
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
+    if (GetProcOffset(workPath) != 0) {
+        hProcess = NULL;
+        return 1;
+    }
     hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Injert(wxPid, workPath);
-    if (status == 1) {
+    if (status != 0) {
         CloseHandle(hProcess);
-        return status;
+        hProcess = NULL;
     }
-    GetProcOffset(workPath);
     return status;
 }
 
@@ -189,11 +197,14 @@ DWORD StopRobotService() {
     if (!hProcess)
         return cpid;
     DWORD wxPid = GetWeChatPid();
-    CheckFriendStatusFinish();
-    StopReceiveMessage();
-    RemoveDll(wxPid);
+    if (wxPid && GetWeChatRobotBase()) {
+        CheckFriendStatusFinish();
+        StopReceiveMessage();
+        RemoveDll(wxPid);
+    }
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
+    hProcess = NULL;
     return cpid;
 }
 
