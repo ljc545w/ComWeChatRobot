@@ -16,6 +16,7 @@
 #include "DbExecuteSql.h"
 #include "DbBackup.h"
 #include "VerifyFriendApply.h"
+#include "AddFriend.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -53,6 +54,9 @@ extern DWORD GetDbHandlesRemoteOffset;
 extern DWORD ExecuteSQLRemoteOffset;
 extern DWORD BackupSQLiteDBRemoteOffset;
 
+extern DWORD AddFriendByWxidRemoteOffset;
+extern DWORD AddFriendByV3RemoteOffset;
+
 
 #define dllname L"DWeChatRobot.dll"
 
@@ -89,3 +93,6 @@ extern DWORD BackupSQLiteDBRemoteOffset;
 #define GetDbHandlesRemote "GetDbHandlesRemote"
 #define ExecuteSQLRemote "ExecuteSQLRemote"
 #define BackupSQLiteDBRemote "BackupSQLiteDBRemote"
+
+#define AddFriendByWxidRemote "AddFriendByWxidRemote"
+#define AddFriendByV3Remote "AddFriendByV3Remote"

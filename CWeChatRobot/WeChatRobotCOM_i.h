@@ -185,6 +185,17 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR v4,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddFriendByWxid( 
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR message,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddFriendByV3( 
+            /* [in] */ BSTR v3,
+            /* [in] */ BSTR message,
+            /* [in] */ int AddType,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -364,6 +375,19 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR v4,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByWxid )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR message,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByV3 )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR v3,
+            /* [in] */ BSTR message,
+            /* [in] */ int AddType,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -471,6 +495,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CVerifyFriendApply(This,v3,v4,__result)	\
     ( (This)->lpVtbl -> CVerifyFriendApply(This,v3,v4,__result) ) 
+
+#define IWeChatRobot_CAddFriendByWxid(This,wxid,message,__result)	\
+    ( (This)->lpVtbl -> CAddFriendByWxid(This,wxid,message,__result) ) 
+
+#define IWeChatRobot_CAddFriendByV3(This,v3,message,AddType,__result)	\
+    ( (This)->lpVtbl -> CAddFriendByV3(This,v3,message,AddType,__result) ) 
 
 #endif /* COBJMACROS */
 

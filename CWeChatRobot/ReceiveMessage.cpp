@@ -4,6 +4,7 @@ BOOL ReceiveMessageHooked = FALSE;
 
 struct GetRemoteMessageStruct {
     DWORD type;
+    BOOL isSendMessage;
     DWORD sender;
     DWORD l_sender;
     DWORD wxid;
@@ -12,10 +13,14 @@ struct GetRemoteMessageStruct {
     DWORD l_message;
     DWORD filepath;
     DWORD l_filepath;
+    DWORD time;
+    DWORD l_time;
 };
 
 struct MessageStruct {
     DWORD type;
+    BOOL isSendMessage;
+    wchar_t* time;
     wchar_t* sender;
     wchar_t* wxid;
     wchar_t* message;
@@ -42,8 +47,10 @@ BOOL StartReceiveMessage() {
 }
 
 BOOL StopReceiveMessage() {
-    if (!hProcess || !ReceiveMessageHooked)
+    if (!hProcess || !ReceiveMessageHooked) {
+        ReceiveMessageHooked = FALSE;
         return 1;
+    }
     DWORD WeChatRobotBase = GetWeChatRobotBase();
     DWORD dwId = 0;
 
@@ -107,10 +114,15 @@ SAFEARRAY* ReceiveMessage() {
     MessageStruct message = { 0 };
     HRESULT hr = S_OK;
     GetHeadMessage(&remotemessage);
+#ifdef _DEBUG
     printf("0x%X,0x%08X,0x%08X,0x%08X\n", remotemessage.type, remotemessage.sender, remotemessage.wxid, remotemessage.message);
+#endif
     DWORD dwInfoAddr = 0;
     if (remotemessage.type) {
         message.type = remotemessage.type;
+        message.isSendMessage = remotemessage.isSendMessage;
+        message.time = new wchar_t[remotemessage.l_time + 1];
+        ReadProcessMemory(hProcess, (LPCVOID)remotemessage.time, message.time, (remotemessage.l_time + 1) * sizeof(wchar_t), 0);
         message.sender = new wchar_t[remotemessage.l_sender + 1];
         ReadProcessMemory(hProcess, (LPCVOID)remotemessage.sender, message.sender, (remotemessage.l_sender + 1) * sizeof(wchar_t), 0);
         message.wxid = new wchar_t[remotemessage.l_wxid + 1];
@@ -129,44 +141,35 @@ SAFEARRAY* ReceiveMessage() {
     SAFEARRAY* psaValue;
     vector<wstring> MessageInfoKey = {
         L"type",
-        L"sender",
+        L"isSendMessage",
+        L"time",
+        message.isSendMessage ? L"sendto" : L"from",
         L"wxid",
         L"message",
         L"filepath",
     };
-    SAFEARRAYBOUND rgsaBound[2] = { {5,0},{2,0} };
+    SAFEARRAYBOUND rgsaBound[2] = { {MessageInfoKey.size(),0},{2,0} };
     psaValue = SafeArrayCreate(VT_VARIANT, 2, rgsaBound);
     long keyIndex[2] = { 0,0 };
     keyIndex[0] = 0; keyIndex[1] = 0;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[0].c_str());
-    keyIndex[0] = 0; keyIndex[1] = 1;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.type);
-
-    keyIndex[0] = 1; keyIndex[1] = 0;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[1].c_str());
-    keyIndex[0] = 1; keyIndex[1] = 1;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.sender);
+    for (unsigned int i = 0; i < MessageInfoKey.size(); i++) {
+        keyIndex[0] = i; keyIndex[1] = 0;
+        hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[i].c_str());
+        keyIndex[0] = i; keyIndex[1] = 1;
+        if(i < 2)
+            hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)((DWORD*)&message)[i]);
+        else {
+            hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)((wchar_t**)&message)[i]);
+        }
+    }
+    delete[] message.time;
+    message.time = NULL;
     delete[] message.sender;
     message.sender = NULL;
-
-    keyIndex[0] = 2; keyIndex[1] = 0;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[2].c_str());
-    keyIndex[0] = 2; keyIndex[1] = 1;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.wxid);
     delete[] message.wxid;
     message.wxid = NULL;
-
-    keyIndex[0] = 3; keyIndex[1] = 0;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[3].c_str());
-    keyIndex[0] = 3; keyIndex[1] = 1;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.message);
     delete[] message.message;
     message.message = NULL;
-
-    keyIndex[0] = 4; keyIndex[1] = 0;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)MessageInfoKey[4].c_str());
-    keyIndex[0] = 4; keyIndex[1] = 1;
-    hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)message.filepath);
     delete[] message.filepath;
     message.filepath = NULL;
 

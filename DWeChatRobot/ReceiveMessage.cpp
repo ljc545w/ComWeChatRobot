@@ -3,8 +3,13 @@
 
 // 接收消息的HOOK地址偏移
 #define ReceiveMessageHookOffset 0x547C0F4C - 0x54270000
-// HOOK的CALL偏移
+// 接收消息HOOK的CALL偏移
 #define ReceiveMessageNextCallOffset 0x54D04E60 - 0x54270000
+
+// 发送消息的HOOK地址偏移
+#define SendMessageHookOffset 0x102C8E32 - 0x0FDE0000
+// 发送消息HOOK的CALL偏移
+#define SendMessageNextCallOffset 0x101E8170 - 0x0FDE0000
 
 /*
 * 保存单条信息的结构
@@ -16,6 +21,7 @@
 */
 struct messageStruct {
 	DWORD messagetype;
+	BOOL isSendMessage;
 	wchar_t* sender;
 	DWORD l_sender;
 	wchar_t* wxid;
@@ -24,6 +30,8 @@ struct messageStruct {
 	DWORD l_message;
 	wchar_t* filepath;
 	DWORD l_filepath;
+	wchar_t* time;
+	DWORD l_time;
 };
 
 // 保存多条信息的动态数组
@@ -33,12 +41,19 @@ vector<messageStruct> messageVector;
 BOOL ReceiveMessageHooked = false;
 // 保存HOOK前的字节码，用于恢复
 char OldReceiveMessageAsmCode[5] = { 0 };
+char OldSendMessageAsmCode[5] = { 0 };
 // 接收消息HOOK地址
 DWORD ReceiveMessageHookAddress = GetWeChatWinBase() + ReceiveMessageHookOffset;
-// HOOK的CALL地址
+// 接收消息HOOK的CALL地址
 DWORD ReceiveMessageNextCall = GetWeChatWinBase() + ReceiveMessageNextCallOffset;
-// HOOK的跳转地址
-DWORD JmpBackAddress = ReceiveMessageHookAddress + 0x5;
+// 接收HOOK的跳转地址
+DWORD ReceiveMessageJmpBackAddress = ReceiveMessageHookAddress + 0x5;
+// 发送消息HOOK地址
+DWORD SendMessageHookAddress = GetWeChatWinBase() + SendMessageHookOffset;
+// 发送消息HOOK的CALL地址
+DWORD SendMessageNextCall = GetWeChatWinBase() + SendMessageNextCallOffset;
+// 发送HOOK的跳转地址
+DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
 /*
 * 消息处理函数，根据消息缓冲区组装结构并存入容器
@@ -46,8 +61,13 @@ DWORD JmpBackAddress = ReceiveMessageHookAddress + 0x5;
 * return：void
 */
 VOID ReceiveMessage(DWORD messageAddr) {
-	// 此处用于区别是发送的还是接收的消息，发送的消息会被过滤
+	// 此处用于区别是发送的还是接收的消息
+	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
+
 	messageStruct message = { 0 };
+	message.isSendMessage = isSendMessage;
+	message.time = GetTimeW();
+	message.l_time = wcslen(message.time);
 	message.messagetype = *(DWORD*)(messageAddr + 0x38);
 	
 	DWORD length = *(DWORD*)(messageAddr + 0x48 + 0x4);
@@ -81,6 +101,9 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	ZeroMemory(message.filepath, (length + 1) * 2);
 	memcpy(message.filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
 	message.l_filepath = length;
+#ifdef _DEBUG
+	wcout << message.time << endl;
+#endif
 
 	messageVector.push_back(message);
 }
@@ -110,6 +133,8 @@ VOID PopHeadMessage() {
 	messageVector[0].wxid = NULL;
 	delete[] messageVector[0].filepath;
 	messageVector[0].filepath = NULL;
+	delete[] messageVector[0].time;
+	messageVector[0].time = NULL;
 	vector<messageStruct>::iterator k = messageVector.begin();
 	messageVector.erase(k);
 }
@@ -128,7 +153,24 @@ _declspec(naked) void dealReceiveMessage() {
 		popfd;
 		popad;
 		call ReceiveMessageNextCall;
-		jmp JmpBackAddress;
+		jmp ReceiveMessageJmpBackAddress;
+	}
+}
+
+/*
+* HOOK的具体实现，发送消息后调用处理函数
+*/
+_declspec(naked) void dealSendMessage() {
+	__asm {
+		pushad;
+		pushfd;
+		push edi;
+		call ReceiveMessage;
+		add esp, 0x4;
+		popfd;
+		popad;
+		call SendMessageNextCall;
+		jmp SendMessageJmpBackAddress;
 	}
 }
 
@@ -140,6 +182,7 @@ VOID HookReceiveMessage() {
 	if (ReceiveMessageHooked)
 		return;
 	HookAnyAddress(ReceiveMessageHookAddress,(LPVOID)dealReceiveMessage,OldReceiveMessageAsmCode);
+	HookAnyAddress(SendMessageHookAddress, (LPVOID)dealSendMessage, OldSendMessageAsmCode);
 	ReceiveMessageHooked = TRUE;
 }
 
@@ -151,5 +194,6 @@ VOID UnHookReceiveMessage() {
 	if (!ReceiveMessageHooked)
 		return;
 	UnHookAnyAddress(ReceiveMessageHookAddress,OldReceiveMessageAsmCode);
+	UnHookAnyAddress(SendMessageHookAddress, OldSendMessageAsmCode);
 	ReceiveMessageHooked = FALSE;
 }

@@ -37,6 +37,9 @@ DWORD GetDbHandlesRemoteOffset = 0x0;
 DWORD ExecuteSQLRemoteOffset = 0x0;
 DWORD BackupSQLiteDBRemoteOffset = 0x0;
 
+DWORD AddFriendByWxidRemoteOffset = 0x0;
+DWORD AddFriendByV3RemoteOffset = 0x0;
+
 wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
@@ -83,19 +86,20 @@ DWORD GetWeChatRobotBase() {
     return dwHandle;
 }
 
-void GetProcOffset(wchar_t* workPath) {
+BOOL GetProcOffset(wchar_t* workPath) {
     wchar_t* dllpath = new wchar_t[MAX_PATH];
+    memset(dllpath, 0, MAX_PATH * 2);
     swprintf_s(dllpath, MAX_PATH, L"%ws%ws%ws", workPath, L"\\", dllname);
     string name = _com_util::ConvertBSTRToString((BSTR)dllpath);
     if (!isFileExists_stat(name)) {
         MessageBoxA(NULL, name.c_str(), "文件不存在", MB_ICONWARNING);
-        return;
+        return 0;
     }
-    HMODULE hd = LoadLibraryW(dllpath);
-    if (!hd)
-        return;
+    HMODULE hd = LoadLibrary(dllpath);
+    if (!hd) {
+        return 0;
+    }
     DWORD WeChatBase = (DWORD)GetModuleHandleW(dllname);
-
     DWORD SendImageProcAddr = (DWORD)GetProcAddress(hd, SendImageRemote);
     SendImageOffset = SendImageProcAddr - WeChatBase;
     DWORD SendTextProcAddr = (DWORD)GetProcAddress(hd, SendTextRemote);
@@ -155,9 +159,15 @@ void GetProcOffset(wchar_t* workPath) {
     DWORD BackupSQLiteDBRemoteAddr = (DWORD)GetProcAddress(hd, BackupSQLiteDBRemote);
     BackupSQLiteDBRemoteOffset = BackupSQLiteDBRemoteAddr - WeChatBase;
 
+    DWORD AddFriendByWxidRemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByWxidRemote);
+    AddFriendByWxidRemoteOffset = AddFriendByWxidRemoteAddr - WeChatBase;
+    DWORD AddFriendByV3RemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByV3Remote);
+    AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
+
     FreeLibrary(hd);
     delete[] dllpath;
     dllpath = NULL;
+    return 1;
 }
 
 DWORD GetWeChatPid() {
@@ -179,6 +189,12 @@ DWORD StartRobotService() {
     }
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
+    if (!GetProcOffset(workPath)) {
+        wchar_t info[200] = { 0 };
+        swprintf_s(info, 200, L"COM无法加载位于%ws的%ws!", workPath, dllname);
+        MessageBox(NULL, info, L"致命错误!", MB_ICONWARNING);
+        return 1;
+    };
     if(!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Injert(wxPid, workPath);
@@ -186,20 +202,20 @@ DWORD StartRobotService() {
         CloseHandle(hProcess);
         return status;
     }
-    GetProcOffset(workPath);
     return status;
 }
 
 DWORD StopRobotService() {
     DWORD cpid = GetCurrentProcessId();
-    if (!hProcess)
-        return cpid;
     DWORD wxPid = GetWeChatPid();
-    CheckFriendStatusFinish();
-    StopReceiveMessage();
+    if (!wxPid)
+        return cpid;
+    if (!hProcess)
+        hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     RemoveDll(wxPid);
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
+    StopReceiveMessage();
     return cpid;
 }
 

@@ -251,3 +251,24 @@ STDMETHODIMP CWeChatRobot::CVerifyFriendApply(BSTR v3, BSTR v4, int* __result) {
     *__result = VerifyFriendApply(v3, v4);
     return S_OK;
 }
+
+/*
+* 参数1：wxid
+* 参数2：附加信息
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CAddFriendByWxid(BSTR wxid, BSTR message, int* __result) {
+    *__result = AddFriendByWxid(wxid, message);
+    return S_OK;
+}
+
+/*
+* 参数1：v3数据
+* 参数2：附加信息
+* 参数3：添加方式
+* 参数4：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CAddFriendByV3(BSTR v3, BSTR message,int AddType, int* __result) {
+    *__result = AddFriendByV3(v3, message,AddType);
+    return S_OK;
+}

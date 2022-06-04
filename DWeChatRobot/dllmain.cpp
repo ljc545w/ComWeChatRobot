@@ -13,7 +13,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #ifdef _DEBUG
         PrintProcAddr();
 #endif
-        SearchContactByNet((wchar_t*)L"ljc545w");
         break;
     }
     case DLL_THREAD_ATTACH:

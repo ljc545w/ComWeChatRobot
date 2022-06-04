@@ -69,7 +69,10 @@ BOOL RemoveDll(DWORD dwId) {
         return 1;
     }
     CloseHandle(hThread);
-
+    if (!dwHandle) {
+        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
+        return 0;
+    }
     pFunc = FreeConsole;
     hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, NULL, 0, &dwID);
     if (hThread) {

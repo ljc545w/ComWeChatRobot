@@ -80,6 +80,9 @@
     <Filter Include="好友相关\通过好友请求">
       <UniqueIdentifier>{ed2746cb-8d2d-4ad9-865d-d06563766571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="好友相关\添加好友">
+      <UniqueIdentifier>{14bcc8af-c28c-4911-8be2-53280ec154ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -157,6 +160,9 @@
     <ClInclude Include="VerifyFriendApply.h">
       <Filter>好友相关\通过好友请求</Filter>
     </ClInclude>
+    <ClInclude Include="AddFriend.h">
+      <Filter>好友相关\添加好友</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -224,6 +230,12 @@
     </ClCompile>
     <ClCompile Include="VerifyFriendApply.cpp">
       <Filter>好友相关\通过好友请求</Filter>
+    </ClCompile>
+    <ClCompile Include="AddFriendByWxid.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="AddFriendByV3.cpp">
+      <Filter>好友相关\添加好友</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

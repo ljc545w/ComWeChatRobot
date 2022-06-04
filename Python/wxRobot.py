@@ -233,3 +233,17 @@ class WeChatRobot():
         
     def VerifyFriendApply(self,v3,v4):
         return self.robot.CVerifyFriendApply(v3,v4)
+    
+    def AddFriendByWxid(self,wxid,message):
+        return self.robot.CAddFriendByWxid(wxid,message)
+    
+    def AddFriendByV3(self,v3,message,AddType):
+        """
+        v3 : str
+            要添加的人的V3数据.
+        message : str
+            附加信息.
+        AddType : int
+            手机号: 0xF;微信号: 0x3;QQ号: 0x1;朋友验证消息: 0x6.
+        """
+        return self.robot.CAddFriendByV3(v3,message,AddType)

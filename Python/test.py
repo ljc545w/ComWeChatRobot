@@ -9,25 +9,13 @@ from wxRobot import WeChatRobot
 
 # 一个示例回调，将收到的文本消息转发给filehelper
 def ReceiveMessageCallBack(robot,message):
-    if message['type'] == 1 and message['sender'] != 'filehelper':
+    chatwith = message.get('sendto') or message.get('from')
+    if message['type'] == 1 and not message['isSendMessage'] and chatwith != 'filehelper':
         robot.robot.CSendText('filehelper',message['message'])
-    wxSender = robot.GetWxUserInfo(message['sender'])
-    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else message['sender']
-    if '@chatroom' in message['sender']:
-        wxUser = robot.GetWxUserInfo(message['wxid'])
-        print("来自 {} {},type {}".format(sender,wxUser['wxNickName'],message['type']))
-    else:
-        print("来自 {},type {}".format(sender,message['type']))
-    if message['type'] == 1:
-        print(message['message'])
-    elif message['type'] == 3:
-        print(message['message'])
-        print(message['filepath'])
-    elif message['type'] == 49:
-        print(message['message'])
-        if not message['filepath']: print(message['filepath'])
-    else:
-        print(message['message'])
+    chatwith = message.get('sendto') or message.get('from')
+    wxSender = robot.GetWxUserInfo(chatwith)
+    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else chatwith
+    print("来自 {}\n".format(sender),message)
     
 def test_SendText():
     import os
@@ -74,13 +62,14 @@ def test_FriendStatus():
 def test_ReceiveMessage():
     wx = WeChatRobot()
     wx.StartService()
+    wx.robot.CStartReceiveMessage()
     wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         pass
-    wx.StopService(wx)
+    wx.StopService()
     
 def test_ExecuteSQL():
     wx = WeChatRobot()

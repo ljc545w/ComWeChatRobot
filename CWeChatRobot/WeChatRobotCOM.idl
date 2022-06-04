@@ -40,6 +40,8 @@ interface IWeChatRobot : IDispatch
 	[id(22)] HRESULT CExecuteSQL([in] DWORD DbHandle, [in] BSTR sql, [out, retval] VARIANT* __result);
 	[id(23)] HRESULT CBackupSQLiteDB([in] DWORD DbHandle, [in] BSTR savepath, [out, retval] int* __result);
 	[id(24)] HRESULT CVerifyFriendApply([in] BSTR v3, [in] BSTR v4, [out, retval] int* __result);
+	[id(25)] HRESULT CAddFriendByWxid([in] BSTR wxid, [in] BSTR message, [out, retval] int* __result);
+	[id(26)] HRESULT CAddFriendByV3([in] BSTR v3, [in] BSTR message, [in] int AddType, [out, retval] int* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),
