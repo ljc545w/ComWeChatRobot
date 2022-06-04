@@ -12,3 +12,4 @@
 /wxRobot/bin/Debug/
 /wxRobot/bin/Release/*.pdb
 */__pycache__/
+packages
