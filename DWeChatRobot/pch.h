@@ -30,9 +30,11 @@
 #include "VerifyFriendApply.h"
 #include "AddFriend.h"
 #include <vector>
+#include <strstream>
 #endif //PCH_H
 
 using namespace std;
+#pragma comment(lib,"version.lib")
 // 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
@@ -84,3 +86,6 @@ DLLEXPORT void UnHookAll();
 wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
 void PrintProcAddr();
 wchar_t* GetTimeW();
+BOOL ProcessIsWeChat();
+DWORD GetWeChatVerInt();
+string GetWeChatVerStr();

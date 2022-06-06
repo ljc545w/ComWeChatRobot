@@ -38,6 +38,8 @@ bool Injert(DWORD dwPid,wchar_t* workPath) {
     string name = _com_util::ConvertBSTRToString((BSTR)workPath); 
     if (!isFileExists_stat(name)) {
         MessageBox(NULL, dllpath, L"文件不存在", MB_ICONWARNING);
+        delete[] dllpath;
+        dllpath = NULL;
         return 1;
     }
     bool status = InjectDll(dwPid, dllpath);

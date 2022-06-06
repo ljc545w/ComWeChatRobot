@@ -11,7 +11,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_ATTACH:
     {
 #ifdef _DEBUG
-        PrintProcAddr();
+        if (ProcessIsWeChat()) {
+            PrintProcAddr();
+        }
 #endif
         break;
     }

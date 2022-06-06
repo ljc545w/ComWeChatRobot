@@ -155,6 +155,7 @@ wchar_t* GetTimeW() {
 
 void PrintProcAddr() {
     CreateConsole();
+    printf("WeChatVersion %s\n", GetWeChatVerStr().c_str());
     printf("SendImage 0x%08X\n", (DWORD)SendImage);
     printf("SendText 0x%08X\n", (DWORD)SendText);
     printf("SendFile 0x%08X\n", (DWORD)SendFile);
@@ -170,4 +171,71 @@ void PrintProcAddr() {
     printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
+}
+
+BOOL ProcessIsWeChat()
+{
+    char szFileFullPath[MAX_PATH] = { 0 }, szProcessName[MAX_PATH] = { 0 };
+    GetModuleFileNameA(NULL, szFileFullPath, MAX_PATH);
+    int length = ::strlen(szFileFullPath);
+    for (int i = length - 1; i >= 0; i--)
+    {
+        if (szFileFullPath[i] == '\\')
+        {
+            i++;
+            for (int j = 0; i <= length; j++)
+            {
+                szProcessName[j] = szFileFullPath[i++];
+            }
+            break;
+        }
+    }
+
+    if (::strcmp(szProcessName, "WeChat.exe") != 0)
+    {
+        return FALSE;
+    }
+    else
+    {
+        return TRUE;
+    }
+}
+
+DWORD GetWeChatVerInt()
+{
+    WCHAR VersionFilePath[MAX_PATH];
+    BYTE WeChatVersion[4] = { 0 };
+    if (GetModuleFileName((HMODULE)GetWeChatWinBase(), VersionFilePath, MAX_PATH) == 0)
+    {
+        return 0;
+    }
+    
+    VS_FIXEDFILEINFO* pVsInfo;
+    unsigned int iFileInfoSize = sizeof(VS_FIXEDFILEINFO);
+    int iVerInfoSize = GetFileVersionInfoSize(VersionFilePath, NULL);
+    if (iVerInfoSize != 0) {
+        char* pBuf = new char[iVerInfoSize];
+        if (GetFileVersionInfo(VersionFilePath, 0, iVerInfoSize, pBuf)) {
+            if (VerQueryValue(pBuf, TEXT("\\"), (void**)&pVsInfo, &iFileInfoSize)) {
+                WeChatVersion[3] = (BYTE)(0x60 + (pVsInfo->dwFileVersionMS >> 16) & 0x0000FFFF);
+                WeChatVersion[2] = (BYTE)(pVsInfo->dwFileVersionMS & 0x0000FFFF);
+                WeChatVersion[1] = (BYTE)((pVsInfo->dwFileVersionLS >> 16) & 0x0000FFFF);
+                WeChatVersion[0] = (BYTE)(pVsInfo->dwFileVersionLS & 0x0000FFFF);
+            }
+        }
+        delete[] pBuf;
+    }
+    return *(DWORD*)WeChatVersion;
+}
+
+string GetWeChatVerStr() {
+    DWORD WeChatVersion = GetWeChatVerInt();
+    if (WeChatVersion == 0)
+        return "null";
+    string wxver = "";
+    BYTE* pWxVer = (BYTE*)&WeChatVersion;
+    strstream wxVer;
+    wxVer << (int)pWxVer[3] - 0x60 << "." << (int)pWxVer[2] << "." << (int)pWxVer[1] << "." << (int)pWxVer[0];
+    wxVer >> wxver;
+    return wxver;
 }

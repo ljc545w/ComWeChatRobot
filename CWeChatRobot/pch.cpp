@@ -44,7 +44,7 @@ wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
 
-bool isFileExists_stat(string& name) {
+BOOL isFileExists_stat(string& name) {
     struct stat buffer;
     return (stat(name.c_str(), &buffer) == 0);
 }
@@ -226,4 +226,63 @@ wstring GetComWorkPath() {
     int pos = wpath.find_last_of(L"\\");
     wpath = wpath.substr(0,pos);
     return wpath;
+}
+
+static BOOL GetWeChatInstallInfo(TCHAR* lpValueName, VOID* Value, DWORD lpcbData) {
+    HKEY hKey = NULL;
+    ZeroMemory(Value, lpcbData);
+    LSTATUS lRet = RegOpenKeyEx(HKEY_CURRENT_USER, _T("SOFTWARE\\Tencent\\WeChat"), 0, KEY_QUERY_VALUE, &hKey);
+    if (lRet != 0) {
+        return false;
+    }
+    lRet = RegQueryValueEx(hKey, lpValueName, NULL, NULL, (LPBYTE)Value, &lpcbData);
+    RegCloseKey(hKey);
+    if (lRet != 0) {
+        return false;
+    }
+    return true;
+}
+
+tstring GetWeChatInstallDir() {
+    TCHAR* szProductType = new TCHAR[MAX_PATH];
+    GetWeChatInstallInfo((TCHAR*)TEXT("InstallPath"), (void*)szProductType, MAX_PATH);
+    tstring wxdir(szProductType);
+    delete[] szProductType;
+    szProductType = NULL;
+    return wxdir.length() == 0 ? TEXT("") : wxdir;
+}
+
+DWORD GetWeChatVerInt() {
+    DWORD version = 0x0;
+    GetWeChatInstallInfo((TCHAR*)TEXT("Version"), (void*)&version, sizeof(DWORD));
+    return version;
+}
+
+tstring GetWeChatVerStr() {
+    BYTE pversion[4] = { 0 };
+    GetWeChatInstallInfo((TCHAR*)TEXT("Version"), (void*)pversion, sizeof(DWORD));
+    TCHAR* temp = new TCHAR[20];
+    _stprintf_s(temp, 20, _T("%d.%d.%d.%d\0"), (int)(pversion[3] - 0x60), (int)pversion[2], (int)pversion[1], (int)pversion[0]);
+    tstring verStr(temp);
+    delete[] temp;
+    temp = NULL;
+    return verStr;
+}
+
+VOID StartWeChat()
+{
+    tstring szAppName = GetWeChatInstallDir();
+    if (szAppName.length() == 0)
+        return;
+    szAppName += TEXT("\\WeChat.exe");
+    STARTUPINFO StartInfo;
+    ZeroMemory(&StartInfo, sizeof(StartInfo));
+    PROCESS_INFORMATION procStruct;
+    ZeroMemory(&procStruct, sizeof(procStruct));
+    StartInfo.cb = sizeof(STARTUPINFO);
+    if (CreateProcess((LPCTSTR)szAppName.c_str(), NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &StartInfo, &procStruct))
+    {
+        CloseHandle(procStruct.hProcess);
+        CloseHandle(procStruct.hThread);
+    }
 }

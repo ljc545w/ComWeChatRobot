@@ -29,15 +29,22 @@
 #include "robotdata.h"
 
 using namespace std;
-struct testStruct {
-	DWORD type;
-	wchar_t* desc;
-};
 
-bool isFileExists_stat(string& name);
+#ifdef _UNICODE
+#define tstring std::wstring
+#else
+#define tstring std::string
+#endif
+
+BOOL isFileExists_stat(string& name);
 DWORD GetWeChatRobotBase();
 DWORD GetWeChatPid();
 DWORD StartRobotService();
 DWORD StopRobotService();
 BOOL CreateConsole();
 wstring GetComWorkPath();
+
+tstring GetWeChatInstallDir();
+DWORD GetWeChatVerInt();
+tstring GetWeChatVerStr();
+VOID StartWeChat();
