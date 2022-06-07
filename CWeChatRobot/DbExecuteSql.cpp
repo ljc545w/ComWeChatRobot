@@ -18,6 +18,7 @@ struct SQLResultAddrStruct {
 	DWORD l_ColName;
 	DWORD content;
 	DWORD l_content;
+	DWORD isblob;
 };
 
 // vector的数据结构
@@ -34,6 +35,8 @@ struct VectorStruct {
 struct SQLResultStruct {
 	wchar_t* ColName;
 	wchar_t* content;
+	unsigned char* BlobContent;
+	int BlobLength;
 };
 // 查询结果是一个二维数组
 vector<vector<SQLResultStruct>> SQLResult;
@@ -52,6 +55,10 @@ void ClearResultArray() {
 			if (sr->content) {
 				delete sr->content;
 				sr->content = NULL;
+			}
+			if (sr->BlobContent) {
+				delete sr->BlobContent;
+				sr->BlobContent = NULL;
 			}
 		}
 		SQLResult[i].clear();
@@ -76,7 +83,23 @@ SAFEARRAY* CreateSQLResultSafeArray() {
 				hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)ptrResult->ColName);
 			}
 			Index[0] = i + 1; Index[1] = j;
-			hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)ptrResult->content);
+			if(ptrResult->content)
+				hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)ptrResult->content);
+			else {
+				VARIANT varChunk;
+				SAFEARRAY* bsa;
+				BYTE* pByte = NULL;
+				SAFEARRAYBOUND rgsabound[1];
+				rgsabound[0].cElements = ptrResult->BlobLength;
+				rgsabound[0].lLbound = 0;
+				bsa = SafeArrayCreate(VT_UI1, 1, rgsabound);
+				SafeArrayAccessData(bsa, (void**)&pByte);
+				memcpy(pByte, ptrResult->BlobContent, ptrResult->BlobLength);
+				SafeArrayUnaccessData(bsa);
+				varChunk.vt = VT_ARRAY | VT_UI1;
+				varChunk.parray = bsa;
+				hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)varChunk);
+			}
 		}
 	}
 	return psaValue;
@@ -99,9 +122,18 @@ VOID ReadSQLResultFromWeChatProcess(DWORD dwHandle) {
 			ReadProcessMemory(hProcess, (LPCVOID)sqlresultAddr.ColName, ColName, sqlresultAddr.l_ColName + 1, 0);
 			MultiByteToWideChar(CP_ACP,0,ColName,-1,sqlresult.ColName,strlen(ColName) + 1);
 			char* content = new char[sqlresultAddr.l_content + 1];
-			sqlresult.content = new wchar_t[sqlresultAddr.l_content + 1];
-			ReadProcessMemory(hProcess, (LPCVOID)sqlresultAddr.content, content, sqlresultAddr.l_content + 1, 0);
-			MultiByteToWideChar(CP_UTF8, 0, content, -1, sqlresult.content, strlen(content) + 1);
+			if (!sqlresultAddr.isblob) {
+				sqlresult.content = new wchar_t[sqlresultAddr.l_content + 1];
+				ReadProcessMemory(hProcess, (LPCVOID)sqlresultAddr.content, content, sqlresultAddr.l_content + 1, 0);
+				MultiByteToWideChar(CP_UTF8, 0, content, -1, sqlresult.content, strlen(content) + 1);
+				sqlresult.BlobContent = NULL;
+			}
+			else {
+				sqlresult.BlobContent = new unsigned char[sqlresultAddr.l_content];
+				ReadProcessMemory(hProcess, (LPCVOID)sqlresultAddr.content, sqlresult.BlobContent, sqlresultAddr.l_content, 0);
+				sqlresult.BlobLength = sqlresultAddr.l_content;
+				sqlresult.content = NULL;
+			}
 			delete[] ColName;
 			ColName = NULL;
 			delete[] content;
@@ -135,8 +167,9 @@ SAFEARRAY* ExecuteSQL(DWORD DbHandle,BSTR sql) {
 	if(paramAndFunc)
 		WriteProcessMemory(hProcess, paramAndFunc, &param, sizeof(executeParams), &dwWriteSize);
 
-	DWORD ExecuteSQLRemoteAddr = GetWeChatRobotBase() + ExecuteSQLRemoteOffset;
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)ExecuteSQLRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
+	// DWORD ExecuteSQLRemoteAddr = GetWeChatRobotBase() + ExecuteSQLRemoteOffset;
+	DWORD SelectDataRemoteAddr = GetWeChatRobotBase() + SelectDataRemoteOffset;
+	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SelectDataRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
 	if (hThread) {
 		WaitForSingleObject(hThread, INFINITE);
 		GetExitCodeThread(hThread, &dwHandle);

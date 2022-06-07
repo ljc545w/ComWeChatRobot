@@ -101,4 +101,6 @@ def test_BackupDb():
     wx.StopService()
 
 if __name__ == '__main__':
-    test_ExecuteSQL()
+    wx = WeChatRobot()
+    print(wx.GetWeChatVer())
+    wx.StopService()

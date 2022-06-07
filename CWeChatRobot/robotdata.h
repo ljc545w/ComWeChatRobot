@@ -52,6 +52,7 @@ extern DWORD GetChatRoomMembersRemoteOffset;
 
 extern DWORD GetDbHandlesRemoteOffset;
 extern DWORD ExecuteSQLRemoteOffset;
+extern DWORD SelectDataRemoteOffset;
 extern DWORD BackupSQLiteDBRemoteOffset;
 
 extern DWORD AddFriendByWxidRemoteOffset;
@@ -92,6 +93,7 @@ extern DWORD AddFriendByV3RemoteOffset;
 
 #define GetDbHandlesRemote "GetDbHandlesRemote"
 #define ExecuteSQLRemote "ExecuteSQLRemote"
+#define SelectDataRemote "SelectDataRemote"
 #define BackupSQLiteDBRemote "BackupSQLiteDBRemote"
 
 #define AddFriendByWxidRemote "AddFriendByWxidRemote"

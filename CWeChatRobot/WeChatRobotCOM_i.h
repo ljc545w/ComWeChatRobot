@@ -196,6 +196,12 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ int AddType,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetWeChatVer( 
+            /* [retval][out] */ BSTR *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartWeChat( 
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -388,6 +394,14 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ int AddType,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetWeChatVer )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ BSTR *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStartWeChat )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -501,6 +515,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CAddFriendByV3(This,v3,message,AddType,__result)	\
     ( (This)->lpVtbl -> CAddFriendByV3(This,v3,message,AddType,__result) ) 
+
+#define IWeChatRobot_CGetWeChatVer(This,__result)	\
+    ( (This)->lpVtbl -> CGetWeChatVer(This,__result) ) 
+
+#define IWeChatRobot_CStartWeChat(This,__result)	\
+    ( (This)->lpVtbl -> CStartWeChat(This,__result) ) 
 
 #endif /* COBJMACROS */
 

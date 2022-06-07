@@ -272,3 +272,21 @@ STDMETHODIMP CWeChatRobot::CAddFriendByV3(BSTR v3, BSTR message,int AddType, int
     *__result = AddFriendByV3(v3, message,AddType);
     return S_OK;
 }
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetWeChatVer(BSTR* __result) {
+    string path = _com_util::ConvertBSTRToString((BSTR)(GetWeChatVerStr().c_str()));
+    *__result = _com_util::ConvertStringToBSTR(path.c_str());
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CStartWeChat(int* __result) {
+    StartWeChat();
+    *__result = 0;
+    return S_OK;
+}

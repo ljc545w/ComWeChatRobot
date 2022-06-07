@@ -35,6 +35,7 @@ DWORD GetChatRoomMembersRemoteOffset = 0x0;
 
 DWORD GetDbHandlesRemoteOffset = 0x0;
 DWORD ExecuteSQLRemoteOffset = 0x0;
+DWORD SelectDataRemoteOffset = 0x0;
 DWORD BackupSQLiteDBRemoteOffset = 0x0;
 
 DWORD AddFriendByWxidRemoteOffset = 0x0;
@@ -156,6 +157,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     GetDbHandlesRemoteOffset = GetDbHandlesRemoteAddr - WeChatBase;
     DWORD ExecuteSQLRemoteAddr = (DWORD)GetProcAddress(hd, ExecuteSQLRemote);
     ExecuteSQLRemoteOffset = ExecuteSQLRemoteAddr - WeChatBase;
+    DWORD SelectDataRemoteAddr = (DWORD)GetProcAddress(hd, SelectDataRemote);
+    SelectDataRemoteOffset = SelectDataRemoteAddr - WeChatBase;
     DWORD BackupSQLiteDBRemoteAddr = (DWORD)GetProcAddress(hd, BackupSQLiteDBRemote);
     BackupSQLiteDBRemoteOffset = BackupSQLiteDBRemoteAddr - WeChatBase;
 
@@ -254,13 +257,13 @@ tstring GetWeChatInstallDir() {
 
 DWORD GetWeChatVerInt() {
     DWORD version = 0x0;
-    GetWeChatInstallInfo((TCHAR*)TEXT("Version"), (void*)&version, sizeof(DWORD));
+    GetWeChatInstallInfo((TCHAR*)TEXT("CrashVersion"), (void*)&version, sizeof(DWORD));
     return version;
 }
 
 tstring GetWeChatVerStr() {
     BYTE pversion[4] = { 0 };
-    GetWeChatInstallInfo((TCHAR*)TEXT("Version"), (void*)pversion, sizeof(DWORD));
+    GetWeChatInstallInfo((TCHAR*)TEXT("CrashVersion"), (void*)pversion, sizeof(DWORD));
     TCHAR* temp = new TCHAR[20];
     _stprintf_s(temp, 20, _T("%d.%d.%d.%d\0"), (int)(pversion[3] - 0x60), (int)pversion[2], (int)pversion[1], (int)pversion[0]);
     tstring verStr(temp);

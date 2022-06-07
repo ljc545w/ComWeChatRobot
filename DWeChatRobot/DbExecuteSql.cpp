@@ -1,8 +1,5 @@
 #include "pch.h"
 
-// sqlite3_exec函数偏移
-#define sqlite3_execOffset 0x141A8C0
-
 // sqlite3_callback函数指针
 typedef int(*sqlite3_callback)(
 	void*,
@@ -22,7 +19,7 @@ typedef int(__cdecl* Sqlite3_exec)(
 
 DWORD WeChatWinBase = GetWeChatWinBase();
 // sqlite3_exec函数地址
-DWORD sqlite3_execAddr = WeChatWinBase + sqlite3_execOffset;
+DWORD sqlite3_execAddr = WeChatWinBase + OffsetFromIdaAddr(IDA_SQLITE3_EXEC_ADDRESS);
 
 /*
 * 外部调用时传递的参数结构
@@ -44,6 +41,7 @@ struct SQLResultStruct {
 	DWORD l_ColName;
 	char* content;
 	DWORD l_content;
+	BOOL  isblob;
 };
 
 /*
@@ -199,6 +197,81 @@ DWORD ExecuteSQLRemote(LPVOID lpParameter){
 	executeParams* sqlparam = (executeParams*)lpParameter;
 	BOOL status = ExecuteSQL(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, (DWORD)select, &result);
 	
+	if (status) {
+		result.SQLResultAddr = (DWORD)SQLResult.data();
+		return (DWORD)&result;
+	}
+	else {
+		result.length = 0;
+	}
+	return 0;
+}
+
+static BOOL SelectData(DWORD db,const char* sql,void* data)
+{
+	executeResult* pdata = (executeResult*)data;
+	DWORD wxBaseAddress = GetWeChatWinBase();
+	Sqlite3_prepare p_Sqlite3_prepare = (Sqlite3_prepare)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_PREPARE_ADDRESS));
+	Sqlite3_step p_Sqlite3_step = (Sqlite3_step)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_STEP_ADDRESS));
+	Sqlite3_column_count p_Sqlite3_column_count = (Sqlite3_column_count)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_COLUMN_COUNT_ADDRESS));
+	Sqlite3_column_name p_Sqlite3_column_name = (Sqlite3_column_name)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_COLUMN_NAME_ADDRESS));
+	Sqlite3_column_type p_Sqlite3_column_type = (Sqlite3_column_type)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_COLUMN_TYPE_ADDRESS));
+	Sqlite3_column_blob p_Sqlite3_column_blob = (Sqlite3_column_blob)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_COLUMN_BLOB_ADDRESS));
+	Sqlite3_column_bytes p_Sqlite3_column_bytes = (Sqlite3_column_bytes)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_COLUMN_BYTES_ADDRESS));
+	Sqlite3_finalize p_Sqlite3_finalize = (Sqlite3_finalize)(wxBaseAddress + OffsetFromIdaAddr(IDA_SQLITE3_FINALIZE_ADDRESS));
+	DWORD* stmt;
+	int rc = p_Sqlite3_prepare(db, sql, -1, &stmt, 0);
+	if (rc != SQLITE_OK)
+		return rc;
+	while (p_Sqlite3_step(stmt) == SQLITE_ROW)
+	{
+		int col_count = p_Sqlite3_column_count(stmt);
+		vector<SQLResultStruct> tempStruct;
+		for (int i = 0; i < col_count; i++) {
+			SQLResultStruct temp = { 0 };
+			const char* ColName = p_Sqlite3_column_name(stmt, i);
+			int nType = p_Sqlite3_column_type(stmt, i);
+			const void* pReadBlobData = p_Sqlite3_column_blob(stmt, i);
+			int nLength = p_Sqlite3_column_bytes(stmt, i);
+			temp.ColName = new char[strlen(ColName) + 1];
+			memcpy(temp.ColName, ColName, strlen(ColName) + 1);
+			temp.l_ColName = strlen(ColName);
+			temp.l_content = nLength;
+			switch (nType)
+			{
+			case SQLITE_BLOB: {
+				temp.content = new char[nLength];
+				memcpy(temp.content, pReadBlobData, nLength);
+				temp.isblob = true;
+				break;
+			}
+			default: {
+				if (nLength != 0) {
+					temp.content = new char[nLength + 1];
+					memcpy(temp.content, pReadBlobData, nLength + 1);
+				}
+				else {
+					temp.content = new char[2];
+					ZeroMemory(temp.content, 2);
+				}
+				temp.isblob = false;
+				break;
+			}
+			}
+			tempStruct.push_back(temp);
+		}
+		SQLResult.push_back(tempStruct);
+		pdata->length++;
+	}
+	p_Sqlite3_finalize(stmt);
+	return rc == 0;
+}
+
+int SelectDataRemote(LPVOID lpParameter) {
+	ClearResultArray();
+	executeParams* sqlparam = (executeParams*)lpParameter;
+	BOOL status = SelectData(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, &result);
+
 	if (status) {
 		result.SQLResultAddr = (DWORD)SQLResult.data();
 		return (DWORD)&result;

@@ -213,7 +213,14 @@ class WeChatRobot():
     
     def ExecuteSQL(self,handle,sql):
         result = self.robot.CExecuteSQL(handle,sql)
-        return result
+        query_list = []
+        keys = list(result[0])
+        for item in result[1:]:
+            query_dict = {}
+            for key,value in zip(keys,item):
+                query_dict[key] = value if not isinstance(value, tuple) else bytes(value)
+            query_list.append(query_dict)
+        return query_list
     
     def BackupSQLiteDB(self,handle,BackupFile):
         BackupFile = BackupFile.replace('/','\\')
@@ -247,3 +254,9 @@ class WeChatRobot():
             手机号: 0xF;微信号: 0x3;QQ号: 0x1;朋友验证消息: 0x6.
         """
         return self.robot.CAddFriendByV3(v3,message,AddType)
+    
+    def GetWeChatVer(self):
+        return self.robot.CGetWeChatVer()
+    
+    def StartWeChat(self):
+        return self.robot.CStartWeChat()

@@ -29,6 +29,7 @@
 #include "DbBackup.h"
 #include "VerifyFriendApply.h"
 #include "AddFriend.h"
+#include "sqlite3.h"
 #include <vector>
 #include <strstream>
 #endif //PCH_H

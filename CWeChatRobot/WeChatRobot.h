@@ -77,6 +77,8 @@ public:
 	STDMETHODIMP CVerifyFriendApply(BSTR v3, BSTR v4, int* __result);
 	STDMETHODIMP CAddFriendByWxid(BSTR wxid, BSTR message, int* __result);
 	STDMETHODIMP CAddFriendByV3(BSTR v3, BSTR message, int AddType, int* __result);
+	STDMETHODIMP CGetWeChatVer(BSTR* __result);
+	STDMETHODIMP CStartWeChat(int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

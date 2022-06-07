@@ -173,6 +173,7 @@
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
     <ClInclude Include="SearchContact.h" />
+    <ClInclude Include="sqlite3.h" />
     <ClInclude Include="VerifyFriendApply.h" />
   </ItemGroup>
   <ItemGroup>

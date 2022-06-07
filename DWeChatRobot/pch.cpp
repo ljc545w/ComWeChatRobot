@@ -171,6 +171,7 @@ void PrintProcAddr() {
     printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
+    printf("SelectDataRemote 0x%08X\n", (DWORD)SelectDataRemote);
 }
 
 BOOL ProcessIsWeChat()
@@ -238,4 +239,8 @@ string GetWeChatVerStr() {
     wxVer << (int)pWxVer[3] - 0x60 << "." << (int)pWxVer[2] << "." << (int)pWxVer[1] << "." << (int)pWxVer[0];
     wxVer >> wxver;
     return wxver;
+}
+
+DWORD OffsetFromIdaAddr(DWORD idaAddr) {
+    return idaAddr - IDA_BASE;
 }
