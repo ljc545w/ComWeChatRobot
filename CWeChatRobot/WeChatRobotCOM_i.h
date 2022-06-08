@@ -202,6 +202,10 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartWeChat( 
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSearchContactByNet( 
+            /* [in] */ BSTR keyword,
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
     };
     
     
@@ -402,6 +406,11 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSearchContactByNet )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR keyword,
+            /* [retval][out] */ VARIANT *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -521,6 +530,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CStartWeChat(This,__result)	\
     ( (This)->lpVtbl -> CStartWeChat(This,__result) ) 
+
+#define IWeChatRobot_CSearchContactByNet(This,keyword,__result)	\
+    ( (This)->lpVtbl -> CSearchContactByNet(This,keyword,__result) ) 
 
 #endif /* COBJMACROS */
 

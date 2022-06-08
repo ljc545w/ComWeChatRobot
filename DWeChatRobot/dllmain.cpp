@@ -13,6 +13,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #ifdef _DEBUG
         if (ProcessIsWeChat()) {
             PrintProcAddr();
+            // HookLogMsgInfo();
         }
 #endif
         break;

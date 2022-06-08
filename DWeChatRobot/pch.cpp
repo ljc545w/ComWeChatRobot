@@ -115,6 +115,7 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 void UnHookAll() {
     UnHookLogMsgInfo();
     UnHookReceiveMessage();
+    StopSearchContactHook();
     return;
 }
 
@@ -172,6 +173,8 @@ void PrintProcAddr() {
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
     printf("SelectDataRemote 0x%08X\n", (DWORD)SelectDataRemote);
+    printf("SearchContactByNet 0x%08X\n", (DWORD)SearchContactByNet);
+    printf("SearchContactByNetRemote 0x%08X\n", (DWORD)SearchContactByNetRemote);
 }
 
 BOOL ProcessIsWeChat()

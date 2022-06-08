@@ -232,7 +232,7 @@
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UserInfo.h" />
+    <ClInclude Include="SearchContact.h" />
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="WeChatRobot.h" />
     <ClInclude Include="WeChatRobotCOM_i.h" />
@@ -255,6 +255,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ReceiveMessage.cpp" />
+    <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendAtText.cpp" />
@@ -262,7 +263,7 @@
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
-    <ClCompile Include="UserInfo.cpp" />
+    <ClCompile Include="SearchContactByCache.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
     <ClCompile Include="WeChatRobot.cpp" />
     <ClCompile Include="WeChatRobotCOM.cpp" />

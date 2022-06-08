@@ -38,9 +38,6 @@
     <Filter Include="好友相关\好友列表">
       <UniqueIdentifier>{be3e55a9-dd57-4e92-a340-cb558f3cd4f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="好友相关\好友信息">
-      <UniqueIdentifier>{cdd9e8b4-4576-499c-b20e-60e05911f6d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="个人信息">
       <UniqueIdentifier>{82fef7e4-e819-4cb2-9087-40ae1f426e73}</UniqueIdentifier>
     </Filter>
@@ -83,6 +80,9 @@
     <Filter Include="好友相关\添加好友">
       <UniqueIdentifier>{14bcc8af-c28c-4911-8be2-53280ec154ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="好友相关\搜索好友">
+      <UniqueIdentifier>{cdd9e8b4-4576-499c-b20e-60e05911f6d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -124,8 +124,8 @@
     <ClInclude Include="robotdata.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="UserInfo.h">
-      <Filter>好友相关\好友信息</Filter>
+    <ClInclude Include="SearchContact.h">
+      <Filter>好友相关\搜索好友</Filter>
     </ClInclude>
     <ClInclude Include="SelfInfo.h">
       <Filter>个人信息</Filter>
@@ -195,8 +195,8 @@
     <ClCompile Include="SendFile.cpp">
       <Filter>发送消息\发送文件</Filter>
     </ClCompile>
-    <ClCompile Include="UserInfo.cpp">
-      <Filter>好友相关\好友信息</Filter>
+    <ClCompile Include="SearchContactByCache.cpp">
+      <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
     <ClCompile Include="SelfInfo.cpp">
       <Filter>个人信息</Filter>
@@ -236,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="AddFriendByV3.cpp">
       <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchContactByNet.cpp">
+      <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

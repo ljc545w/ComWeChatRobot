@@ -44,6 +44,7 @@ interface IWeChatRobot : IDispatch
 	[id(26)] HRESULT CAddFriendByV3([in] BSTR v3, [in] BSTR message, [in] int AddType, [out, retval] int* __result);
 	[id(27)] HRESULT CGetWeChatVer([out, retval] BSTR* __result);
 	[id(28)] HRESULT CStartWeChat([out, retval] int* __result);
+	[id(29)] HRESULT CSearchContactByNet([in] BSTR keyword, [out, retval] VARIANT* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

@@ -260,3 +260,9 @@ class WeChatRobot():
     
     def StartWeChat(self):
         return self.robot.CStartWeChat()
+    
+    def GetUserInfoByNet(self,keyword):
+        userinfo = self.robot.CSearchContactByNet(keyword)
+        if userinfo:
+            return dict(userinfo)
+        return userinfo

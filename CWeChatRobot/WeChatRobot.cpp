@@ -226,7 +226,6 @@ STDMETHODIMP CWeChatRobot::CGetDbHandles(VARIANT* __result) {
 STDMETHODIMP CWeChatRobot::CExecuteSQL(DWORD DbHandle,BSTR sql,VARIANT* __result) {
     VARIANT vsaValue;
     vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    vsaValue.intVal = 0;
     V_ARRAY(&vsaValue) = ExecuteSQL(DbHandle, sql);
     *__result = vsaValue;
     return S_OK;
@@ -288,5 +287,17 @@ STDMETHODIMP CWeChatRobot::CGetWeChatVer(BSTR* __result) {
 STDMETHODIMP CWeChatRobot::CStartWeChat(int* __result) {
     StartWeChat();
     *__result = 0;
+    return S_OK;
+}
+
+/*
+* 参数1：搜索关键字
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSearchContactByNet(BSTR keyword, VARIANT* __result) {
+    VARIANT vsaValue;
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    V_ARRAY(&vsaValue) = SearchContactByNet(keyword);
+    *__result = vsaValue;
     return S_OK;
 }

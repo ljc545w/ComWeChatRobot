@@ -7,7 +7,7 @@
 #include "SendCard.h"
 #include "SendAtText.h"
 #include "FriendList.h"
-#include "UserInfo.h"
+#include "SearchContact.h"
 #include "SelfInfo.h"
 #include "CheckFriendStatus.h"
 #include "ReceiveMessage.h"
@@ -32,6 +32,7 @@ extern DWORD GetFriendListFinishOffset;
 
 extern DWORD GetWxUserInfoOffset;
 extern DWORD DeleteUserInfoCacheOffset;
+extern DWORD SearchContactByNetRemoteOffset;
 
 extern DWORD VerifyFriendApplyOffset;
 
@@ -77,6 +78,7 @@ extern DWORD AddFriendByV3RemoteOffset;
 
 #define GetSelfInfoRemote "GetSelfInfoRemote"
 #define DeleteSelfInfoCacheRemote "DeleteSelfInfoCacheRemote"
+#define SearchContactByNetRemote "SearchContactByNetRemote"
 
 #define VerifyFriendApplyRemote "VerifyFriendApplyRemote"
 
