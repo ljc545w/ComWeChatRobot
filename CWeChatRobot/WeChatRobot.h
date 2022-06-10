@@ -81,6 +81,11 @@ public:
 	STDMETHODIMP CStartWeChat(int* __result);
 	STDMETHODIMP CSearchContactByNet(BSTR keyword, VARIANT* __result);
 	STDMETHODIMP CAddBrandContact(BSTR PublicId, int* __result);
+	STDMETHODIMP CHookVoiceMsg(BSTR savepath, int* __result);
+	STDMETHODIMP CUnHookVoiceMsg(int* __result);
+	STDMETHODIMP CHookImageMsg(BSTR savepath, int* __result);
+	STDMETHODIMP CUnHookImageMsg(int* __result);
+	STDMETHODIMP CChangeWeChatVer(BSTR verStr, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

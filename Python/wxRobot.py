@@ -269,3 +269,21 @@ class WeChatRobot():
     
     def AddBrandContact(self,PublicId):
         return self.robot.CAddBrandContact(PublicId)
+    
+    def ChangeWeChatVer(self,version:str):
+        """
+        version: like `3.7.0.26`
+        """
+        return self.robot.CChangeWeChatVer(version)
+    
+    def HookImageMsg(self,savepath):
+        return self.robot.CHookImageMsg(savepath)
+    
+    def UnHookImageMsg(self):
+        return self.robot.CUnHookImageMsg()
+    
+    def HookVoiceMsg(self,savepath):
+        return self.robot.CHookVoiceMsg(savepath)
+    
+    def UnHookVoiceMsg(self):
+        return self.robot.CUnHookVoiceMsg()

@@ -210,6 +210,24 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR PublicId,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CHookVoiceMsg( 
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CUnHookVoiceMsg( 
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CHookImageMsg( 
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CUnHookImageMsg( 
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CChangeWeChatVer( 
+            /* [in] */ BSTR verStr,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -420,6 +438,29 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR PublicId,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CHookVoiceMsg )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookVoiceMsg )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CHookImageMsg )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR savepath,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookImageMsg )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CChangeWeChatVer )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR verStr,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -545,6 +586,21 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CAddBrandContact(This,PublicId,__result)	\
     ( (This)->lpVtbl -> CAddBrandContact(This,PublicId,__result) ) 
+
+#define IWeChatRobot_CHookVoiceMsg(This,savepath,__result)	\
+    ( (This)->lpVtbl -> CHookVoiceMsg(This,savepath,__result) ) 
+
+#define IWeChatRobot_CUnHookVoiceMsg(This,__result)	\
+    ( (This)->lpVtbl -> CUnHookVoiceMsg(This,__result) ) 
+
+#define IWeChatRobot_CHookImageMsg(This,savepath,__result)	\
+    ( (This)->lpVtbl -> CHookImageMsg(This,savepath,__result) ) 
+
+#define IWeChatRobot_CUnHookImageMsg(This,__result)	\
+    ( (This)->lpVtbl -> CUnHookImageMsg(This,__result) ) 
+
+#define IWeChatRobot_CChangeWeChatVer(This,verStr,__result)	\
+    ( (This)->lpVtbl -> CChangeWeChatVer(This,verStr,__result) ) 
 
 #endif /* COBJMACROS */
 

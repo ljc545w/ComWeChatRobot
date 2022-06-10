@@ -43,6 +43,13 @@ DWORD AddFriendByWxidRemoteOffset = 0x0;
 DWORD AddFriendByV3RemoteOffset = 0x0;
 DWORD AddBrandContactRemoteOffset = 0x0;
 
+DWORD HookImageMsgRemoteOffset = 0x0;
+DWORD UnHookImageMsgRemoteOffset = 0x0;
+DWORD HookVoiceMsgRemoteOffset = 0x0;
+DWORD UnHookVoiceMsgRemoteOffset = 0x0;
+
+DWORD ChangeWeChatVerRemoteOffset = 0x0;
+
 wstring SelfInfoString = L"";
 
 HANDLE hProcess = NULL;
@@ -172,6 +179,18 @@ BOOL GetProcOffset(wchar_t* workPath) {
     AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
     DWORD AddBrandContactRemoteAddr = (DWORD)GetProcAddress(hd, AddBrandContactRemote);
     AddBrandContactRemoteOffset = AddBrandContactRemoteAddr - WeChatBase;
+
+    DWORD HookImageMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookImageMsgRemote);
+    HookImageMsgRemoteOffset = HookImageMsgRemoteAddr - WeChatBase;
+    DWORD UnHookImageMsgAddr = (DWORD)GetProcAddress(hd, UnHookImageMsgRemote);
+    UnHookImageMsgRemoteOffset = UnHookImageMsgAddr - WeChatBase;
+    DWORD HookVoiceMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookVoiceMsgRemote);
+    HookVoiceMsgRemoteOffset = HookVoiceMsgRemoteAddr - WeChatBase;
+    DWORD UnHookVoiceMsgAddr = (DWORD)GetProcAddress(hd, UnHookVoiceMsgRemote);
+    UnHookVoiceMsgRemoteOffset = UnHookVoiceMsgAddr - WeChatBase;
+
+    DWORD ChangeWeChatVerRemoteAddr = (DWORD)GetProcAddress(hd, ChangeWeChatVerRemote);
+    ChangeWeChatVerRemoteOffset = ChangeWeChatVerRemoteAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;

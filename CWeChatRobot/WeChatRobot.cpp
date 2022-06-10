@@ -310,3 +310,48 @@ STDMETHODIMP CWeChatRobot::CAddBrandContact(BSTR PublicId, int* __result) {
     *__result = AddBrandContact(PublicId);
     return S_OK;
 }
+
+/*
+* 参数1：保存路径
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CHookVoiceMsg(BSTR savepath, int* __result) {
+    *__result = HookVoiceMsg(savepath);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CUnHookVoiceMsg(int* __result) {
+    UnHookVoiceMsg();
+    *__result = 0;
+    return S_OK;
+}
+
+/*
+* 参数1：保存路径
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CHookImageMsg(BSTR savepath, int* __result) {
+    *__result = HookImageMsg(savepath);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CUnHookImageMsg(int* __result) {
+    UnHookImageMsg();
+    *__result = 0;
+    return S_OK;
+}
+
+/*
+* 参数1：版本号
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CChangeWeChatVer(BSTR verStr, int* __result) {
+    *__result = ChangeWeChatVer(verStr);
+    return S_OK;
+}

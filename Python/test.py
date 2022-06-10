@@ -102,5 +102,6 @@ def test_BackupDb():
 
 if __name__ == '__main__':
     wx = WeChatRobot()
+    print([i for i in dir(wx.robot) if '_' not in i and i[0] == 'C'])
     print(wx.GetWeChatVer())
     wx.StopService()

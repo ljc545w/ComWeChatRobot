@@ -30,6 +30,7 @@
 #include "VerifyFriendApply.h"
 #include "AddFriend.h"
 #include "sqlite3.h"
+#include "wechatver.h"
 #include <vector>
 #include <strstream>
 #endif //PCH_H
@@ -89,5 +90,4 @@ wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
 void PrintProcAddr();
 wchar_t* GetTimeW();
 BOOL ProcessIsWeChat();
-DWORD GetWeChatVerInt();
-string GetWeChatVerStr();
+BOOL FindOrCreateDirectory(const wchar_t* pszPath);

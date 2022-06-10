@@ -46,6 +46,11 @@ interface IWeChatRobot : IDispatch
 	[id(28)] HRESULT CStartWeChat([out, retval] int* __result);
 	[id(29)] HRESULT CSearchContactByNet([in] BSTR keyword, [out, retval] VARIANT* __result);
 	[id(30)] HRESULT CAddBrandContact([in] BSTR PublicId, [out, retval] int* __result);
+	[id(31)] HRESULT CHookVoiceMsg([in] BSTR savepath, [out, retval] int* __result);
+	[id(32)] HRESULT CUnHookVoiceMsg([out, retval] int* __result);
+	[id(33)] HRESULT CHookImageMsg([in] BSTR savepath, [out, retval] int* __result);
+	[id(34)] HRESULT CUnHookImageMsg([out, retval] int* __result);
+	[id(35)] HRESULT CChangeWeChatVer([in] BSTR verStr, [out, retval] int* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

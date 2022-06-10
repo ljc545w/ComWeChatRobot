@@ -29,6 +29,23 @@ DWORD GetWeChatWinBase() {
     return (DWORD)GetModuleHandleA("WeChatWin.dll");
 }
 
+BOOL FindOrCreateDirectory(const wchar_t* pszPath)
+{
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(pszPath, &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        FindClose(hFind);
+        return true;
+    }
+
+    if (!::CreateDirectory(pszPath, NULL))
+    {
+        return false;
+    }
+    return true;
+}
+
 /*
 * 将宽字节字符串转换成`std::string`
 */
@@ -116,6 +133,8 @@ void UnHookAll() {
     UnHookLogMsgInfo();
     UnHookReceiveMessage();
     StopSearchContactHook();
+    UnHookVoiceMsg();
+    UnHookImageMsg();
     return;
 }
 
@@ -204,45 +223,6 @@ BOOL ProcessIsWeChat()
     {
         return TRUE;
     }
-}
-
-DWORD GetWeChatVerInt()
-{
-    WCHAR VersionFilePath[MAX_PATH];
-    BYTE WeChatVersion[4] = { 0 };
-    if (GetModuleFileName((HMODULE)GetWeChatWinBase(), VersionFilePath, MAX_PATH) == 0)
-    {
-        return 0;
-    }
-    
-    VS_FIXEDFILEINFO* pVsInfo;
-    unsigned int iFileInfoSize = sizeof(VS_FIXEDFILEINFO);
-    int iVerInfoSize = GetFileVersionInfoSize(VersionFilePath, NULL);
-    if (iVerInfoSize != 0) {
-        char* pBuf = new char[iVerInfoSize];
-        if (GetFileVersionInfo(VersionFilePath, 0, iVerInfoSize, pBuf)) {
-            if (VerQueryValue(pBuf, TEXT("\\"), (void**)&pVsInfo, &iFileInfoSize)) {
-                WeChatVersion[3] = (BYTE)(0x60 + (pVsInfo->dwFileVersionMS >> 16) & 0x0000FFFF);
-                WeChatVersion[2] = (BYTE)(pVsInfo->dwFileVersionMS & 0x0000FFFF);
-                WeChatVersion[1] = (BYTE)((pVsInfo->dwFileVersionLS >> 16) & 0x0000FFFF);
-                WeChatVersion[0] = (BYTE)(pVsInfo->dwFileVersionLS & 0x0000FFFF);
-            }
-        }
-        delete[] pBuf;
-    }
-    return *(DWORD*)WeChatVersion;
-}
-
-string GetWeChatVerStr() {
-    DWORD WeChatVersion = GetWeChatVerInt();
-    if (WeChatVersion == 0)
-        return "null";
-    string wxver = "";
-    BYTE* pWxVer = (BYTE*)&WeChatVersion;
-    strstream wxVer;
-    wxVer << (int)pWxVer[3] - 0x60 << "." << (int)pWxVer[2] << "." << (int)pWxVer[1] << "." << (int)pWxVer[0];
-    wxVer >> wxver;
-    return wxver;
 }
 
 DWORD OffsetFromIdaAddr(DWORD idaAddr) {

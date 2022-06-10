@@ -175,6 +175,7 @@
     <ClInclude Include="SearchContact.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="VerifyFriendApply.h" />
+    <ClInclude Include="wechatver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddFriendByV3.cpp" />
@@ -187,6 +188,8 @@
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="GetChatRoomMemebers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
+    <ClCompile Include="HookImageMessage.cpp" />
+    <ClCompile Include="HookVoiceMessage.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -205,6 +208,7 @@
     <ClCompile Include="SearchContactByCache.cpp" />
     <ClCompile Include="LogMsgInfo.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
+    <ClCompile Include="wechatver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

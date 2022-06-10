@@ -82,6 +82,9 @@
     <Filter Include="好友相关\搜索好友">
       <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
     </Filter>
+    <Filter Include="微信版本">
+      <UniqueIdentifier>{820d8228-ee6c-43ad-87ec-4e349d7a549a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -146,6 +149,9 @@
     </ClInclude>
     <ClInclude Include="sqlite3.h">
       <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="wechatver.h">
+      <Filter>微信版本</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +223,15 @@
     </ClCompile>
     <ClCompile Include="AddBrandContact.cpp">
       <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="HookImageMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="HookVoiceMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="wechatver.cpp">
+      <Filter>微信版本</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

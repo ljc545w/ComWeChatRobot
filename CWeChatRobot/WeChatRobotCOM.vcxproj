@@ -236,6 +236,7 @@
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="WeChatRobot.h" />
     <ClInclude Include="WeChatRobotCOM_i.h" />
+    <ClInclude Include="wechatver.h" />
     <ClInclude Include="xdlldata.h" />
   </ItemGroup>
   <ItemGroup>
@@ -248,6 +249,8 @@
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="GetChatRoomMembers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
+    <ClCompile Include="HookImageMessage.cpp" />
+    <ClCompile Include="HookVoiceMessage.cpp" />
     <ClCompile Include="InjertDll.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -282,6 +285,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="wechatver.cpp" />
     <ClCompile Include="xdlldata.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeader>

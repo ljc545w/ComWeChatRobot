@@ -17,6 +17,7 @@
 #include "DbBackup.h"
 #include "VerifyFriendApply.h"
 #include "AddFriend.h"
+#include "wechatver.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -60,6 +61,13 @@ extern DWORD AddFriendByWxidRemoteOffset;
 extern DWORD AddFriendByV3RemoteOffset;
 extern DWORD AddBrandContactRemoteOffset;
 
+extern DWORD HookImageMsgRemoteOffset;
+extern DWORD UnHookImageMsgRemoteOffset;
+extern DWORD HookVoiceMsgRemoteOffset;
+extern DWORD UnHookVoiceMsgRemoteOffset;
+
+extern DWORD ChangeWeChatVerRemoteOffset;
+
 
 #define dllname L"DWeChatRobot.dll"
 
@@ -102,3 +110,10 @@ extern DWORD AddBrandContactRemoteOffset;
 #define AddFriendByWxidRemote "AddFriendByWxidRemote"
 #define AddFriendByV3Remote "AddFriendByV3Remote"
 #define AddBrandContactRemote "AddBrandContactRemote"
+
+#define HookImageMsgRemote "HookImageMsgRemote"
+#define UnHookImageMsgRemote "UnHookImageMsg"
+#define HookVoiceMsgRemote "HookVoiceMsgRemote"
+#define UnHookVoiceMsgRemote "UnHookVoiceMsg"
+
+#define ChangeWeChatVerRemote "ChangeWeChatVerRemote"
