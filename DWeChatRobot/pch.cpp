@@ -172,6 +172,7 @@ void PrintProcAddr() {
     printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
+    printf("AddBrandContact 0x%08X\n", (DWORD)AddBrandContact);
     printf("SelectDataRemote 0x%08X\n", (DWORD)SelectDataRemote);
     printf("SearchContactByNet 0x%08X\n", (DWORD)SearchContactByNet);
     printf("SearchContactByNetRemote 0x%08X\n", (DWORD)SearchContactByNetRemote);

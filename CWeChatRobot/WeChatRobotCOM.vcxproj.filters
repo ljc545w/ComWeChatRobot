@@ -240,6 +240,9 @@
     <ClCompile Include="SearchContactByNet.cpp">
       <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
+    <ClCompile Include="AddBrandContact.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WeChatRobotCOM.rc">

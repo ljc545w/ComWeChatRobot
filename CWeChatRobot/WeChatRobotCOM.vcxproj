@@ -239,6 +239,7 @@
     <ClInclude Include="xdlldata.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddBrandContact.cpp" />
     <ClCompile Include="AddFriendByV3.cpp" />
     <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="CheckFriendStatus.cpp" />

@@ -301,3 +301,12 @@ STDMETHODIMP CWeChatRobot::CSearchContactByNet(BSTR keyword, VARIANT* __result) 
     *__result = vsaValue;
     return S_OK;
 }
+
+/*
+* 参数1：公众号id
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CAddBrandContact(BSTR PublicId, int* __result) {
+    *__result = AddBrandContact(PublicId);
+    return S_OK;
+}

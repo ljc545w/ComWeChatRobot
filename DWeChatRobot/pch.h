@@ -36,6 +36,7 @@
 
 using namespace std;
 #pragma comment(lib,"version.lib")
+#pragma warning(disable:4731)
 // 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)
 

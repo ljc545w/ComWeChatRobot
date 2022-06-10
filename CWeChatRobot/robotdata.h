@@ -58,6 +58,7 @@ extern DWORD BackupSQLiteDBRemoteOffset;
 
 extern DWORD AddFriendByWxidRemoteOffset;
 extern DWORD AddFriendByV3RemoteOffset;
+extern DWORD AddBrandContactRemoteOffset;
 
 
 #define dllname L"DWeChatRobot.dll"
@@ -100,3 +101,4 @@ extern DWORD AddFriendByV3RemoteOffset;
 
 #define AddFriendByWxidRemote "AddFriendByWxidRemote"
 #define AddFriendByV3Remote "AddFriendByV3Remote"
+#define AddBrandContactRemote "AddBrandContactRemote"

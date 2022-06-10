@@ -206,6 +206,10 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR keyword,
             /* [retval][out] */ VARIANT *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddBrandContact( 
+            /* [in] */ BSTR PublicId,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -411,6 +415,11 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR keyword,
             /* [retval][out] */ VARIANT *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddBrandContact )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR PublicId,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -533,6 +542,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CSearchContactByNet(This,keyword,__result)	\
     ( (This)->lpVtbl -> CSearchContactByNet(This,keyword,__result) ) 
+
+#define IWeChatRobot_CAddBrandContact(This,PublicId,__result)	\
+    ( (This)->lpVtbl -> CAddBrandContact(This,PublicId,__result) ) 
 
 #endif /* COBJMACROS */
 

@@ -41,6 +41,7 @@ DWORD BackupSQLiteDBRemoteOffset = 0x0;
 
 DWORD AddFriendByWxidRemoteOffset = 0x0;
 DWORD AddFriendByV3RemoteOffset = 0x0;
+DWORD AddBrandContactRemoteOffset = 0x0;
 
 wstring SelfInfoString = L"";
 
@@ -169,6 +170,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     AddFriendByWxidRemoteOffset = AddFriendByWxidRemoteAddr - WeChatBase;
     DWORD AddFriendByV3RemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByV3Remote);
     AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
+    DWORD AddBrandContactRemoteAddr = (DWORD)GetProcAddress(hd, AddBrandContactRemote);
+    AddBrandContactRemoteOffset = AddBrandContactRemoteAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;

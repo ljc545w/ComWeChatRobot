@@ -266,3 +266,6 @@ class WeChatRobot():
         if userinfo:
             return dict(userinfo)
         return userinfo
+    
+    def AddBrandContact(self,PublicId):
+        return self.robot.CAddBrandContact(PublicId)
