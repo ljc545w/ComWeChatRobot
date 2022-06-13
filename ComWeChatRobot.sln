@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wxRobot", "wxRobot", "{8E5B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Python", "Python", "{9533FA77-5AB8-473D-83D5-55E07137401E}"
 	ProjectSection(SolutionItems) = preProject
-		wxRobot.py = wxRobot.py
+		Python\wxRobot.py = Python\wxRobot.py
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp", "CSharp", "{4DE1F624-3F17-44E8-9B1F-28D88285D25F}"

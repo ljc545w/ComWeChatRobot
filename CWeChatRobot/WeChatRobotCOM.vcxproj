@@ -215,6 +215,7 @@
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="DbBackup.h" />
     <ClInclude Include="DbExecuteSql.h" />
+    <ClInclude Include="DeleteUser.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="GetChatRoomMembers.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
     <ClInclude Include="SelfInfo.h" />
+    <ClInclude Include="SendAppMsg.h" />
     <ClInclude Include="SendArticle.h" />
     <ClInclude Include="SendAtText.h" />
     <ClInclude Include="SendCard.h" />
@@ -246,6 +248,7 @@
     <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="DbBackup.cpp" />
     <ClCompile Include="DbExecuteSql.cpp" />
+    <ClCompile Include="DeleteUser.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="GetChatRoomMembers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
@@ -261,6 +264,7 @@
     <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
+    <ClCompile Include="SendAppMsg.cpp" />
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendAtText.cpp" />
     <ClCompile Include="SendCard.cpp" />

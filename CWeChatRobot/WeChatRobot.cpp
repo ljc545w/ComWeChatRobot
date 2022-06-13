@@ -355,3 +355,22 @@ STDMETHODIMP CWeChatRobot::CChangeWeChatVer(BSTR verStr, int* __result) {
     *__result = ChangeWeChatVer(verStr);
     return S_OK;
 }
+
+/*
+* 参数1：接收人wxid
+* 参数2：小程序id
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSendAppMsg(BSTR wxid,BSTR appid,int* __result) {
+    *__result = SendAppMsg(wxid,appid);
+    return S_OK;
+}
+
+/*
+* 参数1：要删除的人wxid
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CDeleteUser(BSTR wxid, int* __result) {
+    *__result = DeleteUser(wxid);
+    return S_OK;
+}

@@ -51,6 +51,8 @@ interface IWeChatRobot : IDispatch
 	[id(33)] HRESULT CHookImageMsg([in] BSTR savepath, [out, retval] int* __result);
 	[id(34)] HRESULT CUnHookImageMsg([out, retval] int* __result);
 	[id(35)] HRESULT CChangeWeChatVer([in] BSTR verStr, [out, retval] int* __result);
+	[id(36)] HRESULT CSendAppMsg([in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
+	[id(37)] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

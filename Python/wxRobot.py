@@ -55,6 +55,9 @@ class ChatSession():
         if '@chatroom' not in self.chatwith:
             return 1
         return self.robot.CSendAtText(self.chatwith,wxid,msg,AutoNickName)
+
+    def SendAppMsg(self,appid):
+        return self.robot.CSendAppMsg(self.chatwith,appid)
         
 
 class WeChatRobot():
@@ -68,6 +71,26 @@ class WeChatRobot():
     def StartService(self):
         status = self.robot.CStartRobotService()
         return status
+
+    def SendText(self,receiver,msg):
+        return self.robot.CSendText(receiver,msg)
+        
+    def SendImage(self,receiver,imgpath):
+        return self.robot.CSendImage(receiver,imgpath)
+    
+    def SendFile(self,receiver,filepath):
+        return self.robot.CSendFile(receiver,filepath)
+        
+    def SendArticle(self,receiver,title,abstract,url,imgpath = None):
+        return self.robot.CSendArticle(receiver,title,abstract,url,imgpath)
+    
+    def SendCard(self,receiver,sharedwxid,nickname):
+        return self.robot.CSendCard(receiver,sharedwxid,nickname)
+    
+    def SendAtText(self,chatroomid,AtUsers:list or str or tuple,msg,AutoNickName = True):
+        if '@chatroom' not in chatroomid:
+            return 1
+        return self.robot.CSendAtText(chatroomid,AtUsers,msg,AutoNickName)
 
     def GetSelfInfo(self):
         myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
@@ -302,3 +325,9 @@ class WeChatRobot():
     
     def UnHookVoiceMsg(self):
         return self.robot.CUnHookVoiceMsg()
+
+    def DeleteUser(self,wxid):
+        return self.robot.CDeleteUser(wxid)
+
+    def SendAppMsg(self,wxid,appid):
+        return self.robot.CSendAppMsg(wxid,appid)

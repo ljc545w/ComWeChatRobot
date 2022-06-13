@@ -230,6 +230,15 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR verStr,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendAppMsg( 
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR appid,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CDeleteUser( 
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -465,6 +474,17 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR verStr,
             /* [retval][out] */ int *__result);
         
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendAppMsg )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR appid,
+            /* [retval][out] */ int *__result);
+        
+        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CDeleteUser )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -605,6 +625,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CChangeWeChatVer(This,verStr,__result)	\
     ( (This)->lpVtbl -> CChangeWeChatVer(This,verStr,__result) ) 
+
+#define IWeChatRobot_CSendAppMsg(This,wxid,appid,__result)	\
+    ( (This)->lpVtbl -> CSendAppMsg(This,wxid,appid,__result) ) 
+
+#define IWeChatRobot_CDeleteUser(This,wxid,__result)	\
+    ( (This)->lpVtbl -> CDeleteUser(This,wxid,__result) ) 
 
 #endif /* COBJMACROS */
 

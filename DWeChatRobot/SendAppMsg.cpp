@@ -13,6 +13,11 @@ struct VectorStruct {
 	DWORD v_end2;
 };
 
+struct SendAppMsgStruct {
+	wchar_t* wxid;
+	wchar_t* appid;
+};
+
 BOOL __stdcall SendAppMsg(wchar_t* wxid,wchar_t* appid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SendAppMsgCall1 = WeChatWinBase + SendAppMsgCall1Offset;
@@ -47,5 +52,11 @@ BOOL __stdcall SendAppMsg(wchar_t* wxid,wchar_t* appid) {
 		popfd;
 		popad;
 	}
+	return isSuccess;
+}
+
+BOOL SendAppMsgRemote(LPVOID lpParameter) {
+	SendAppMsgStruct* sams = (SendAppMsgStruct*)lpParameter;
+	BOOL isSuccess = SendAppMsg(sams->wxid, sams->appid);
 	return isSuccess;
 }

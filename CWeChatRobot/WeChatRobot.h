@@ -86,6 +86,8 @@ public:
 	STDMETHODIMP CHookImageMsg(BSTR savepath, int* __result);
 	STDMETHODIMP CUnHookImageMsg(int* __result);
 	STDMETHODIMP CChangeWeChatVer(BSTR verStr, int* __result);
+	STDMETHODIMP CSendAppMsg(BSTR wxid, BSTR appid, int* __result);
+	STDMETHODIMP CDeleteUser(BSTR wxid, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

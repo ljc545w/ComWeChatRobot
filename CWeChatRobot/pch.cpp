@@ -9,6 +9,7 @@ DWORD SendFileOffset = 0x0;
 DWORD SendArticleOffset = 0x0;
 DWORD SendCardOffset = 0x0;
 DWORD SendAtTextOffset = 0x0;
+DWORD SendAppMsgRemoteOffset = 0x0;
 
 DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
@@ -41,6 +42,7 @@ DWORD BackupSQLiteDBRemoteOffset = 0x0;
 
 DWORD AddFriendByWxidRemoteOffset = 0x0;
 DWORD AddFriendByV3RemoteOffset = 0x0;
+DWORD DeleteUserRemoteOffset = 0x0;
 DWORD AddBrandContactRemoteOffset = 0x0;
 
 DWORD HookImageMsgRemoteOffset = 0x0;
@@ -122,6 +124,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     SendCardOffset = SendCardProcAddr - WeChatBase;
     DWORD SendAtTextProcAddr = (DWORD)GetProcAddress(hd, SendAtTextRemote);
     SendAtTextOffset = SendAtTextProcAddr - WeChatBase;
+    DWORD SendAppMsgProcAddr = (DWORD)GetProcAddress(hd, SendAppMsgRemote);
+    SendAppMsgRemoteOffset = SendAppMsgProcAddr - WeChatBase;
 
     DWORD GetFriendListInitProcAddr = (DWORD)GetProcAddress(hd, GetFriendListInit);
     GetFriendListInitOffset = GetFriendListInitProcAddr - WeChatBase;
@@ -177,6 +181,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     AddFriendByWxidRemoteOffset = AddFriendByWxidRemoteAddr - WeChatBase;
     DWORD AddFriendByV3RemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByV3Remote);
     AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
+    DWORD DeleteUserRemoteAddr = (DWORD)GetProcAddress(hd, DeleteUserRemote);
+    DeleteUserRemoteOffset = DeleteUserRemoteAddr - WeChatBase;
     DWORD AddBrandContactRemoteAddr = (DWORD)GetProcAddress(hd, AddBrandContactRemote);
     AddBrandContactRemoteOffset = AddBrandContactRemoteAddr - WeChatBase;
 

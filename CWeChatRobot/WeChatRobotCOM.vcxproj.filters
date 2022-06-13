@@ -86,6 +86,12 @@
     <Filter Include="微信版本">
       <UniqueIdentifier>{4214a216-3efc-48db-8fda-8a33066b2db2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送小程序">
+      <UniqueIdentifier>{85b30d50-eaf9-4576-9416-c6083438389c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\删除好友">
+      <UniqueIdentifier>{68a69a6f-dba9-412e-9030-a9dc0544d31c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -168,6 +174,12 @@
     </ClInclude>
     <ClInclude Include="wechatver.h">
       <Filter>微信版本</Filter>
+    </ClInclude>
+    <ClInclude Include="SendAppMsg.h">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteUser.h">
+      <Filter>好友相关\删除好友</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +269,12 @@
     </ClCompile>
     <ClCompile Include="wechatver.cpp">
       <Filter>微信版本</Filter>
+    </ClCompile>
+    <ClCompile Include="SendAppMsg.cpp">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteUser.cpp">
+      <Filter>好友相关\删除好友</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
