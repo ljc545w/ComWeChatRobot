@@ -114,6 +114,7 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR title,
             /* [in] */ BSTR abstract,
             /* [in] */ BSTR url,
+            /* [in] */ BSTR imgpath,
             /* [retval][out] */ int *__result) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendCard( 
@@ -161,6 +162,7 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR chatroomid,
             /* [in] */ VARIANT *wxid,
             /* [in] */ BSTR wxmsg,
+            /* [in] */ BOOL AutoNickName,
             /* [retval][out] */ int *__result) = 0;
         
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetChatRoomMembers( 
@@ -318,6 +320,7 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR title,
             /* [in] */ BSTR abstract,
             /* [in] */ BSTR url,
+            /* [in] */ BSTR imgpath,
             /* [retval][out] */ int *__result);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendCard )( 
@@ -378,6 +381,7 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR chatroomid,
             /* [in] */ VARIANT *wxid,
             /* [in] */ BSTR wxmsg,
+            /* [in] */ BOOL AutoNickName,
             /* [retval][out] */ int *__result);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetChatRoomMembers )( 
@@ -512,8 +516,8 @@ EXTERN_C const IID IID_IWeChatRobot;
 #define IWeChatRobot_CSendFile(This,wxid,filepath,__result)	\
     ( (This)->lpVtbl -> CSendFile(This,wxid,filepath,__result) ) 
 
-#define IWeChatRobot_CSendArticle(This,wxid,title,abstract,url,__result)	\
-    ( (This)->lpVtbl -> CSendArticle(This,wxid,title,abstract,url,__result) ) 
+#define IWeChatRobot_CSendArticle(This,wxid,title,abstract,url,imgpath,__result)	\
+    ( (This)->lpVtbl -> CSendArticle(This,wxid,title,abstract,url,imgpath,__result) ) 
 
 #define IWeChatRobot_CSendCard(This,receiver,sharedwxid,nickname,__result)	\
     ( (This)->lpVtbl -> CSendCard(This,receiver,sharedwxid,nickname,__result) ) 
@@ -551,8 +555,8 @@ EXTERN_C const IID IID_IWeChatRobot;
 #define IWeChatRobot_CStopReceiveMessage(This,__result)	\
     ( (This)->lpVtbl -> CStopReceiveMessage(This,__result) ) 
 
-#define IWeChatRobot_CSendAtText(This,chatroomid,wxid,wxmsg,__result)	\
-    ( (This)->lpVtbl -> CSendAtText(This,chatroomid,wxid,wxmsg,__result) ) 
+#define IWeChatRobot_CSendAtText(This,chatroomid,wxid,wxmsg,AutoNickName,__result)	\
+    ( (This)->lpVtbl -> CSendAtText(This,chatroomid,wxid,wxmsg,AutoNickName,__result) ) 
 
 #define IWeChatRobot_CGetChatRoomMembers(This,chatroomid,__result)	\
     ( (This)->lpVtbl -> CGetChatRoomMembers(This,chatroomid,__result) ) 

@@ -21,7 +21,7 @@ interface IWeChatRobot : IDispatch
 	[id(3)] HRESULT CSendText([in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
 	[id(4)] HRESULT CSendImage([in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
 	[id(5)] HRESULT CSendFile([in] BSTR wxid, [in] BSTR filepath, [out, retval] int* __result);
-	[id(6)] HRESULT CSendArticle([in] BSTR wxid, [in] BSTR title, [in] BSTR abstract, [in] BSTR url, [out, retval] int* __result);
+	[id(6)] HRESULT CSendArticle([in] BSTR wxid, [in] BSTR title, [in] BSTR abstract, [in] BSTR url, [in] BSTR imgpath, [out, retval] int* __result);
 	[id(7)] HRESULT CSendCard([in] BSTR receiver, [in] BSTR sharedwxid, [in] BSTR nickname, [out, retval] int* __result);
 	[id(8)] HRESULT CGetFriendList([out, retval] VARIANT* __result);
 	[id(9)] HRESULT CGetFriendListString([out, retval] BSTR* __result);
@@ -34,7 +34,7 @@ interface IWeChatRobot : IDispatch
 	[id(16)] HRESULT CStartReceiveMessage([out, retval] int* __result);
 	[id(17)] HRESULT CReceiveMessage([out, retval] VARIANT* __result);
 	[id(18)] HRESULT CStopReceiveMessage([out, retval] int* __result);
-	[id(19)] HRESULT CSendAtText([in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [out, retval] int* __result);
+	[id(19)] HRESULT CSendAtText([in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [in] BOOL AutoNickName, [out, retval] int* __result);
 	[id(20)] HRESULT CGetChatRoomMembers([in] BSTR chatroomid, [out, retval] VARIANT* __result);
 	[id(21)] HRESULT CGetDbHandles([out, retval] VARIANT* __result);
 	[id(22)] HRESULT CExecuteSQL([in] DWORD DbHandle, [in] BSTR sql, [out, retval] VARIANT* __result);

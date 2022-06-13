@@ -5,9 +5,10 @@ struct SendArticleStruct {
 	DWORD title;
 	DWORD abstract;
 	DWORD url;
+	DWORD imgpath;
 };
 
-BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url) {
+BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url, wchar_t* imgpath) {
 	if (!hProcess)
 		return 1;
 	DWORD WeChatRobotBase = GetWeChatRobotBase();
@@ -20,8 +21,9 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url)
 	LPVOID titleaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	LPVOID abstractaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	LPVOID urladdr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
+	LPVOID imgaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	SendArticleStruct* paramAndFunc = (SendArticleStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendArticleStruct), MEM_COMMIT, PAGE_READWRITE);
-	if (!wxidaddr || !titleaddr || !abstractaddr || !urladdr ||
+	if (!wxidaddr || !titleaddr || !abstractaddr || !urladdr || !imgaddr ||
 		!paramAndFunc || !WeChatRobotBase)
 	{
 		return 1;
@@ -35,10 +37,13 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url)
 		WriteProcessMemory(hProcess, abstractaddr, abstract, wcslen(abstract) * 2 + 2, &dwWriteSize);
 	if (urladdr)
 		WriteProcessMemory(hProcess, urladdr, url, wcslen(url) * 2 + 2, &dwWriteSize);
+	if (imgpath && imgaddr)
+		WriteProcessMemory(hProcess, imgaddr, imgpath, wcslen(imgpath) * 2 + 2, &dwWriteSize);
 	params.wxid = (DWORD)wxidaddr;
 	params.title = (DWORD)titleaddr;
 	params.abstract = (DWORD)abstractaddr;
 	params.url = (DWORD)urladdr;
+	params.imgpath = imgpath ? (DWORD)imgaddr : 0;
 
 	if (paramAndFunc)
 		WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwId);
@@ -51,6 +56,7 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url)
 	VirtualFreeEx(hProcess, titleaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, abstractaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, urladdr, 0, MEM_RELEASE);
+	VirtualFreeEx(hProcess, imgaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
 	return 0;
 }

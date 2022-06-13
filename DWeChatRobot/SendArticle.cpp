@@ -28,6 +28,7 @@ struct SendArticleStruct {
 	DWORD title;
 	DWORD abstract;
 	DWORD url;
+	DWORD imgpath;
 };
 
 /*
@@ -41,7 +42,8 @@ VOID SendArticleRemote(LPVOID lparameter) {
 	wchar_t* title = (wchar_t*)sas->title;
 	wchar_t* abstract = (wchar_t*)sas->abstract;
 	wchar_t* url = (wchar_t*)sas->url;
-	SendArticle(wxid,title,abstract,url);
+	wchar_t* imgpath = sas->imgpath ? (wchar_t*)sas->imgpath : NULL;
+	SendArticle(wxid,title,abstract,url, imgpath);
 }
 
 /*
@@ -72,7 +74,7 @@ DWORD GetSelfWxIdAddr() {
 * url：文章链接
 * return：BOOL，成功返回`1`，失败返回`0`
 */
-BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url) {
+BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url,wchar_t* imgpath) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SendArticleCall1 = WeChatWinBase + SendArticleCall1Offset;
 	DWORD SendArticleCall2 = WeChatWinBase + SendArticleCall2Offset;
@@ -99,6 +101,12 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	WxBaseStruct pXml(xmlbuffer);
 	WxBaseStruct pReceiver(wxid);
 	WxString imgbuffer = { 0 };
+	wcout << imgpath << endl;
+	if (imgpath) {
+		imgbuffer.buffer = imgpath;
+		imgbuffer.length = wcslen(imgpath);
+		imgbuffer.maxLength = wcslen(imgpath) * 2;
+	}
 	WxString nullStruct = { 0 };
 	char buffer[0xFF0] = { 0 };
 	DWORD isSuccess = 0x0;

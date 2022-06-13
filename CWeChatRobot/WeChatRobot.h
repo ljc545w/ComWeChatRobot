@@ -56,9 +56,9 @@ public:
 	STDMETHODIMP CSendImage(BSTR wxid, BSTR imagepath, int* __result);
 	STDMETHODIMP CSendText(BSTR wxid, BSTR wxmsg, int* __result);
 	STDMETHODIMP CSendFile(BSTR wxid, BSTR filepath, int* __result);
-	STDMETHODIMP CSendArticle(BSTR wxid, BSTR title, BSTR abstract, BSTR url, int* __result);
+	STDMETHODIMP CSendArticle(BSTR wxid, BSTR title, BSTR abstract, BSTR url, BSTR imgpath, int* __result);
 	STDMETHODIMP CSendCard(BSTR receiver, BSTR sharedwxid, BSTR nickname, int* __result);
-	STDMETHODIMP CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, int* __result);
+	STDMETHODIMP CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, BOOL AutoNickName, int* __result);
 	STDMETHODIMP CGetFriendList(VARIANT* __result);
 	STDMETHODIMP CGetFriendListString(BSTR* __result);
 	STDMETHODIMP CGetWxUserInfo(BSTR wxid, BSTR* __result);

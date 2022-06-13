@@ -1,3 +1,3 @@
 #pragma once
 #include<windows.h>
-BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url);
+BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url, wchar_t* imgpath);

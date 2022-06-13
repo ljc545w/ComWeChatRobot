@@ -6,9 +6,10 @@ struct SendAtTextStruct
     DWORD wxid;
     DWORD wxmsg;
     DWORD length;
+    DWORD AutoNickName;
 };
 
-int SendAtText(wchar_t* chatroomid, wchar_t* wxid, wchar_t* wxmsg) {
+int SendAtText(wchar_t* chatroomid, wchar_t* wxid, wchar_t* wxmsg,BOOL AutoNickName) {
     if (!hProcess)
         return 1;
     DWORD WeChatRobotBase = GetWeChatRobotBase();
@@ -38,6 +39,7 @@ int SendAtText(wchar_t* chatroomid, wchar_t* wxid, wchar_t* wxmsg) {
     params.wxid = (DWORD)wxidaddr;
     params.wxmsg = (DWORD)wxmsgaddr;
     params.length = 1;
+    params.AutoNickName = AutoNickName;
 
     if (paramAndFunc) {
         if (!::WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(SendAtTextStruct), &dwTId))
@@ -65,7 +67,7 @@ int SendAtText(wchar_t* chatroomid, wchar_t* wxid, wchar_t* wxmsg) {
     return 0;
 }
 
-BOOL SendAtText(wchar_t* chatroomid, SAFEARRAY* psaValue, wchar_t* wxmsg) {
+BOOL SendAtText(wchar_t* chatroomid, SAFEARRAY* psaValue, wchar_t* wxmsg,BOOL AutoNickName) {
     if (!hProcess)
         return 1;
     VARIANT rgvar;
@@ -77,7 +79,7 @@ BOOL SendAtText(wchar_t* chatroomid, SAFEARRAY* psaValue, wchar_t* wxmsg) {
         VariantInit(&rgvar);
         long pIndex = 0;
         hr = SafeArrayGetElement(psaValue, &pIndex, &rgvar);
-        return SendAtText(chatroomid, rgvar.bstrVal, wxmsg);
+        return SendAtText(chatroomid, rgvar.bstrVal, wxmsg,AutoNickName);
     }
     vector<void*> wxidptrs;
     DWORD dwWriteSize = 0;
@@ -113,6 +115,7 @@ BOOL SendAtText(wchar_t* chatroomid, SAFEARRAY* psaValue, wchar_t* wxmsg) {
     params.wxid = (DWORD)wxidptrsaddr;
     params.wxmsg = (DWORD)wxmsgaddr;
     params.length = wxidptrs.size();
+    params.AutoNickName = AutoNickName;
     if (paramAndFunc) {
         WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(SendAtTextStruct), &dwTId);
     }

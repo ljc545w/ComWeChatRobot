@@ -31,6 +31,8 @@
 #include "AddFriend.h"
 #include "sqlite3.h"
 #include "wechatver.h"
+#include "DeleteUser.h"
+#include "SendAppMsg.h"
 #include <vector>
 #include <strstream>
 #endif //PCH_H

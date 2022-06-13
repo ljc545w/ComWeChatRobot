@@ -37,14 +37,14 @@ STDMETHODIMP CWeChatRobot::CSendText(BSTR wxid, BSTR wxmsg, int* __result) {
 * 参数3：文本消息内容
 * 参数4：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, int* __result) {
+STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, BOOL AutoNickName, int* __result) {
     *__result = 0;
     if (wxid->vt == VT_BSTR) {
-        *__result = SendAtText(chatroomid,wxid->bstrVal, wxmsg);
+        *__result = SendAtText(chatroomid, wxid->bstrVal, wxmsg, AutoNickName);
     }
-    else if(wxid->vt == (VT_ARRAY | VT_VARIANT)) {
+    else if (wxid->vt == (VT_ARRAY | VT_VARIANT)) {
         SAFEARRAY* psaValue = wxid->parray;
-        *__result = SendAtText(chatroomid, psaValue, wxmsg);
+        *__result = SendAtText(chatroomid, psaValue, wxmsg, AutoNickName);
     }
     return S_OK;
 }
@@ -76,8 +76,8 @@ STDMETHODIMP CWeChatRobot::CSendFile(BSTR wxid, BSTR filepath, int* __result) {
 * 参数4：文章链接
 * 参数5：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR url, int* __result) {
-    *__result = SendArticle(wxid, title,abstract,url);
+STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR url, BSTR imgpath, int* __result) {
+    *__result = SendArticle(wxid, title,abstract,url,imgpath);
     return S_OK;
 }
 

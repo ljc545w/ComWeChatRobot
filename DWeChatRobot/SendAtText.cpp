@@ -18,6 +18,7 @@ struct SendAtTextStruct
     DWORD wxidlist;
     DWORD wxmsg;
     DWORD length;
+    BOOL  AutoNickName;
 };
 
 /*
@@ -45,10 +46,10 @@ void SendAtTextRemote(LPVOID lpParameter) {
     wchar_t* wsTextMsg = (WCHAR*)rp->wxmsg;
     if (rp->length == 0)
         return;
-    else if(rp->length == 1)
-        SendAtText(wsChatRoomId, (DWORD*)&rp->wxidlist, wsTextMsg,rp->length);
+    else if (rp->length == 1)
+        SendAtText(wsChatRoomId, (DWORD*)&rp->wxidlist, wsTextMsg, rp->length, rp->AutoNickName);
     else
-        SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length);
+        SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length, rp->AutoNickName);
 }
 
 /*
@@ -57,9 +58,10 @@ void SendAtTextRemote(LPVOID lpParameter) {
 * wsWxId：艾特的人列表
 * wsTextMsg：发送的消息内容
 * length：艾特的人数量
+* AutoNickName：是否自动填充被艾特人昵称
 * return：void
 */
-void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length) {
+void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length,BOOL AutoNickName) {
     // +1的作用是补充一个空结构体，将`AtStruct`尾地址设定为空结构的首地址即可
     WxString* AtUsers = new WxString[length + 1];
     wstring AtMessage = L"";
@@ -77,8 +79,10 @@ void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsText
         temp.buffer = (wchar_t*)wsWxId[i];
         temp.length = wcslen((wchar_t*)wsWxId[i]);
         temp.maxLength = wcslen((wchar_t*)wsWxId[i]) * 2;
-        memcpy(&AtUsers[querySuccess],&temp,sizeof(WxString));
-        AtMessage = AtMessage + L"@" + nickname + L" ";
+        memcpy(&AtUsers[querySuccess], &temp, sizeof(WxString));
+        if (AutoNickName) {
+            AtMessage = AtMessage + L"@" + nickname + L" ";
+        }
         querySuccess++;
     }
     AtMessage += wsTextMsg;

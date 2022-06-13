@@ -30,16 +30,31 @@ class ChatSession():
     def SendMp4(self,mp4path):
         return self.robot.CSendImage(self.chatwith,mp4path)
         
-    def SendArticle(self,title,abstract,url):
-        return self.robot.CSendArticle(self.chatwith,title,abstract,url)
+    def SendArticle(self,title,abstract,url,imgpath = None):
+        return self.robot.CSendArticle(self.chatwith,title,abstract,url,imgpath)
     
     def SendCard(self,sharedwxid,nickname):
         return self.robot.CSendCard(self.chatwith,sharedwxid,nickname)
     
-    def SendAtText(self,wxid:list or str or tuple,msg):
+    def SendAtText(self,wxid:list or str or tuple,msg,AutoNickName = True):
+        """
+        Parameters
+        ----------
+        wxid : list or str or tuple
+            被艾特人的wxid，列表或字符串.
+        msg : str
+            消息内容.
+        AutoNickName : BOOL, optional
+            是否自动填充被艾特人昵称. 
+
+        Returns None
+        -------
+        SendAtText
+            发送群艾特消息.
+        """
         if '@chatroom' not in self.chatwith:
             return 1
-        return self.robot.CSendAtText(self.chatwith,wxid,msg)
+        return self.robot.CSendAtText(self.chatwith,wxid,msg,AutoNickName)
         
 
 class WeChatRobot():
