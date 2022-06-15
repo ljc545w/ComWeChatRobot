@@ -234,6 +234,7 @@ DWORD StartRobotService() {
     bool status = Injert(wxPid, workPath);
     if (status == 1) {
         CloseHandle(hProcess);
+        hProcess = NULL;
         return status;
     }
     return status;
@@ -242,13 +243,16 @@ DWORD StartRobotService() {
 DWORD StopRobotService() {
     DWORD cpid = GetCurrentProcessId();
     DWORD wxPid = GetWeChatPid();
-    if (!wxPid)
+    if (!wxPid) {
+        hProcess = NULL;
         return cpid;
+    }
     if (!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     RemoveDll(wxPid);
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
+    hProcess = NULL;
     StopReceiveMessage();
     return cpid;
 }
