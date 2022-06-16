@@ -114,28 +114,28 @@ EXTERN_C const IID IID_IWeChatRobot;
     IWeChatRobot : public IDispatch
     {
     public:
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartRobotService( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartRobotService( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStopRobotService( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStopRobotService( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendText( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendText( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendImage( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendImage( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR imagepath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendFile( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendFile( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR filepath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendArticle( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendArticle( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR title,
             /* [in] */ BSTR abstract,
@@ -143,125 +143,119 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR imgpath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendCard( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendCard( 
             /* [in] */ BSTR receiver,
             /* [in] */ BSTR sharedwxid,
             /* [in] */ BSTR nickname,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendList( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetFriendList( 
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetFriendListString( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetFriendListString( 
             /* [retval][out] */ BSTR *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetWxUserInfo( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetWxUserInfo( 
             /* [in] */ BSTR wxid,
             /* [retval][out] */ BSTR *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetSelfInfo( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetSelfInfo( 
             /* [retval][out] */ BSTR *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CCheckFriendStatusInit( 
-            /* [retval][out] */ int *__result) = 0;
-        
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CCheckFriendStatus( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CCheckFriendStatus( 
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CCheckFriendStatusFinish( 
-            /* [retval][out] */ int *__result) = 0;
-        
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetComWorkPath( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetComWorkPath( 
             /* [retval][out] */ BSTR *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartReceiveMessage( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartReceiveMessage( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CReceiveMessage( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CReceiveMessage( 
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStopReceiveMessage( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStopReceiveMessage( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendAtText( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendAtText( 
             /* [in] */ BSTR chatroomid,
             /* [in] */ VARIANT *wxid,
             /* [in] */ BSTR wxmsg,
             /* [in] */ BOOL AutoNickName,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetChatRoomMembers( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetChatRoomMembers( 
             /* [in] */ BSTR chatroomid,
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetDbHandles( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetDbHandles( 
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CExecuteSQL( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CExecuteSQL( 
             /* [in] */ DWORD DbHandle,
             /* [in] */ BSTR sql,
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CBackupSQLiteDB( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CBackupSQLiteDB( 
             /* [in] */ DWORD DbHandle,
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CVerifyFriendApply( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CVerifyFriendApply( 
             /* [in] */ BSTR v3,
             /* [in] */ BSTR v4,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddFriendByWxid( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CAddFriendByWxid( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR message,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddFriendByV3( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CAddFriendByV3( 
             /* [in] */ BSTR v3,
             /* [in] */ BSTR message,
             /* [in] */ int AddType,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CGetWeChatVer( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetWeChatVer( 
             /* [retval][out] */ BSTR *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CStartWeChat( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartWeChat( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSearchContactByNet( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSearchContactByNet( 
             /* [in] */ BSTR keyword,
             /* [retval][out] */ VARIANT *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CAddBrandContact( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CAddBrandContact( 
             /* [in] */ BSTR PublicId,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CHookVoiceMsg( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CHookVoiceMsg( 
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CUnHookVoiceMsg( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CUnHookVoiceMsg( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CHookImageMsg( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CHookImageMsg( 
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CUnHookImageMsg( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CUnHookImageMsg( 
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CChangeWeChatVer( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CChangeWeChatVer( 
             /* [in] */ BSTR verStr,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CSendAppMsg( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendAppMsg( 
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR appid,
             /* [retval][out] */ int *__result) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE CDeleteUser( 
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CDeleteUser( 
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result) = 0;
         
@@ -323,33 +317,33 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStartRobotService )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartRobotService )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStopRobotService )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStopRobotService )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendText )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendText )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR wxmsg,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendImage )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendImage )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR imagepath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendFile )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendFile )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR filepath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendArticle )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendArticle )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR title,
@@ -358,60 +352,52 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR imgpath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendCard )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendCard )( 
             IWeChatRobot * This,
             /* [in] */ BSTR receiver,
             /* [in] */ BSTR sharedwxid,
             /* [in] */ BSTR nickname,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendList )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendList )( 
             IWeChatRobot * This,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendListString )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetFriendListString )( 
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetWxUserInfo )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetWxUserInfo )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [retval][out] */ BSTR *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetSelfInfo )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetSelfInfo )( 
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CCheckFriendStatusInit )( 
-            IWeChatRobot * This,
-            /* [retval][out] */ int *__result);
-        
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CCheckFriendStatus )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CCheckFriendStatus )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CCheckFriendStatusFinish )( 
-            IWeChatRobot * This,
-            /* [retval][out] */ int *__result);
-        
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetComWorkPath )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetComWorkPath )( 
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStartReceiveMessage )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartReceiveMessage )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CReceiveMessage )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CReceiveMessage )( 
             IWeChatRobot * This,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStopReceiveMessage )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStopReceiveMessage )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendAtText )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendAtText )( 
             IWeChatRobot * This,
             /* [in] */ BSTR chatroomid,
             /* [in] */ VARIANT *wxid,
@@ -419,94 +405,94 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BOOL AutoNickName,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetChatRoomMembers )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetChatRoomMembers )( 
             IWeChatRobot * This,
             /* [in] */ BSTR chatroomid,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetDbHandles )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetDbHandles )( 
             IWeChatRobot * This,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CExecuteSQL )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CExecuteSQL )( 
             IWeChatRobot * This,
             /* [in] */ DWORD DbHandle,
             /* [in] */ BSTR sql,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CBackupSQLiteDB )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CBackupSQLiteDB )( 
             IWeChatRobot * This,
             /* [in] */ DWORD DbHandle,
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CVerifyFriendApply )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CVerifyFriendApply )( 
             IWeChatRobot * This,
             /* [in] */ BSTR v3,
             /* [in] */ BSTR v4,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByWxid )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByWxid )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR message,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByV3 )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CAddFriendByV3 )( 
             IWeChatRobot * This,
             /* [in] */ BSTR v3,
             /* [in] */ BSTR message,
             /* [in] */ int AddType,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CGetWeChatVer )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetWeChatVer )( 
             IWeChatRobot * This,
             /* [retval][out] */ BSTR *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CStartWeChat )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartWeChat )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSearchContactByNet )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSearchContactByNet )( 
             IWeChatRobot * This,
             /* [in] */ BSTR keyword,
             /* [retval][out] */ VARIANT *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CAddBrandContact )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CAddBrandContact )( 
             IWeChatRobot * This,
             /* [in] */ BSTR PublicId,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CHookVoiceMsg )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CHookVoiceMsg )( 
             IWeChatRobot * This,
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookVoiceMsg )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookVoiceMsg )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CHookImageMsg )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CHookImageMsg )( 
             IWeChatRobot * This,
             /* [in] */ BSTR savepath,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookImageMsg )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CUnHookImageMsg )( 
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CChangeWeChatVer )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CChangeWeChatVer )( 
             IWeChatRobot * This,
             /* [in] */ BSTR verStr,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CSendAppMsg )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendAppMsg )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [in] */ BSTR appid,
             /* [retval][out] */ int *__result);
         
-        /* [id] */ HRESULT ( STDMETHODCALLTYPE *CDeleteUser )( 
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CDeleteUser )( 
             IWeChatRobot * This,
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result);
@@ -580,14 +566,8 @@ EXTERN_C const IID IID_IWeChatRobot;
 #define IWeChatRobot_CGetSelfInfo(This,__result)	\
     ( (This)->lpVtbl -> CGetSelfInfo(This,__result) ) 
 
-#define IWeChatRobot_CCheckFriendStatusInit(This,__result)	\
-    ( (This)->lpVtbl -> CCheckFriendStatusInit(This,__result) ) 
-
 #define IWeChatRobot_CCheckFriendStatus(This,wxid,__result)	\
     ( (This)->lpVtbl -> CCheckFriendStatus(This,wxid,__result) ) 
-
-#define IWeChatRobot_CCheckFriendStatusFinish(This,__result)	\
-    ( (This)->lpVtbl -> CCheckFriendStatusFinish(This,__result) ) 
 
 #define IWeChatRobot_CGetComWorkPath(This,__result)	\
     ( (This)->lpVtbl -> CGetComWorkPath(This,__result) ) 

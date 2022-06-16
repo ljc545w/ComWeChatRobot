@@ -165,7 +165,7 @@ __declspec(naked) void dealUserInfo() {
 	}
 }
 
-static void StartSearchContactHook() {
+static void HookSearchContact() {
 	if (SearchContactHooked)
 		return;
 	HookAnyAddress(HookSearchContactErrcodeAddr, (LPVOID)dealSearchContactErrcode, HookSearchContactErrcodeOldAsm);
@@ -173,7 +173,7 @@ static void StartSearchContactHook() {
 	SearchContactHooked = true;
 }
 
-void StopSearchContactHook() {
+void UnHookSearchContact() {
 	if (!SearchContactHooked)
 		return;
 	UnHookAnyAddress(HookSearchContactErrcodeAddr, HookSearchContactErrcodeOldAsm);
@@ -218,7 +218,7 @@ static void DeleteUserInfoCache() {
 
 
 void __stdcall SearchContactByNet(wchar_t* keyword) {
-	StartSearchContactHook();
+	HookSearchContact();
 	DeleteUserInfoCache();
 	DWORD SearchContactByNetCall1 = GetWeChatWinBase() + SearchContactByNetCall1Offset;
 	DWORD SearchContactByNetCall2 = GetWeChatWinBase() + SearchContactByNetCall2Offset;

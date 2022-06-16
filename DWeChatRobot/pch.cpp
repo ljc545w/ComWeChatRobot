@@ -132,7 +132,8 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 void UnHookAll() {
     UnHookLogMsgInfo();
     UnHookReceiveMessage();
-    StopSearchContactHook();
+    UnHookFriendStatusCode();
+    UnHookSearchContact();
     UnHookVoiceMsg();
     UnHookImageMsg();
     return;
