@@ -55,6 +55,17 @@ interface IWeChatRobot : IDispatch
 	[id(37)] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
 };
 [
+	object,
+	uuid(1a9d8d1b-d40e-4f3a-8ed4-b783e6a59830),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IRobotEvent : IDispatch
+{
+	[id(1), helpstring("微信主动推送消息")] HRESULT CPostMessage([in] VARIANT* msg, [out, retval] int* __result);
+};
+[
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),
 	version(1.0),
 ]
@@ -68,6 +79,24 @@ library WeChatRobotCOMLib
 	{
 		[default] interface IWeChatRobot;
 	};
+	[
+		uuid(8fd26fd1-9169-4e4c-8a1d-d05093bacce5)
+	]
+	dispinterface _IRobotEventEvents
+	{
+		properties:
+		methods:
+			[id(1)] HRESULT OnGetMessageEvent(VARIANT* msg);
+	};
+	[
+		uuid(178001e8-5e64-4cec-8032-1de28801df55)
+	]
+	coclass RobotEvent
+	{
+		[default] interface IRobotEvent;
+		[default, source] dispinterface _IRobotEventEvents;
+	};
 };
 
+import "shobjidl.idl";
 import "shobjidl.idl";

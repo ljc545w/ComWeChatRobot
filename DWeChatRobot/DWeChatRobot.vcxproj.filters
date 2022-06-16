@@ -91,6 +91,12 @@
     <Filter Include="发送消息\发送小程序">
       <UniqueIdentifier>{2e1bef8d-a840-4318-a728-29f1e8e68336}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wxsocket">
+      <UniqueIdentifier>{aa631fe9-d228-4c2b-a317-0b0914bed451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="comclient">
+      <UniqueIdentifier>{79c2ec41-70f9-445a-8681-5a2dbfe01eca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -164,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="SendAppMsg.h">
       <Filter>发送消息\发送小程序</Filter>
+    </ClInclude>
+    <ClInclude Include="wxsocket.h">
+      <Filter>wxsocket</Filter>
+    </ClInclude>
+    <ClInclude Include="comclient.h">
+      <Filter>comclient</Filter>
+    </ClInclude>
+    <ClInclude Include="wxsocketapi.h">
+      <Filter>wxsocket</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +265,12 @@
     </ClCompile>
     <ClCompile Include="SendAppMsg.cpp">
       <Filter>发送消息\发送小程序</Filter>
+    </ClCompile>
+    <ClCompile Include="wxsocket.cpp">
+      <Filter>wxsocket</Filter>
+    </ClCompile>
+    <ClCompile Include="comclient.cpp">
+      <Filter>comclient</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

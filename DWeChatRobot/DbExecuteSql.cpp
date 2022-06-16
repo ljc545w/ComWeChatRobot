@@ -122,7 +122,7 @@ int query(void* data, int argc, char** argv, char** azColName) {
 * 外部调用时使用的回调函数，将结果存入`SQLResult`中
 * return：int，执行成功返回`0`，执行失败返回非0值
 */
-int select(void* data, int argc, char** argv, char** azColName) {
+int selectdbinfo(void* data, int argc, char** argv, char** azColName) {
 	executeResult* pdata = (executeResult*)data;
 	vector<SQLResultStruct> tempStruct;
 	for (int i = 0; i < argc; i++) {
@@ -195,7 +195,7 @@ BOOL ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
 DWORD ExecuteSQLRemote(LPVOID lpParameter){
 	ClearResultArray();
 	executeParams* sqlparam = (executeParams*)lpParameter;
-	BOOL status = ExecuteSQL(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, (DWORD)select, &result);
+	BOOL status = ExecuteSQL(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, (DWORD)selectdbinfo, &result);
 	
 	if (status) {
 		result.SQLResultAddr = (DWORD)SQLResult.data();

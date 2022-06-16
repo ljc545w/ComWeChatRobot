@@ -1,0 +1,26 @@
+HKCR
+{
+	WeChatRobot.RobotEvent.1 = s 'RobotEvent class'
+	{
+		CLSID = s '{178001e8-5e64-4cec-8032-1de28801df55}'
+	}
+	WeChatRobot.RobotEvent = s 'RobotEvent class'
+	{		
+		CurVer = s 'WeChatRobot.RobotEvent.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {178001e8-5e64-4cec-8032-1de28801df55} = s 'RobotEvent class'
+		{
+			ProgID = s 'WeChatRobot.RobotEvent.1'
+			VersionIndependentProgID = s 'WeChatRobot.RobotEvent'
+			ForceRemove Programmable
+			LocalServer32 = s '%MODULE%'
+			{
+				val ServerExecutable = s '%MODULE_RAW%'
+			}
+			TypeLib = s '{721abb35-141a-4aa2-94f2-762e2833fa6c}'
+			Version = s '1.0'
+		}
+	}
+}

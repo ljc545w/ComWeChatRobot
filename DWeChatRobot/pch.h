@@ -11,6 +11,7 @@
 #include "framework.h"
 #include<windows.h>
 #include<iostream>
+#include <comutil.h>
 #include "SendImage.h"
 #include "SendText.h"
 #include "SendFile.h"
@@ -35,10 +36,18 @@
 #include "SendAppMsg.h"
 #include <vector>
 #include <strstream>
+#include "wxsocket.h"
+#include "comclient.h"
 #endif //PCH_H
+
+
+#ifdef WX_SOCKET
+#include "wxsocketapi.h"
+#endif
 
 using namespace std;
 #pragma comment(lib,"version.lib")
+#pragma comment(lib, "comsuppw.lib")
 #pragma warning(disable:4731)
 // 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)

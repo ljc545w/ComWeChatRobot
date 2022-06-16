@@ -74,6 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -155,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AddFriend.h" />
+    <ClInclude Include="comclient.h" />
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="DbBackup.h" />
     <ClInclude Include="DbExecuteSql.h" />
@@ -178,12 +180,15 @@
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="wechatver.h" />
+    <ClInclude Include="wxsocket.h" />
+    <ClInclude Include="wxsocketapi.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddFriendByV3.cpp" />
     <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="AddBrandContact.cpp" />
     <ClCompile Include="CheckFriendStatus.cpp" />
+    <ClCompile Include="comclient.cpp" />
     <ClCompile Include="DbBackup.cpp" />
     <ClCompile Include="DbExecuteSql.cpp" />
     <ClCompile Include="DeleteUser.cpp" />
@@ -213,6 +218,7 @@
     <ClCompile Include="LogMsgInfo.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
     <ClCompile Include="wechatver.cpp" />
+    <ClCompile Include="wxsocket.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

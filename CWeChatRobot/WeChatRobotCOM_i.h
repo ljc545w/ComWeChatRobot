@@ -51,6 +51,13 @@ typedef interface IWeChatRobot IWeChatRobot;
 #endif 	/* __IWeChatRobot_FWD_DEFINED__ */
 
 
+#ifndef __IRobotEvent_FWD_DEFINED__
+#define __IRobotEvent_FWD_DEFINED__
+typedef interface IRobotEvent IRobotEvent;
+
+#endif 	/* __IRobotEvent_FWD_DEFINED__ */
+
+
 #ifndef __WeChatRobot_FWD_DEFINED__
 #define __WeChatRobot_FWD_DEFINED__
 
@@ -61,6 +68,25 @@ typedef struct WeChatRobot WeChatRobot;
 #endif /* __cplusplus */
 
 #endif 	/* __WeChatRobot_FWD_DEFINED__ */
+
+
+#ifndef ___IRobotEventEvents_FWD_DEFINED__
+#define ___IRobotEventEvents_FWD_DEFINED__
+typedef interface _IRobotEventEvents _IRobotEventEvents;
+
+#endif 	/* ___IRobotEventEvents_FWD_DEFINED__ */
+
+
+#ifndef __RobotEvent_FWD_DEFINED__
+#define __RobotEvent_FWD_DEFINED__
+
+#ifdef __cplusplus
+typedef class RobotEvent RobotEvent;
+#else
+typedef struct RobotEvent RobotEvent;
+#endif /* __cplusplus */
+
+#endif 	/* __RobotEvent_FWD_DEFINED__ */
 
 
 /* header files for imported files */
@@ -643,6 +669,138 @@ EXTERN_C const IID IID_IWeChatRobot;
 #endif 	/* __IWeChatRobot_INTERFACE_DEFINED__ */
 
 
+#ifndef __IRobotEvent_INTERFACE_DEFINED__
+#define __IRobotEvent_INTERFACE_DEFINED__
+
+/* interface IRobotEvent */
+/* [unique][nonextensible][dual][uuid][object] */ 
+
+
+EXTERN_C const IID IID_IRobotEvent;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+    
+    MIDL_INTERFACE("1a9d8d1b-d40e-4f3a-8ed4-b783e6a59830")
+    IRobotEvent : public IDispatch
+    {
+    public:
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CPostMessage( 
+            /* [in] */ VARIANT *msg,
+            /* [retval][out] */ int *__result) = 0;
+        
+    };
+    
+    
+#else 	/* C style interface */
+
+    typedef struct IRobotEventVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            IRobotEvent * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            IRobotEvent * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            IRobotEvent * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            IRobotEvent * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            IRobotEvent * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            IRobotEvent * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [range][in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            IRobotEvent * This,
+            /* [annotation][in] */ 
+            _In_  DISPID dispIdMember,
+            /* [annotation][in] */ 
+            _In_  REFIID riid,
+            /* [annotation][in] */ 
+            _In_  LCID lcid,
+            /* [annotation][in] */ 
+            _In_  WORD wFlags,
+            /* [annotation][out][in] */ 
+            _In_  DISPPARAMS *pDispParams,
+            /* [annotation][out] */ 
+            _Out_opt_  VARIANT *pVarResult,
+            /* [annotation][out] */ 
+            _Out_opt_  EXCEPINFO *pExcepInfo,
+            /* [annotation][out] */ 
+            _Out_opt_  UINT *puArgErr);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CPostMessage )( 
+            IRobotEvent * This,
+            /* [in] */ VARIANT *msg,
+            /* [retval][out] */ int *__result);
+        
+        END_INTERFACE
+    } IRobotEventVtbl;
+
+    interface IRobotEvent
+    {
+        CONST_VTBL struct IRobotEventVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define IRobotEvent_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define IRobotEvent_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define IRobotEvent_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define IRobotEvent_GetTypeInfoCount(This,pctinfo)	\
+    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
+
+#define IRobotEvent_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
+
+#define IRobotEvent_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
+
+#define IRobotEvent_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
+
+
+#define IRobotEvent_CPostMessage(This,msg,__result)	\
+    ( (This)->lpVtbl -> CPostMessage(This,msg,__result) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+
+
+#endif 	/* __IRobotEvent_INTERFACE_DEFINED__ */
+
+
 
 #ifndef __WeChatRobotCOMLib_LIBRARY_DEFINED__
 #define __WeChatRobotCOMLib_LIBRARY_DEFINED__
@@ -659,6 +817,129 @@ EXTERN_C const CLSID CLSID_WeChatRobot;
 
 class DECLSPEC_UUID("4ce7f5e1-2c93-4bfe-86ac-886452e47475")
 WeChatRobot;
+#endif
+
+#ifndef ___IRobotEventEvents_DISPINTERFACE_DEFINED__
+#define ___IRobotEventEvents_DISPINTERFACE_DEFINED__
+
+/* dispinterface _IRobotEventEvents */
+/* [uuid] */ 
+
+
+EXTERN_C const IID DIID__IRobotEventEvents;
+
+#if defined(__cplusplus) && !defined(CINTERFACE)
+
+    MIDL_INTERFACE("8fd26fd1-9169-4e4c-8a1d-d05093bacce5")
+    _IRobotEventEvents : public IDispatch
+    {
+    };
+    
+#else 	/* C style interface */
+
+    typedef struct _IRobotEventEventsVtbl
+    {
+        BEGIN_INTERFACE
+        
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+            _IRobotEventEvents * This,
+            /* [in] */ REFIID riid,
+            /* [annotation][iid_is][out] */ 
+            _COM_Outptr_  void **ppvObject);
+        
+        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+            _IRobotEventEvents * This);
+        
+        ULONG ( STDMETHODCALLTYPE *Release )( 
+            _IRobotEventEvents * This);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
+            _IRobotEventEvents * This,
+            /* [out] */ UINT *pctinfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
+            _IRobotEventEvents * This,
+            /* [in] */ UINT iTInfo,
+            /* [in] */ LCID lcid,
+            /* [out] */ ITypeInfo **ppTInfo);
+        
+        HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
+            _IRobotEventEvents * This,
+            /* [in] */ REFIID riid,
+            /* [size_is][in] */ LPOLESTR *rgszNames,
+            /* [range][in] */ UINT cNames,
+            /* [in] */ LCID lcid,
+            /* [size_is][out] */ DISPID *rgDispId);
+        
+        /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
+            _IRobotEventEvents * This,
+            /* [annotation][in] */ 
+            _In_  DISPID dispIdMember,
+            /* [annotation][in] */ 
+            _In_  REFIID riid,
+            /* [annotation][in] */ 
+            _In_  LCID lcid,
+            /* [annotation][in] */ 
+            _In_  WORD wFlags,
+            /* [annotation][out][in] */ 
+            _In_  DISPPARAMS *pDispParams,
+            /* [annotation][out] */ 
+            _Out_opt_  VARIANT *pVarResult,
+            /* [annotation][out] */ 
+            _Out_opt_  EXCEPINFO *pExcepInfo,
+            /* [annotation][out] */ 
+            _Out_opt_  UINT *puArgErr);
+        
+        END_INTERFACE
+    } _IRobotEventEventsVtbl;
+
+    interface _IRobotEventEvents
+    {
+        CONST_VTBL struct _IRobotEventEventsVtbl *lpVtbl;
+    };
+
+    
+
+#ifdef COBJMACROS
+
+
+#define _IRobotEventEvents_QueryInterface(This,riid,ppvObject)	\
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+
+#define _IRobotEventEvents_AddRef(This)	\
+    ( (This)->lpVtbl -> AddRef(This) ) 
+
+#define _IRobotEventEvents_Release(This)	\
+    ( (This)->lpVtbl -> Release(This) ) 
+
+
+#define _IRobotEventEvents_GetTypeInfoCount(This,pctinfo)	\
+    ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
+
+#define _IRobotEventEvents_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+    ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
+
+#define _IRobotEventEvents_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+    ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
+
+#define _IRobotEventEvents_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+    ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
+
+#endif /* COBJMACROS */
+
+
+#endif 	/* C style interface */
+
+
+#endif 	/* ___IRobotEventEvents_DISPINTERFACE_DEFINED__ */
+
+
+EXTERN_C const CLSID CLSID_RobotEvent;
+
+#ifdef __cplusplus
+
+class DECLSPEC_UUID("178001e8-5e64-4cec-8032-1de28801df55")
+RobotEvent;
 #endif
 #endif /* __WeChatRobotCOMLib_LIBRARY_DEFINED__ */
 

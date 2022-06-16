@@ -13,3 +13,5 @@
 /wxRobot/bin/Release/*.pdb
 */__pycache__/
 packages
+mongoose.c
+mongoose.h

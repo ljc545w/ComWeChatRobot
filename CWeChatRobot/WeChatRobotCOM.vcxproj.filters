@@ -181,6 +181,12 @@
     <ClInclude Include="DeleteUser.h">
       <Filter>好友相关\删除好友</Filter>
     </ClInclude>
+    <ClInclude Include="_IRobotEventEvents_CP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RobotEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -276,6 +282,9 @@
     <ClCompile Include="DeleteUser.cpp">
       <Filter>好友相关\删除好友</Filter>
     </ClCompile>
+    <ClCompile Include="RobotEvent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WeChatRobotCOM.rc">
@@ -287,6 +296,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="WeChatRobot.rgs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="RobotEvent.rgs">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

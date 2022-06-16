@@ -225,6 +225,7 @@
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
+    <ClInclude Include="RobotEvent.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendAppMsg.h" />
     <ClInclude Include="SendArticle.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="WeChatRobotCOM_i.h" />
     <ClInclude Include="wechatver.h" />
     <ClInclude Include="xdlldata.h" />
+    <ClInclude Include="_IRobotEventEvents_CP.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddBrandContact.cpp" />
@@ -262,6 +264,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ReceiveMessage.cpp" />
+    <ClCompile Include="RobotEvent.cpp" />
     <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendAppMsg.cpp" />
@@ -305,6 +308,7 @@
     <ResourceCompile Include="WeChatRobotCOM.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="RobotEvent.rgs" />
     <None Include="WeChatRobot.rgs" />
     <None Include="WeChatRobotCOM.rgs" />
   </ItemGroup>

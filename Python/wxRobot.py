@@ -12,6 +12,8 @@ import ast
 import os
 import threading
 import time
+from comtypes.client import GetEvents
+from comtypes.client import PumpEvents
 
 class ChatSession():
     def __init__(self,robot,wxid):
@@ -58,12 +60,18 @@ class ChatSession():
 
     def SendAppMsg(self,appid):
         return self.robot.CSendAppMsg(self.chatwith,appid)
-        
+    
+class WeChatEventSink():
+    def OnGetMessageEvent(self,msg,*args,**kwargs):
+        # 为了兼容原有接口，需要在接收到广播后调用此接口，否则会导致严重的内存泄漏
+        WeChatRobot().robot.CReceiveMessage()
+        print(msg)
 
 class WeChatRobot():
     
     def __init__(self):
         self.robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
+        self.event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
         self.AddressBook = []
         self.myinfo = {}
         self.ReceiveMessageStarted = False
@@ -234,6 +242,18 @@ class WeChatRobot():
         self.ReceiveMessageThread.daemon = True
         self.ReceiveMessageThread.start()
         return status
+    
+    # 通过连接点接收消息
+    def StartReceiveMsgByEvent(self,EventSink = None):
+        self.robot.CStartReceiveMessage()
+        if self.event is not None:
+            sink = EventSink or WeChatEventSink()
+            self.ConnectionPoint = GetEvents(self.event,sink)
+            while True:
+                try:
+                    PumpEvents(10)
+                except:
+                    break
     
     def GetDbHandles(self):
         tablesTuple = self.robot.CGetDbHandles()
