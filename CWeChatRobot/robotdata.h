@@ -1,5 +1,5 @@
 #pragma once
-#include "InjertDll.h"
+#include "InjectDll.h"
 #include "SendImage.h"
 #include "SendText.h"
 #include "SendFile.h"

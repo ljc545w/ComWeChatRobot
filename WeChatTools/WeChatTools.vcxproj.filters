@@ -19,7 +19,7 @@
     <ClCompile Include="main.cpp">
       <Filter>主函数</Filter>
     </ClCompile>
-    <ClCompile Include="Injert.cpp">
+    <ClCompile Include="Inject.cpp">
       <Filter>注入工具</Filter>
     </ClCompile>
     <ClCompile Include="base.cpp">

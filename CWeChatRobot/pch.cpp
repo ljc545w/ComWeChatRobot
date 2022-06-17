@@ -225,7 +225,7 @@ DWORD StartRobotService() {
     };
     if(!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
-    bool status = Injert(wxPid, workPath);
+    bool status = Inject(wxPid, workPath);
     if (status == 1) {
         CloseHandle(hProcess);
         hProcess = NULL;

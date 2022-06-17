@@ -115,7 +115,7 @@
     <ClInclude Include="WeChatRobot.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="InjertDll.h">
+    <ClInclude Include="InjectDll.h">
       <Filter>注入工具</Filter>
     </ClInclude>
     <ClInclude Include="SendImage.h">
@@ -204,7 +204,7 @@
     <ClCompile Include="WeChatRobot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="InjertDll.cpp">
+    <ClCompile Include="InjectDll.cpp">
       <Filter>注入工具</Filter>
     </ClCompile>
     <ClCompile Include="SendImage.cpp">

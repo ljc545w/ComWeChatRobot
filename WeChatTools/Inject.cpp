@@ -64,7 +64,7 @@ bool InjectDll(DWORD dwId, WCHAR* szPath)//参数1：目标进程PID  参数2：DLL路径
     return 0;
 }
 
-void Injert(DWORD dwPid, wchar_t* wStr) {
+void Inject(DWORD dwPid, wchar_t* wStr) {
     wchar_t dllpath[MAX_PATH];
     wchar_t workPath[MAX_PATH];
     wchar_t* pworkPath = _wgetcwd(workPath, MAX_PATH);

@@ -220,7 +220,7 @@
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
-    <ClInclude Include="InjertDll.h" />
+    <ClInclude Include="InjectDll.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="Resource.h" />
@@ -256,7 +256,7 @@
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
-    <ClCompile Include="InjertDll.cpp" />
+    <ClCompile Include="InjectDll.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -19,7 +19,7 @@ int _tmain(int nargv, WCHAR* argvs[])
     }
     else if (nargv == 2) {
         wStr = argvs[1];
-        Injert(dwPid, argvs[1]);
+        Inject(dwPid, argvs[1]);
     }
     else if (nargv == 3 && !((wstring)argvs[1]).compare(L"-r")) {
         wStr = argvs[2];
