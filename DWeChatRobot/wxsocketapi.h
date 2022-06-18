@@ -1,7 +1,7 @@
 #pragma once
 #ifdef USE_SOCKET
 #include <signal.h>
-// mongoose: https://github.com/Automattic/mongoose
+// mongoose: https://github.com/cesanta/mongoose
 #include "mongoose/mongoose.h"
 #pragma comment(lib,"ws2_32.lib")
 extern "C" __declspec(dllexport) void HttpStart();

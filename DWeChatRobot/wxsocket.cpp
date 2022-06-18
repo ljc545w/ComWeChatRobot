@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #ifdef USE_SOCKET
-// mongoose: https://github.com/Automattic/mongoose
+// mongoose: https://github.com/cesanta/mongoose
 #include "mongoose/mongoose.c"
 #include<thread>
 static struct mg_mgr mgr;
