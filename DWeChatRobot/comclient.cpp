@@ -1,4 +1,5 @@
 #include "pch.h"
+#ifdef USE_COM
 #include <atlbase.h>
 #include <atlcom.h>
 #include "../CWeChatRobot/WeChatRobotCOM_i.h"
@@ -7,7 +8,6 @@
 #include <iostream>
 #include <thread>
 
-using namespace std;
 CComModule m_commodule;
 
 class CSink :
@@ -63,3 +63,4 @@ BOOL PostComMessage(VARIANT* msg) {
     CoUninitialize();
     return true;
 }
+#endif // !USE_COM

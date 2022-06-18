@@ -14,20 +14,24 @@
 * wxid：保存wxid的地址
 * imagepath：保存图片绝对路径的地址
 */
+#ifndef USE_SOCKET
 struct ImageParamStruct {
 	DWORD wxid;
 	DWORD imagepath;
 };
+#endif
 
 /*
 * 供外部调用的发送图片消息接口
 * lpParamStruct：ImageParamStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendImageRemote(LPVOID lpParamStruct) {
 	ImageParamStruct* params = (ImageParamStruct*)lpParamStruct;
 	SendImage((WCHAR*)params->wxid, (WCHAR*)params->imagepath);
 }
+#endif
 
 /*
 * 发送图片消息的具体实现

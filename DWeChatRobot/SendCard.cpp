@@ -11,17 +11,20 @@
 * sharedwxid：被推荐人的wxid保存地址
 * nickname：名片显示的昵称保存地址
 */
+#ifndef USE_SOCKET
 struct SendCardStruct {
 	DWORD receiver;
 	DWORD sharedwxid;
 	DWORD nickname;
 };
+#endif
 
 /*
 * 供外部调用的发送名片接口
 * lparameter：SendCardStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 VOID SendCardRemote(LPVOID lparameter) {
 	SendCardStruct* scs = (SendCardStruct*)lparameter;
 	wchar_t* receiver = (WCHAR*)scs->receiver;
@@ -29,6 +32,7 @@ VOID SendCardRemote(LPVOID lparameter) {
 	wchar_t* nickname = (WCHAR*)scs->nickname;
 	SendCard(receiver,sharedwxid,nickname);
 }
+#endif
 
 /*
 * 发送名片消息的具体实现

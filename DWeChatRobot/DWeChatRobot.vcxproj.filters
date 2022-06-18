@@ -25,9 +25,6 @@
     <Filter Include="发送消息\发送文件">
       <UniqueIdentifier>{069b8c09-e473-4bba-a49e-571f35f2efef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="自动功能">
-      <UniqueIdentifier>{25f77de8-b12c-4f2b-a3ac-0260b6a16897}</UniqueIdentifier>
-    </Filter>
     <Filter Include="好友相关">
       <UniqueIdentifier>{8ad1ff87-550b-4942-8ebd-afbe1cfaddc9}</UniqueIdentifier>
     </Filter>
@@ -171,14 +168,17 @@
     <ClInclude Include="SendAppMsg.h">
       <Filter>发送消息\发送小程序</Filter>
     </ClInclude>
-    <ClInclude Include="wxsocket.h">
-      <Filter>wxsocket</Filter>
-    </ClInclude>
     <ClInclude Include="comclient.h">
       <Filter>comclient</Filter>
     </ClInclude>
     <ClInclude Include="wxsocketapi.h">
       <Filter>wxsocket</Filter>
+    </ClInclude>
+    <ClInclude Include="wxdata.h">
+      <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="wxapi.h">
+      <Filter>通用标头</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

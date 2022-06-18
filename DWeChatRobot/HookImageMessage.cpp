@@ -84,6 +84,7 @@ void UnHookImageMsg() {
 	ImageMsgHooked = false;
 }
 
+#ifndef USE_SOCKET
 BOOL HookImageMsgRemote(LPVOID lpParameter) {
 	savepath = (wstring)(wchar_t*)lpParameter;
 	if (savepath.back() != '\\') {
@@ -96,3 +97,4 @@ BOOL HookImageMsgRemote(LPVOID lpParameter) {
 	HookImageMsg();
 	return true;
 }
+#endif

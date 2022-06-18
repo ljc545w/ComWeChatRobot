@@ -10,23 +10,27 @@
 * wxid：wxid保存地址
 * wxmsg：发送的内容保存地址
 */
+#ifndef USE_SOCKET
 struct SendTextStruct
 {
     DWORD wxid;
     DWORD wxmsg;
 };
+#endif
 
 /*
 * 供外部调用的发送文本消息接口
 * lpParameter：SendTextStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendTextRemote(LPVOID lpParameter) {
     SendTextStruct* rp = (SendTextStruct*)lpParameter;
     wchar_t* wsWxId = (WCHAR*)rp->wxid;
     wchar_t* wsTextMsg = (WCHAR*)rp->wxmsg;
     SendText(wsWxId, wsTextMsg);
 }
+#endif
 
 /*
 * 发送文本消息的具体实现

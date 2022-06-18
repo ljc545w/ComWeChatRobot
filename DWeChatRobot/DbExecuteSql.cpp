@@ -26,10 +26,12 @@ DWORD sqlite3_execAddr = WeChatWinBase + OffsetFromIdaAddr(IDA_SQLITE3_EXEC_ADDR
 * ptrDb：数据库句柄
 * ptrSql：保存sql的地址
 */
+#ifndef USE_SOCKET
 struct executeParams {
 	DWORD ptrDb;
 	DWORD ptrSql;
 };
+#endif
 
 /*
 * 保存查询结果的结构
@@ -179,12 +181,14 @@ void ClearResultArray() {
 * sql：要执行的SQL
 * callback：回调函数地址
 * data：传递给回调函数的参数
-* return：BOOL，执行成功返回`1`，执行失败返回`0`
+* return：void*，执行成功返回数组指针，执行失败返回`0`
 */
-BOOL ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
+void* ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
 	Sqlite3_exec p_Sqlite3_exec = (Sqlite3_exec)sqlite3_execAddr;
 	int status = p_Sqlite3_exec(ptrDb,sql, (sqlite3_callback)callback,data,0);
-	return status == 0;
+	if (status != SQLITE_OK)
+		return NULL;
+	return SQLResult.data();
 }
 
 /*
@@ -192,12 +196,13 @@ BOOL ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
 * lpParameter：`executeParams`类型结构体指针
 * return：DWORD，如果SQL执行成功，返回`SQLResult`首成员地址，否则返回0
 */
+#ifndef USE_SOCKET
 DWORD ExecuteSQLRemote(LPVOID lpParameter){
 	ClearResultArray();
 	executeParams* sqlparam = (executeParams*)lpParameter;
-	BOOL status = ExecuteSQL(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, (DWORD)selectdbinfo, &result);
+	void* status = ExecuteSQL(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, (DWORD)selectdbinfo, &result);
 	
-	if (status) {
+	if (status != NULL) {
 		result.SQLResultAddr = (DWORD)SQLResult.data();
 		return (DWORD)&result;
 	}
@@ -206,8 +211,9 @@ DWORD ExecuteSQLRemote(LPVOID lpParameter){
 	}
 	return 0;
 }
+#endif
 
-static BOOL SelectData(DWORD db,const char* sql,void* data)
+void* SelectData(DWORD db,const char* sql,void* data)
 {
 	executeResult* pdata = (executeResult*)data;
 	DWORD wxBaseAddress = GetWeChatWinBase();
@@ -222,7 +228,7 @@ static BOOL SelectData(DWORD db,const char* sql,void* data)
 	DWORD* stmt;
 	int rc = p_Sqlite3_prepare(db, sql, -1, &stmt, 0);
 	if (rc != SQLITE_OK)
-		return rc;
+		return NULL;
 	while (p_Sqlite3_step(stmt) == SQLITE_ROW)
 	{
 		int col_count = p_Sqlite3_column_count(stmt);
@@ -264,15 +270,16 @@ static BOOL SelectData(DWORD db,const char* sql,void* data)
 		pdata->length++;
 	}
 	p_Sqlite3_finalize(stmt);
-	return rc == 0;
+	return SQLResult.data();
 }
 
+#ifndef USE_SOCKET
 int SelectDataRemote(LPVOID lpParameter) {
 	ClearResultArray();
 	executeParams* sqlparam = (executeParams*)lpParameter;
-	BOOL status = SelectData(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, &result);
+	void* status = SelectData(sqlparam->ptrDb, (const char*)sqlparam->ptrSql, &result);
 
-	if (status) {
+	if (status != NULL) {
 		result.SQLResultAddr = (DWORD)SQLResult.data();
 		return (DWORD)&result;
 	}
@@ -281,3 +288,4 @@ int SelectDataRemote(LPVOID lpParameter) {
 	}
 	return 0;
 }
+#endif

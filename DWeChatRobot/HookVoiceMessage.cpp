@@ -70,6 +70,7 @@ void UnHookVoiceMsg() {
 	VoiceMsgHooked = false;
 }
 
+#ifndef USE_SOCKET
 BOOL HookVoiceMsgRemote(LPVOID lpParameter) {
 	savepath = (wstring)(wchar_t*)lpParameter;
 	if (savepath.back() != '\\') {
@@ -82,3 +83,4 @@ BOOL HookVoiceMsgRemote(LPVOID lpParameter) {
 	HookVoiceMsg();
 	return true;
 }
+#endif

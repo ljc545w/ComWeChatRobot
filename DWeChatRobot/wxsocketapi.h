@@ -1,9 +1,9 @@
 #pragma once
-#include "wxsocket.h"
-#ifdef WX_SOCKET
+#ifdef USE_SOCKET
 #include <signal.h>
-#include "mongoose.h"
+// mongoose: https://github.com/Automattic/mongoose
+#include "mongoose/mongoose.h"
 #pragma comment(lib,"ws2_32.lib")
-int HttpStart();
-int HttpClose();
+extern "C" __declspec(dllexport) void HttpStart();
+extern "C" __declspec(dllexport) int HttpClose();
 #endif

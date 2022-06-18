@@ -12,31 +12,8 @@
 // 发送消息HOOK的CALL偏移
 #define SendMessageNextCallOffset 0x101E8170 - 0x0FDE0000
 
-/*
-* 保存单条信息的结构
-* messagetype：消息类型
-* sender：发送者wxid；l_sender：`sender`字符数
-* wxid：如果sender是群聊id，则此成员保存具体发送人wxid，否则与`sender`一致；l_wxid：`wxid`字符数
-* message：消息内容，非文本消息是xml格式；l_message：`message`字符数
-* filepath：图片、文件及其他资源的保存路径；l_filepath：`filepath`字符数
-*/
-struct messageStruct {
-	DWORD messagetype;
-	BOOL isSendMessage;
-	wchar_t* sender;
-	DWORD l_sender;
-	wchar_t* wxid;
-	DWORD l_wxid;
-	wchar_t* message;
-	DWORD l_message;
-	wchar_t* filepath;
-	DWORD l_filepath;
-	wchar_t* time;
-	DWORD l_time;
-};
-
 // 保存多条信息的动态数组
-vector<messageStruct> messageVector;
+vector<ReceiveMsgStruct> messageVector;
 
 // 是否开启接收消息HOOK标志
 BOOL ReceiveMessageHooked = false;
@@ -57,7 +34,8 @@ DWORD SendMessageNextCall = GetWeChatWinBase() + SendMessageNextCallOffset;
 DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
 // 创建广播消息数组
-static SAFEARRAY* CreateMessageArray(messageStruct* ms) {
+#ifndef USE_SOCKET
+static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
 	HRESULT hr = S_OK;
 	SAFEARRAY* psaValue;
 	vector<wstring> MessageInfoKey = {
@@ -89,6 +67,7 @@ static SAFEARRAY* CreateMessageArray(messageStruct* ms) {
 	}
 	return psaValue;
 }
+#endif
 
 /*
 * 消息处理函数，根据消息缓冲区组装结构并存入容器
@@ -99,7 +78,7 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	// 此处用于区别是发送的还是接收的消息
 	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
 
-	messageStruct message = { 0 };
+	ReceiveMsgStruct message = { 0 };
 	message.isSendMessage = isSendMessage;
 	message.time = GetTimeW();
 	message.l_time = wcslen(message.time);
@@ -136,7 +115,7 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	ZeroMemory(message.filepath, (length + 1) * 2);
 	memcpy(message.filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
 	message.l_filepath = length;
-#ifdef USE_COM_EVENT
+#ifdef USE_COM
 	// 通过连接点，将消息广播给客户端
 	SAFEARRAY* psaValue = CreateMessageArray(&message);
 	VARIANT vsaValue;
@@ -174,7 +153,7 @@ VOID PopHeadMessage() {
 	messageVector[0].filepath = NULL;
 	delete[] messageVector[0].time;
 	messageVector[0].time = NULL;
-	vector<messageStruct>::iterator k = messageVector.begin();
+	vector<ReceiveMsgStruct>::iterator k = messageVector.begin();
 	messageVector.erase(k);
 }
 

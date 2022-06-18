@@ -98,6 +98,7 @@ VOID UnHookFriendStatusCode() {
 	CheckFriendStatusHooked = false;
 }
 
+#ifndef USE_SOCKET
 /*
 * 供外部调用的检查好友状态接口，检查并返回状态码
 * lparameter：要检查的联系人wxid保存地址
@@ -107,6 +108,7 @@ DWORD CheckFriendStatusRemote(LPVOID lparameter) {
 	CheckFriendStatus((wchar_t*)lparameter);
 	return LocalFriendStatus;
 }
+#endif
 
 /*
 * 检查好友状态的具体实现

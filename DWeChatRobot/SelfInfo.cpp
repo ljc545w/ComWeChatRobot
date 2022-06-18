@@ -1,24 +1,40 @@
 #include "pch.h"
 #include <vector>
 
-// 保存个人信息的字符串
-wstring selfinfo = L"";
-
 /*
 * 外部调用时的返回类型
 * message：selfinfo.c_str()
 * length：selfinfo字符串长度
 */
+#ifndef USE_SOCKET
 struct SelfInfoStruct {
 	DWORD message;
 	DWORD length;
 } ret;
+#endif // !USE_SOCKET
+
 
 /*
 * 供外部调用的获取个人信息接口
 * return：DWORD，ret的首地址
 */
+#ifndef USE_SOCKET
 DWORD GetSelfInfoRemote() {
+	ZeroMemory(&ret, sizeof(SelfInfoStruct));
+	wstring selfinfo = GetSelfInfo();
+	wchar_t* message = new wchar_t[selfinfo.length() + 1];
+	memcpy(message,selfinfo.c_str(),(selfinfo.length() + 1) * 2);
+	ret.message = (DWORD)message;
+	ret.length = selfinfo.length();
+	return (DWORD)&ret;
+}
+#endif
+
+/*
+* 获取个人信息
+*/
+wstring GetSelfInfo() {
+	wstring selfinfo = L"";
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
 		WeChatWinBase + 0x236307C,
@@ -45,9 +61,7 @@ DWORD GetSelfInfoRemote() {
 		L"\"wxCity\"",
 		L"\"PhoneNumber\""
 	};
-#ifdef _DEBUG
-	wcout.imbue(locale("chs"));
-#endif
+
 	selfinfo = selfinfo + L"{";
 	for (unsigned int i = 0; i < SelfInfoAddr.size(); i++) {
 		selfinfo = selfinfo + SelfInfoKey[i] + L":";
@@ -91,22 +105,22 @@ DWORD GetSelfInfoRemote() {
 		wtemp = NULL;
 	}
 	selfinfo = selfinfo + L"}";
-	ret.message = (DWORD)selfinfo.c_str();
-	ret.length = selfinfo.length();
 #ifdef _DEBUG
+	wcout.imbue(locale("chs"));
 	wcout << selfinfo << endl;
 #endif
-	return (DWORD)&ret;
+	return selfinfo;
 }
 
 /*
 * 删除个人信息缓存
 * return：void
 */
+#ifndef USE_SOCKET
 VOID DeleteSelfInfoCacheRemote() {
 	if (ret.length) {
-		ZeroMemory((wchar_t*)ret.message, ret.length*2 + 2);
-		ret.length = 0;
-		selfinfo = L"";
+		delete[] (wchar_t*)ret.message;
+		ZeroMemory(&ret, sizeof(SelfInfoStruct));
 	}
 }
+#endif

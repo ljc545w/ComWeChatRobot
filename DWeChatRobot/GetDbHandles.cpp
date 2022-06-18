@@ -29,17 +29,19 @@ DWORD GetDbHandleByDbName(wchar_t* dbname) {
 * 供外部调用的获取数据库信息接口
 * return：DWORD，`dbs`首个成员地址
 */
+#ifndef USE_SOCKET
 DWORD GetDbHandlesRemote() {
 	if (dbs.size() == 0)
 		GetDbHandles();
 	return (DWORD)dbs.data() ;
 }
+#endif
 
 /*
 * 获取数据库信息的具体实现
 * return：void
 */
-void GetDbHandles() {
+void* GetDbHandles() {
 	dbs.clear();
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SqlHandleBaseAddr = WeChatWinBase + SqlHandleMicroMsgOffset;
@@ -121,4 +123,5 @@ void GetDbHandles() {
 		cout << endl;
 	}
 #endif
+	return dbs.data();
 }

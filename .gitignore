@@ -4,10 +4,13 @@
 *.lib
 */Debug/
 */Release/
+*/SOCKET_Debug/
+*/SOCKET_Release/
+*/Win32/
+*/x64/
 *.rar
 /.vs/
 /x64
-*/x64/
 */obj/
 /wxRobot/bin/Debug/
 /wxRobot/bin/Release/*.pdb
