@@ -11,6 +11,7 @@ struct SendArticleStruct {
 BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url, wchar_t* imgpath) {
 	if (!hProcess)
 		return 1;
+	
 	DWORD WeChatRobotBase = GetWeChatRobotBase();
 	DWORD dwId = 0;
 	DWORD dwWriteSize = 0;

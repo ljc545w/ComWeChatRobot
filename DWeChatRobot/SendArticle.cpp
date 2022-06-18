@@ -101,7 +101,6 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	WxBaseStruct pXml(xmlbuffer);
 	WxBaseStruct pReceiver(wxid);
 	WxString imgbuffer = { 0 };
-	wcout << imgpath << endl;
 	if (imgpath) {
 		imgbuffer.buffer = imgpath;
 		imgbuffer.length = wcslen(imgpath);
