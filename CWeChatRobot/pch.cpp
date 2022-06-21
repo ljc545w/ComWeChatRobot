@@ -28,8 +28,6 @@ DWORD CheckFriendStatusRemoteOffset = 0x0;
 
 DWORD HookReceiveMessageRemoteOffset = 0x0;
 DWORD UnHookReceiveMessageRemoteOffset = 0x0;
-DWORD GetHeadMessageRemoteOffset = 0x0;
-DWORD PopHeadMessageRemoteOffset = 0x0;
 
 DWORD GetChatRoomMembersRemoteOffset = 0x0;
 
@@ -154,10 +152,6 @@ BOOL GetProcOffset(wchar_t* workPath) {
     HookReceiveMessageRemoteOffset = HookReceiveMessageRemoteAddr - WeChatBase;
     DWORD UnHookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, UnHookReceiveMessageRemote);
     UnHookReceiveMessageRemoteOffset = UnHookReceiveMessageRemoteAddr - WeChatBase;
-    DWORD GetHeadMessageRemoteAddr = (DWORD)GetProcAddress(hd, GetHeadMessageRemote);
-    GetHeadMessageRemoteOffset = GetHeadMessageRemoteAddr - WeChatBase;
-    DWORD PopHeadMessageRemoteAddr = (DWORD)GetProcAddress(hd, PopHeadMessageRemote);
-    PopHeadMessageRemoteOffset = PopHeadMessageRemoteAddr - WeChatBase;
 
     DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
     GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;

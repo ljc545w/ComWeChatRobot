@@ -170,10 +170,8 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [retval][out] */ BSTR *__result) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartReceiveMessage( 
+            /* [in] */ int port,
             /* [retval][out] */ int *__result) = 0;
-        
-        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CReceiveMessage( 
-            /* [retval][out] */ VARIANT *__result) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStopReceiveMessage( 
             /* [retval][out] */ int *__result) = 0;
@@ -387,11 +385,8 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartReceiveMessage )( 
             IWeChatRobot * This,
+            /* [in] */ int port,
             /* [retval][out] */ int *__result);
-        
-        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CReceiveMessage )( 
-            IWeChatRobot * This,
-            /* [retval][out] */ VARIANT *__result);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStopReceiveMessage )( 
             IWeChatRobot * This,
@@ -572,11 +567,8 @@ EXTERN_C const IID IID_IWeChatRobot;
 #define IWeChatRobot_CGetComWorkPath(This,__result)	\
     ( (This)->lpVtbl -> CGetComWorkPath(This,__result) ) 
 
-#define IWeChatRobot_CStartReceiveMessage(This,__result)	\
-    ( (This)->lpVtbl -> CStartReceiveMessage(This,__result) ) 
-
-#define IWeChatRobot_CReceiveMessage(This,__result)	\
-    ( (This)->lpVtbl -> CReceiveMessage(This,__result) ) 
+#define IWeChatRobot_CStartReceiveMessage(This,port,__result)	\
+    ( (This)->lpVtbl -> CStartReceiveMessage(This,port,__result) ) 
 
 #define IWeChatRobot_CStopReceiveMessage(This,__result)	\
     ( (This)->lpVtbl -> CStopReceiveMessage(This,__result) ) 

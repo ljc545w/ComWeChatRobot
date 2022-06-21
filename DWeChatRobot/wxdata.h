@@ -61,6 +61,18 @@ struct ReceiveMsgStruct {
     DWORD l_filepath;
     wchar_t* time;
     DWORD l_time;
+    ~ReceiveMsgStruct() {
+        if (this->sender)
+            delete[] this->sender;
+        if (this->wxid)
+            delete[] this->wxid;
+        if (this->message)
+            delete[] this->message;
+        if (this->filepath)
+            delete[] this->filepath;
+        if (this->time)
+            delete[] this->time;
+    }
 };
 
 // vector在内存中的表现形式

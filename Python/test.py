@@ -6,16 +6,6 @@ Created on Sat Apr 16 14:06:24 2022
 """
 import time
 from wxRobot import WeChatRobot
-
-# 一个示例回调，将收到的文本消息转发给filehelper
-def ReceiveMessageCallBack(robot,message):
-    chatwith = message.get('sendto') or message.get('from')
-    if message['type'] == 1 and not message['isSendMessage'] and chatwith != 'filehelper':
-        robot.robot.CSendText('filehelper',message['message'])
-    chatwith = message.get('sendto') or message.get('from')
-    wxSender = robot.GetWxUserInfo(chatwith)
-    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else chatwith
-    print("来自 {}\n".format(sender),message)
     
 def test_SendText():
     import os
@@ -59,18 +49,6 @@ def test_FriendStatus():
     f.close()
     wx.StopService()
     
-def test_ReceiveMessage():
-    wx = WeChatRobot()
-    wx.StartService()
-    wx.robot.CStartReceiveMessage()
-    wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
-    wx.StopService()
-    
 def test_ExecuteSQL():
     wx = WeChatRobot()
     wx.StartService()
@@ -104,6 +82,6 @@ if __name__ == '__main__':
     wx = WeChatRobot()
     print([i for i in dir(wx.robot) if '_' not in i and i[0] == 'C'])
     print(wx.GetWeChatVer())
-    print(wx.StartService())
-    wx.StartReceiveMsgByEvent()
+    wx.StartService()
+    wx.StartReceiveMessage()
     wx.StopService()

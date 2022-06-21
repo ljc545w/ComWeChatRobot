@@ -155,19 +155,8 @@ STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR* __result) {
 /*
 * 参数1：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CStartReceiveMessage(int* __result) {
-    *__result = StartReceiveMessage();
-    return S_OK;
-}
-
-/*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CReceiveMessage(VARIANT* __result) {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = ReceiveMessage();
-    *__result = vsaValue;
+STDMETHODIMP CWeChatRobot::CStartReceiveMessage(int port,int* __result) {
+    *__result = StartReceiveMessage(port);
     return S_OK;
 }
 

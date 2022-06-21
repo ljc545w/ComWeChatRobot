@@ -8,12 +8,73 @@ Created on Thu Feb 24 16:19:48 2022
 # Before use,execute `CWeChatRebot.exe /regserver` in cmd by admin user
 # need `pip install comtypes`
 import comtypes.client
+from ctypes import wintypes
 import ast
 import os
+import socketserver
 import threading
-import time
 from comtypes.client import GetEvents
 from comtypes.client import PumpEvents
+        
+class WeChatEventSink():
+    """
+    接收消息的默认回调，可以自定义，并将实例化对象作为StartReceiveMsgByEvent参数
+    自定义的类需要包含以下所有成员
+    """
+    def OnGetMessageEvent(self,msg,*args,**kwargs):
+        print(msg)
+        
+    
+class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        
+    class ReceiveMsgStruct(comtypes.Structure):
+            _fields_ = [("type", wintypes.DWORD),
+                        ("isSendMsg", wintypes.DWORD),
+                        ("sender",comtypes.c_wchar * 80),
+                        ("wxid",comtypes.c_wchar * 80),
+                        ("message",comtypes.c_wchar * 0x1000B),
+                        ("filepath",comtypes.c_wchar * 260),
+                        ("time",comtypes.c_wchar * 20),
+                        ]
+        
+    def handle(self):
+        conn = self.request
+        comtypes.CoInitialize()
+        while True:
+            try:
+                ptrdata = conn.recv(comtypes.sizeof(self.ReceiveMsgStruct))
+                if ptrdata == 'bye'.encode():
+                    break
+                elif ptrdata:
+                    pReceiveMsgStruct = comtypes.cast(ptrdata,comtypes.POINTER(self.ReceiveMsgStruct))
+                    self.msgcallback(pReceiveMsgStruct.contents)
+                response = "200 OK"
+                conn.sendall(response.encode())
+            except OSError:
+                break
+            except:
+                conn.sendall("200 OK".encode())
+        conn.close()
+        comtypes.CoUninitialize()
+        
+    def msgcallback(self,data):
+        # 主线程中已经注入，此处禁止调用StartService和StopService
+        robot = WeChatRobot()
+        msg = {'time':data.time,'type':data.type,'isSendMsg':data.isSendMsg,'wxid':data.wxid,
+               'sendto' if data.isSendMsg else 'from':data.sender,'message':data.message}
+        if '@chatroom' in data.sender:
+            chatroominfo = robot.GetWxUserInfo(data.sender)
+            userinfo = robot.GetWxUserInfo(data.wxid)
+            msg['chatroomname'] = chatroominfo['wxNickName']
+        else:
+            userinfo = robot.GetWxUserInfo(data.sender)
+        msg['nickname'] = userinfo['wxNickName']
+        msg['alias'] = userinfo['wxNumber']
+            
+        print(msg)
+        # TODO: ...
 
 class ChatSession():
     def __init__(self,robot,wxid):
@@ -45,16 +106,6 @@ class ChatSession():
 
     def SendAppMsg(self,appid):
         return self.robot.CSendAppMsg(self.chatwith,appid)
-    
-class WeChatEventSink():
-    """
-    接收消息的默认回调，可以自定义，并将实例化对象作为StartReceiveMsgByEvent参数
-    自定义的类需要包含以下所有成员
-    """
-    def OnGetMessageEvent(self,msg,*args,**kwargs):
-        # 为了兼容原有接口，需要在接收到广播后调用此接口，否则会导致严重的内存泄漏
-        WeChatRobot().robot.CReceiveMessage()
-        print(msg)
 
 class WeChatRobot():
     
@@ -63,7 +114,6 @@ class WeChatRobot():
         self.event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
         self.AddressBook = []
         self.myinfo = {}
-        self.ReceiveMessageStarted = False
         
     def StartService(self) -> int:
         """
@@ -462,44 +512,22 @@ class WeChatRobot():
 
         """
         return self.robot.CCheckFriendStatus(wxid)
-        
-    def ReceiveMessage(self,CallBackFunc = None) -> None:
-        """
-        消息监听函数
-
-        Parameters
-        ----------
-        CallBackFunc : 'function' or None, optional
-            消息回调函数. 默认为空.
-
-        Returns
-        -------
-        None
-            .
-
-        """
-        comtypes.CoInitialize()
-        # 线程中必须新建一个对象，但无需重复注入
-        ThreadRobot = WeChatRobot()
-        while self.ReceiveMessageStarted:
-            try:
-                message = dict(ThreadRobot.robot.CReceiveMessage())
-                if CallBackFunc and message:
-                    CallBackFunc(ThreadRobot,message)
-            except IndexError:
-                message = None
-            time.sleep(0.5)
-        comtypes.CoUninitialize()
     
-    # 接收消息的函数，可以添加一个回调
-    def StartReceiveMessage(self,CallBackFunc = None) -> int:
+    # 接收消息的函数
+    def StartReceiveMessage(self,port:int = 10808,RequestHandler: 'ReceviveMsgBaseServer' = ReceviveMsgBaseServer,mainThread = True) -> int:
         """
         启动接收消息Hook，并创建监听线程
 
         Parameters
         ----------
-        CallBackFunc : 'function' or None, optional
-            指定的回调函数. 默认为空.
+        port : int
+            socket的监听端口号.
+            
+        RequestHandler : ReceviveMsgBaseServer
+            用于处理消息的类，需要继承自socketserver.BaseRequestHandler或ReceviveMsgBaseServer
+            
+        mainThread : bool
+            是否在主线程中启动server
 
         Returns
         -------
@@ -507,13 +535,27 @@ class WeChatRobot():
             启动成功返回0,失败返回非0值.
 
         """
-        self.ReceiveMessageStarted = True
-        status = self.robot.CStartReceiveMessage()
-        if status == 0:
-            self.ReceiveMessageThread = threading.Thread(target = self.ReceiveMessage,args= (CallBackFunc,))
-            self.ReceiveMessageThread.daemon = True
-            self.ReceiveMessageThread.start()
+        ip_port=("127.0.0.1",port)
+        status = self.robot.CStartReceiveMessage(port)
+        if status != 0:
+            print('warning: Hook not success')
+            return status
+        if mainThread:
+            try:
+                s = socketserver.ThreadingTCPServer(ip_port,RequestHandler)
+                s.serve_forever()
+            except:
+                pass
+        else:
+            try:
+                s = socketserver.ThreadingTCPServer(ip_port,RequestHandler)
+                self.socket_server = threading.Thread(target = s.serve_forever)
+                self.socket_server.setDaemon(True)
+                self.socket_server.start()
+            except:
+                pass
         return status
+        
     
     def StartReceiveMsgByEvent(self,EventSink:object or None = None) -> None:
         """
@@ -624,9 +666,18 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        self.ReceiveMessageStarted = False
+        import inspect
         try:
-            self.ReceiveMessageThread.join()
+            """raises the exception, performs cleanup if needed"""
+            tid = comtypes.c_long(self.socket_server.ident)
+            if not inspect.isclass(SystemExit):
+                exctype = type(SystemExit)
+            res = comtypes.pythonapi.PyThreadState_SetAsyncExc(tid, comtypes.py_object(exctype))
+            if res == 0:
+                raise ValueError("invalid thread id")
+            elif res != 1:
+                comtypes.ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+                raise SystemError("PyThreadState_SetAsyncExc failed")
         except:
             pass
         status = self.robot.CStopReceiveMessage()
