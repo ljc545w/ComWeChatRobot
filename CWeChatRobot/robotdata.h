@@ -48,8 +48,6 @@ extern DWORD CheckFriendStatusRemoteOffset;
 
 extern DWORD HookReceiveMessageRemoteOffset;
 extern DWORD UnHookReceiveMessageRemoteOffset;
-extern DWORD GetHeadMessageRemoteOffset;
-extern DWORD PopHeadMessageRemoteOffset;
 
 extern DWORD GetChatRoomMembersRemoteOffset;
 
@@ -98,8 +96,6 @@ extern DWORD ChangeWeChatVerRemoteOffset;
 
 #define HookReceiveMessageRemote		"HookReceiveMessage"
 #define UnHookReceiveMessageRemote		"UnHookReceiveMessage"
-#define GetHeadMessageRemote			"GetHeadMessage"
-#define PopHeadMessageRemote			"PopHeadMessage"
 
 #define GetChatRoomMembersRemote		"GetChatRoomMembersRemote"
 

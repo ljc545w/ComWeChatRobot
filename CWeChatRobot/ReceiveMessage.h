@@ -1,7 +1,6 @@
 #pragma once
 #include<windows.h>
-BOOL StartReceiveMessage();
-SAFEARRAY* ReceiveMessage();
+BOOL StartReceiveMessage(int port);
 BOOL StopReceiveMessage();
 
 BOOL HookImageMsg(wchar_t* savepath);

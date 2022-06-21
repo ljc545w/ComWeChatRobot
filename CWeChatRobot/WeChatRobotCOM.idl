@@ -29,8 +29,7 @@ interface IWeChatRobot : IDispatch
 	[id(11), helpstring("获取个人信息")] HRESULT CGetSelfInfo([out, retval] BSTR* __result);
 	[id(13), helpstring("检查是否被好友删除")] HRESULT CCheckFriendStatus([in] BSTR wxid, [out, retval] int* __result);
 	[id(15), helpstring("获取COM的工作目录")] HRESULT CGetComWorkPath([out, retval] BSTR* __result);
-	[id(16), helpstring("启动接收消息Hook")] HRESULT CStartReceiveMessage([out, retval] int* __result);
-	[id(17), helpstring("从Hook缓存中获取一条消息")] HRESULT CReceiveMessage([out, retval] VARIANT* __result);
+	[id(16), helpstring("启动接收消息Hook")] HRESULT CStartReceiveMessage([in] int port, [out, retval] int* __result);
 	[id(18), helpstring("停止接收消息Hook")] HRESULT CStopReceiveMessage([out, retval] int* __result);
 	[id(19), helpstring("发送艾特消息")] HRESULT CSendAtText([in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [in] BOOL AutoNickName, [out, retval] int* __result);
 	[id(20), helpstring("获取群成员wxid")] HRESULT CGetChatRoomMembers([in] BSTR chatroomid, [out, retval] VARIANT* __result);

@@ -65,8 +65,7 @@ public:
 	STDMETHODIMP CGetSelfInfo(BSTR* __result);
 	STDMETHODIMP CCheckFriendStatus(BSTR wxid, int* __result);
 	STDMETHODIMP CGetComWorkPath(BSTR* __result);
-	STDMETHODIMP CStartReceiveMessage(int* __result);
-	STDMETHODIMP CReceiveMessage(VARIANT* __result);
+	STDMETHODIMP CStartReceiveMessage(int port, int* __result);
 	STDMETHODIMP CStopReceiveMessage(int* __result);
 	STDMETHODIMP CGetChatRoomMembers(BSTR chatroomid, VARIANT* __result);
 	STDMETHODIMP CGetDbHandles(VARIANT* __result);
