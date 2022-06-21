@@ -132,7 +132,8 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 void UnHookAll() {
     UnHookLogMsgInfo();
     UnHookReceiveMessage();
-    StopSearchContactHook();
+    UnHookFriendStatusCode();
+    UnHookSearchContact();
     UnHookVoiceMsg();
     UnHookImageMsg();
     return;
@@ -187,14 +188,13 @@ void PrintProcAddr() {
     printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
     printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
     printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
-    printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
+    printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDB);
     printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
     printf("AddBrandContact 0x%08X\n", (DWORD)AddBrandContact);
-    printf("SelectDataRemote 0x%08X\n", (DWORD)SelectDataRemote);
+    printf("SelectData 0x%08X\n", (DWORD)SelectData);
     printf("SearchContactByNet 0x%08X\n", (DWORD)SearchContactByNet);
-    printf("SearchContactByNetRemote 0x%08X\n", (DWORD)SearchContactByNetRemote);
 }
 
 BOOL ProcessIsWeChat()

@@ -29,6 +29,7 @@ ChatRoomInfoStruct chatroominfo = { 0 };
 * lparameter：保存群聊ID的地址
 * return：DWORD，调用成功且群成员数量不为0，返回`chatroominfo`首地址，否则返回0
 */
+#ifndef USE_SOCKET
 DWORD GetChatRoomMembersRemote(LPVOID lparameter) {
 	wchar_t* chatroomid = (WCHAR*)lparameter;
 	if (chatroominfo.members != NULL) {
@@ -47,6 +48,7 @@ DWORD GetChatRoomMembersRemote(LPVOID lparameter) {
 	}
 	return 0;
 }
+#endif
 
 /*
 * 获取群成员列表的具体实现

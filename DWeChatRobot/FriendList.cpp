@@ -4,29 +4,8 @@
 // 通讯录左树偏移
 #define LeftTreeOffset 0x23638F4
 
-/*
-* 保存单个好友信息的结构体
-* wxIdAddr：wxid保存地址
-* wxNumberAddr：微信号保存地址
-* wxNickNameAddr：昵称保存地址
-* wxRemarkAddr：备注保存地址
-* WxFriendStructW：默认构造函数
-*/
-struct WxFriendStructW {
-	DWORD wxIdAddr;
-	DWORD wxNumberAddr;
-	DWORD wxNickNameAddr;
-	DWORD wxRemarkAddr;
-	WxFriendStructW(DWORD wxIdAddr, DWORD wxNumberAddr, DWORD wxNickNameAddr, DWORD wxRemarkAddr) {
-		this->wxIdAddr = wxIdAddr;
-		this->wxNumberAddr = wxNumberAddr;
-		this->wxNickNameAddr = wxNickNameAddr;
-		this->wxRemarkAddr = wxRemarkAddr;
-	}
-};
-
 // 保存所有好友信息的动态数组
-vector<WxFriendStructW> WxFriendList;
+vector<WxFriendStruct> WxFriendList;
 
 /*
 * 供外部调用的获取好友列表接口1
@@ -37,15 +16,16 @@ int GetFriendListInit() {
 #ifdef _DEBUG
 	cout << WxFriendList.size() << endl;
 #endif
-	return WxFriendList.size();
+	return WxFriendList.size() == 0 ? 0 : WxFriendList.size() - 1;
 }
 
+#ifndef USE_SOCKET
 /*
 * 供外部调用的获取好友列表接口2
 * return：DWORD，WxFriendList第一个成员地址
 */
 DWORD GetFriendListRemote() {
-	if (WxFriendList.size() == 0)
+	if (WxFriendList.size() == 0 || WxFriendList.size() - 1 == 0)
 		return 0;
 #ifdef _DEBUG
 	printf("0x%08X\n", (DWORD)&WxFriendList[0]);
@@ -62,12 +42,12 @@ void GetFriendListFinish() {
 	WxFriendList.clear();
 	cout << WxFriendList.size() << endl;
 }
-
+#endif
 /*
 * 获取好友列表的具体实现
 * return：void
 */
-void __stdcall GetFriendList() {
+WxFriendStruct* __stdcall GetFriendList() {
 #ifdef _DEBUG
 	wcout.imbue(locale("chs"));
 #endif
@@ -114,7 +94,7 @@ void __stdcall GetFriendList() {
 			mov LeftTreeAddr, ecx;
 			popad;
 		}
-		WxFriendStructW p(wxIdAddr, wxNumberAddr, wxNickNameAddr, wxRemarkAddr);
+		WxFriendStruct p(wxIdAddr, wxNumberAddr, wxNickNameAddr, wxRemarkAddr);
 		WxFriendList.push_back(p);
 #ifdef _DEBUG
 		wcout << (wchar_t*)(*(DWORD*)p.wxIdAddr) << endl;
@@ -123,4 +103,7 @@ void __stdcall GetFriendList() {
 			break;
 		}
 	}
+	WxFriendStruct nullp(NULL, NULL, NULL, NULL);
+	WxFriendList.push_back(nullp);
+	return WxFriendList.data();
 }

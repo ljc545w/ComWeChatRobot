@@ -1,5 +1,6 @@
 #include "pch.h"
 #include <vector>
+#include <iostream>
 
 // 接收消息的HOOK地址偏移
 #define ReceiveMessageHookOffset 0x547C0F4C - 0x54270000
@@ -11,31 +12,8 @@
 // 发送消息HOOK的CALL偏移
 #define SendMessageNextCallOffset 0x101E8170 - 0x0FDE0000
 
-/*
-* 保存单条信息的结构
-* messagetype：消息类型
-* sender：发送者wxid；l_sender：`sender`字符数
-* wxid：如果sender是群聊id，则此成员保存具体发送人wxid，否则与`sender`一致；l_wxid：`wxid`字符数
-* message：消息内容，非文本消息是xml格式；l_message：`message`字符数
-* filepath：图片、文件及其他资源的保存路径；l_filepath：`filepath`字符数
-*/
-struct messageStruct {
-	DWORD messagetype;
-	BOOL isSendMessage;
-	wchar_t* sender;
-	DWORD l_sender;
-	wchar_t* wxid;
-	DWORD l_wxid;
-	wchar_t* message;
-	DWORD l_message;
-	wchar_t* filepath;
-	DWORD l_filepath;
-	wchar_t* time;
-	DWORD l_time;
-};
-
 // 保存多条信息的动态数组
-vector<messageStruct> messageVector;
+vector<ReceiveMsgStruct> messageVector;
 
 // 是否开启接收消息HOOK标志
 BOOL ReceiveMessageHooked = false;
@@ -55,6 +33,42 @@ DWORD SendMessageNextCall = GetWeChatWinBase() + SendMessageNextCallOffset;
 // 发送HOOK的跳转地址
 DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
+// 创建广播消息数组
+#ifndef USE_SOCKET
+static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
+	HRESULT hr = S_OK;
+	SAFEARRAY* psaValue;
+	vector<wstring> MessageInfoKey = {
+		L"type",
+		L"isSendMessage",
+		ms->isSendMessage ? L"sendto" : L"from",
+		L"wxid",
+		L"message",
+		L"filepath",
+		L"time"
+	};
+	SAFEARRAYBOUND rgsaBound[2] = { {MessageInfoKey.size(),0},{2,0} };
+	psaValue = SafeArrayCreate(VT_VARIANT, 2, rgsaBound);
+	long keyIndex[2] = { 0,0 };
+	keyIndex[0] = 0; keyIndex[1] = 0;
+	for (unsigned int i = 0; i < MessageInfoKey.size(); i++) {
+		keyIndex[0] = i; keyIndex[1] = 0;
+		_variant_t key = MessageInfoKey[i].c_str();
+		hr = SafeArrayPutElement(psaValue, keyIndex, &key);
+		keyIndex[0] = i; keyIndex[1] = 1;
+		if (i < 2) {
+			_variant_t value = ((DWORD*)ms)[i];
+			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
+		}
+		else {
+			_variant_t value = ((wchar_t**)ms)[i * 2 - 2];
+			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
+		}
+	}
+	return psaValue;
+}
+#endif
+
 /*
 * 消息处理函数，根据消息缓冲区组装结构并存入容器
 * messageAddr：保存消息的缓冲区地址
@@ -64,7 +78,7 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	// 此处用于区别是发送的还是接收的消息
 	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
 
-	messageStruct message = { 0 };
+	ReceiveMsgStruct message = { 0 };
 	message.isSendMessage = isSendMessage;
 	message.time = GetTimeW();
 	message.l_time = wcslen(message.time);
@@ -101,10 +115,14 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	ZeroMemory(message.filepath, (length + 1) * 2);
 	memcpy(message.filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
 	message.l_filepath = length;
-#ifdef _DEBUG
-	wcout << message.time << endl;
+#ifdef USE_COM
+	// 通过连接点，将消息广播给客户端
+	SAFEARRAY* psaValue = CreateMessageArray(&message);
+	VARIANT vsaValue;
+	vsaValue.vt = VT_ARRAY | VT_VARIANT;
+	V_ARRAY(&vsaValue) = psaValue;
+	PostComMessage(&vsaValue);
 #endif
-
 	messageVector.push_back(message);
 }
 
@@ -135,7 +153,7 @@ VOID PopHeadMessage() {
 	messageVector[0].filepath = NULL;
 	delete[] messageVector[0].time;
 	messageVector[0].time = NULL;
-	vector<messageStruct>::iterator k = messageVector.begin();
+	vector<ReceiveMsgStruct>::iterator k = messageVector.begin();
 	messageVector.erase(k);
 }
 

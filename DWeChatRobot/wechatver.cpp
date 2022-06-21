@@ -61,7 +61,13 @@ vector<wstring> split(const wstring& str, const wstring& delim) {
     return res;
 }
 
-BOOL ChangeWeChatVerRemote(wchar_t* verStr) {
+#ifndef USE_SOCKET
+BOOL ChangeWeChatVerRemote(LPVOID verStr) {
+    return ChangeWeChatVer((wchar_t*)verStr);
+}
+#endif
+
+BOOL ChangeWeChatVer(wchar_t* verStr) {
     wstring wverStr(verStr);
     vector<wstring> v_split = split(wverStr, L".");
     BYTE bVer[4] = { 0 };

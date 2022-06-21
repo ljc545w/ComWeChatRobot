@@ -4,19 +4,12 @@
 #define SendAppMsgCall2Offset 0x04AD0980 - 0x04360000
 #define SendAppMsgCall3Offset 0x04B1BB30 - 0x04360000
 
-struct VectorStruct {
-#ifdef _DEBUG
-	DWORD v_head;
-#endif
-	DWORD v_data;
-	DWORD v_end1;
-	DWORD v_end2;
-};
-
+#ifndef USE_SOCKET
 struct SendAppMsgStruct {
 	wchar_t* wxid;
 	wchar_t* appid;
 };
+#endif
 
 BOOL __stdcall SendAppMsg(wchar_t* wxid,wchar_t* appid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
@@ -55,8 +48,10 @@ BOOL __stdcall SendAppMsg(wchar_t* wxid,wchar_t* appid) {
 	return isSuccess;
 }
 
+#ifndef USE_SOCKET
 BOOL SendAppMsgRemote(LPVOID lpParameter) {
 	SendAppMsgStruct* sams = (SendAppMsgStruct*)lpParameter;
 	BOOL isSuccess = SendAppMsg(sams->wxid, sams->appid);
 	return isSuccess;
 }
+#endif

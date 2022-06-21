@@ -13,7 +13,7 @@
 
 using namespace std;
 
-void Injert(DWORD dwPid, wchar_t* wStr);
+void Inject(DWORD dwPid, wchar_t* wStr);
 bool isFileExists_stat(string& name);
 string wstring2string(wstring wstr);
 BOOL RemoveDll(DWORD dwId);

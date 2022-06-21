@@ -31,7 +31,9 @@ BOOL __stdcall DeleteUser(wchar_t* wxid) {
 	return isSuccess;
 }
 
+#ifndef USE_SOCKET
 BOOL DeleteUserRemote(LPVOID lpParameter) {
 	BOOL isSuccess = DeleteUser((wchar_t*)lpParameter);
 	return isSuccess;
 }
+#endif

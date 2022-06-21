@@ -135,27 +135,11 @@ STDMETHODIMP CWeChatRobot::CGetSelfInfo(BSTR* __result) {
 }
 
 /*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CCheckFriendStatusInit(int* __result) {
-    *__result = CheckFriendStatusInit();
-    return S_OK;
-}
-
-/*
 * 参数1：查询的wxid
 * 参数2：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CCheckFriendStatus(BSTR wxid,int* __result) {
     *__result = CheckFriendStatus((wchar_t*)wxid);
-    return S_OK;
-}
-
-/*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CCheckFriendStatusFinish(int* __result) {
-    *__result = CheckFriendStatusFinish();
     return S_OK;
 }
 

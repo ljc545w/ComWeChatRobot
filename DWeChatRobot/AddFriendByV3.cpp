@@ -21,17 +21,21 @@ struct AddFriendByV3ParamStruct {
 	char nullbuffer[0xC] = { 0 };
 };
 
+#ifndef USE_SOCKET
 struct AddFriendByV3Struct {
 	wchar_t* wxid;
 	wchar_t* message;
 	int AddType;
 };
+#endif
 
+#ifndef USE_SOCKET
 BOOL AddFriendByV3Remote(LPVOID lpParameter) {
 	AddFriendByV3Struct* afbvs = (AddFriendByV3Struct*)lpParameter;
 	BOOL isSuccess = AddFriendByV3(afbvs->wxid, afbvs->message,afbvs->AddType);
 	return isSuccess;
 }
+#endif
 
 BOOL __stdcall AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
 	DWORD WeChatWinBase = GetWeChatWinBase();

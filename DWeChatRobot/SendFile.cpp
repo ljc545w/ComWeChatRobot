@@ -18,10 +18,12 @@
 * wxid：wxid的保存地址
 * filepath：文件绝对路径的保存地址
 */
+#ifndef USE_SOCKET
 struct FileParamStruct {
 	DWORD wxid;
 	DWORD filepath;
 };
+#endif
 
 /*
 * 内存中使用的参数结构
@@ -51,10 +53,12 @@ struct WxFileStruct {
 * lpParamStruct：FileParamStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendFileRemote(LPVOID lpParamStruct) {
 	FileParamStruct* params = (FileParamStruct*)lpParamStruct;
 	SendFile((WCHAR*)params->wxid, (WCHAR*)params->filepath);
 }
+#endif
 
 /*
 * 发送文件消息的具体实现

@@ -98,16 +98,9 @@ VOID UnHookFriendStatusCode() {
 	CheckFriendStatusHooked = false;
 }
 
+#ifndef USE_SOCKET
 /*
-* 供外部调用的检查好友状态接口1，启动HOOK
-* return：void
-*/
-VOID CheckFriendStatusInitRemote() {
-	HookFriendStatusCode();
-}
-
-/*
-* 供外部调用的检查好友状态接口2，检查并返回状态码
+* 供外部调用的检查好友状态接口，检查并返回状态码
 * lparameter：要检查的联系人wxid保存地址
 * return：DWORD，好友状态码
 */
@@ -115,14 +108,7 @@ DWORD CheckFriendStatusRemote(LPVOID lparameter) {
 	CheckFriendStatus((wchar_t*)lparameter);
 	return LocalFriendStatus;
 }
-
-/*
-* 供外部调用的检查好友状态接口3，取消HOOK
-* return：void
-*/
-VOID CheckFriendStatusFinishRemote() {
-	UnHookFriendStatusCode();
-}
+#endif
 
 /*
 * 检查好友状态的具体实现
@@ -130,6 +116,8 @@ VOID CheckFriendStatusFinishRemote() {
 * return：void
 */
 VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
+	if (!CheckFriendStatusHooked)
+		HookFriendStatusCode();
 	LocalFriendStatus = 0x0;
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD CheckFriendStatusCall1 = WeChatWinBase + CheckFriendStatusCall1Offset;

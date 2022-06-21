@@ -115,7 +115,7 @@
     <ClInclude Include="WeChatRobot.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="InjertDll.h">
+    <ClInclude Include="InjectDll.h">
       <Filter>注入工具</Filter>
     </ClInclude>
     <ClInclude Include="SendImage.h">
@@ -181,6 +181,12 @@
     <ClInclude Include="DeleteUser.h">
       <Filter>好友相关\删除好友</Filter>
     </ClInclude>
+    <ClInclude Include="_IRobotEventEvents_CP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RobotEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -198,7 +204,7 @@
     <ClCompile Include="WeChatRobot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="InjertDll.cpp">
+    <ClCompile Include="InjectDll.cpp">
       <Filter>注入工具</Filter>
     </ClCompile>
     <ClCompile Include="SendImage.cpp">
@@ -276,6 +282,9 @@
     <ClCompile Include="DeleteUser.cpp">
       <Filter>好友相关\删除好友</Filter>
     </ClCompile>
+    <ClCompile Include="RobotEvent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WeChatRobotCOM.rc">
@@ -287,6 +296,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="WeChatRobot.rgs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="RobotEvent.rgs">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

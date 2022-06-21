@@ -9,87 +9,15 @@
 
 // 添加要在此处预编译的标头
 #include "framework.h"
-#include<windows.h>
 #include<iostream>
-#include "SendImage.h"
-#include "SendText.h"
-#include "SendFile.h"
-#include "SendArticle.h"
-#include "FriendList.h"
-#include "SearchContact.h"
-#include "SelfInfo.h"
-#include "SendCard.h"
-#include "CheckFriendStatus.h"
-#include "LogMsgInfo.h"
-#include "ReceiveMessage.h"
-#include "SendAtText.h"
-#include "GetChatRoomMembers.h"
-#include "GetDbHandles.h"
-#include "DbExecuteSql.h"
-#include "DbBackup.h"
-#include "VerifyFriendApply.h"
-#include "AddFriend.h"
-#include "sqlite3.h"
-#include "wechatver.h"
-#include "DeleteUser.h"
-#include "SendAppMsg.h"
-#include <vector>
-#include <strstream>
+#include<vector>
+#include<strstream>
+#include "wxdata.h"
+#include "wxapi.h"
 #endif //PCH_H
 
-using namespace std;
-#pragma comment(lib,"version.lib")
-#pragma warning(disable:4731)
-// 对于导出函数，需要使用此宏修饰
-#define DLLEXPORT extern "C" __declspec(dllexport)
-
-/*
-* 微信中的基础数据结构
-* buffer：UNICODE字符串
-* length：`buffer`字符数
-* maxLength：`buffer`最大字符数
-* fill1：占位成员1，默认为0
-* fill2：占位成员2，默认为0
-* WxBaseStruct：默认构造函数
-*/
-struct WxBaseStruct
-{
-    wchar_t* buffer;
-    DWORD length;
-    DWORD maxLength;
-    DWORD fill1;
-    DWORD fill2;
-
-    WxBaseStruct(wchar_t* pStr) {
-        buffer = pStr;
-        length = wcslen(pStr);
-        maxLength = wcslen(pStr) * 2;
-        fill1 = 0x0;
-        fill2 = 0x0;
-    }
-};
-
-/*
-* 不使用构造函数的微信基础数据结构，使用频率较低
-*/
-struct WxString
-{
-    wchar_t* buffer = NULL;
-    DWORD length = 0;
-    DWORD maxLength = 0;
-    DWORD fill1 = 0;
-    DWORD fill2 = 0;
-};
-
-BOOL CreateConsole(void);
-DWORD GetWeChatWinBase();
-void Wchar_tToString(std::string& szDst, wchar_t* wchar);
-string UTF8ToGBK(const std::string& strUTF8);
-void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char* originalRecieveCode);
-void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
-DLLEXPORT void UnHookAll();
-wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
-void PrintProcAddr();
-wchar_t* GetTimeW();
-BOOL ProcessIsWeChat();
-BOOL FindOrCreateDirectory(const wchar_t* pszPath);
+#ifdef USE_SOCKET
+#include "wxsocketapi.h"
+#else
+#include "comclient.h"
+#endif

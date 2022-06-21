@@ -1,8 +1,9 @@
 #pragma once
 #include<windows.h>
 
-extern "C" __declspec(dllexport) VOID CheckFriendStatusInitRemote();
+#ifndef USE_SOCKET
 extern "C" __declspec(dllexport) DWORD CheckFriendStatusRemote(LPVOID lparameter);
-extern "C" __declspec(dllexport) VOID CheckFriendStatusFinishRemote();
-
+#endif
 VOID __stdcall CheckFriendStatus(wchar_t* wxid);
+VOID UnHookFriendStatusCode();
+VOID HookFriendStatusCode();

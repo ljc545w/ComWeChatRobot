@@ -53,7 +53,9 @@ BOOL __stdcall AddBrandContact(wchar_t* PublicId) {
 	return isSuccess;
 }
 
+#ifndef USE_SOCKET
 BOOL AddBrandContactRemote(LPVOID lpParameter) {
 	int isSuccess = AddBrandContact((wchar_t*)lpParameter);
 	return isSuccess;
 }
+#endif

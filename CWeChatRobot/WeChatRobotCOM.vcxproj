@@ -220,11 +220,12 @@
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
-    <ClInclude Include="InjertDll.h" />
+    <ClInclude Include="InjectDll.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
+    <ClInclude Include="RobotEvent.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendAppMsg.h" />
     <ClInclude Include="SendArticle.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="WeChatRobotCOM_i.h" />
     <ClInclude Include="wechatver.h" />
     <ClInclude Include="xdlldata.h" />
+    <ClInclude Include="_IRobotEventEvents_CP.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddBrandContact.cpp" />
@@ -254,7 +256,7 @@
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
-    <ClCompile Include="InjertDll.cpp" />
+    <ClCompile Include="InjectDll.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -262,6 +264,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ReceiveMessage.cpp" />
+    <ClCompile Include="RobotEvent.cpp" />
     <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />
     <ClCompile Include="SendAppMsg.cpp" />
@@ -305,6 +308,7 @@
     <ResourceCompile Include="WeChatRobotCOM.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="RobotEvent.rgs" />
     <None Include="WeChatRobot.rgs" />
     <None Include="WeChatRobotCOM.rgs" />
   </ItemGroup>

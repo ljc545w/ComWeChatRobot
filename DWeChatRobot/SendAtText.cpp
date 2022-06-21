@@ -12,6 +12,7 @@
 * wxmsg：发送的内容保存地址
 * length：艾特的人数量，用于指示wxidlist长度
 */
+#ifndef USE_SOCKET
 struct SendAtTextStruct
 {
     DWORD chatroomid;
@@ -20,6 +21,7 @@ struct SendAtTextStruct
     DWORD length;
     BOOL  AutoNickName;
 };
+#endif
 
 /*
 * 内存中使用的参数结构
@@ -40,6 +42,7 @@ struct AtStruct {
 * lpParameter：SendAtTextStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendAtTextRemote(LPVOID lpParameter) {
     SendAtTextStruct* rp = (SendAtTextStruct*)lpParameter;
     wchar_t* wsChatRoomId = (WCHAR*)rp->chatroomid;
@@ -51,6 +54,7 @@ void SendAtTextRemote(LPVOID lpParameter) {
     else
         SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length, rp->AutoNickName);
 }
+#endif
 
 /*
 * 发送艾特消息的具体实现

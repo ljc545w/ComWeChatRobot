@@ -23,6 +23,7 @@
 * abstract：文章摘要的保存地址
 * url：文章链接的保存地址
 */
+#ifndef USE_SOCKET
 struct SendArticleStruct {
 	DWORD wxid;
 	DWORD title;
@@ -30,12 +31,14 @@ struct SendArticleStruct {
 	DWORD url;
 	DWORD imgpath;
 };
+#endif
 
 /*
 * 供外部调用的发送文章消息接口
 * lparameter：SendArticleStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 VOID SendArticleRemote(LPVOID lparameter) {
 	SendArticleStruct* sas = (SendArticleStruct*)lparameter;
 	wchar_t* wxid = (wchar_t*)sas->wxid;
@@ -45,6 +48,7 @@ VOID SendArticleRemote(LPVOID lparameter) {
 	wchar_t* imgpath = sas->imgpath ? (wchar_t*)sas->imgpath : NULL;
 	SendArticle(wxid,title,abstract,url, imgpath);
 }
+#endif
 
 /*
 * 获取自己的wxid保存地址
@@ -101,7 +105,6 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	WxBaseStruct pXml(xmlbuffer);
 	WxBaseStruct pReceiver(wxid);
 	WxString imgbuffer = { 0 };
-	wcout << imgpath << endl;
 	if (imgpath) {
 		imgbuffer.buffer = imgpath;
 		imgbuffer.length = wcslen(imgpath);

@@ -1,5 +1,5 @@
 #pragma once
-#include "InjertDll.h"
+#include "InjectDll.h"
 #include "SendImage.h"
 #include "SendText.h"
 #include "SendFile.h"
@@ -44,9 +44,7 @@ extern DWORD GetSelfInfoOffset;
 extern DWORD DeleteSelfInfoCacheOffset;
 extern wstring SelfInfoString;
 
-extern DWORD CheckFriendStatusInitRemoteOffset;
 extern DWORD CheckFriendStatusRemoteOffset;
-extern DWORD CheckFriendStatusFinishRemoteOffset;
 
 extern DWORD HookReceiveMessageRemoteOffset;
 extern DWORD UnHookReceiveMessageRemoteOffset;
@@ -96,9 +94,7 @@ extern DWORD ChangeWeChatVerRemoteOffset;
 
 #define VerifyFriendApplyRemote			"VerifyFriendApplyRemote"
 
-#define CheckFriendStatusInitRemote		"CheckFriendStatusInitRemote"
 #define CheckFriendStatusRemote			"CheckFriendStatusRemote"
-#define CheckFriendStatusFinishRemote	"CheckFriendStatusFinishRemote"
 
 #define HookReceiveMessageRemote		"HookReceiveMessage"
 #define UnHookReceiveMessageRemote		"UnHookReceiveMessage"

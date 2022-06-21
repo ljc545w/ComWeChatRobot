@@ -21,16 +21,20 @@ struct AddFriendByWxidParamStruct {
 	char nullbuffer[0xC] = { 0 };
 };
 
+#ifndef USE_SOCKET
 struct AddFriendByWxidStruct {
 	wchar_t* wxid;
 	wchar_t* message;
 };
+#endif
 
+#ifndef USE_SOCKET
 BOOL AddFriendByWxidRemote(LPVOID lpParameter) {
 	AddFriendByWxidStruct* afbws = (AddFriendByWxidStruct*)lpParameter;
 	BOOL isSuccess = AddFriendByWxid(afbws->wxid, afbws->message);
 	return isSuccess;
 }
+#endif
 
 BOOL __stdcall AddFriendByWxid(wchar_t* wxid,wchar_t* message) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
