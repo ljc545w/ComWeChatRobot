@@ -2,6 +2,7 @@
 
 #define HookImageMsgAddrOffset 0x61211FF6 - 0x60AE0000
 #define HookImageMsgNextCallOffset 0x61211430 - 0x60AE0000
+#define AutoDownloadTimeSettingOffset 0x239BC50
 
 BOOL ImageMsgHooked = false;
 static DWORD WeChatWinBase = GetWeChatWinBase();
@@ -74,6 +75,9 @@ void __stdcall HookImageMsg() {
 	if (ImageMsgHooked)
 		return;
 	HookAnyAddress(HookImageMsgAddr, dealImageMsg, ImageMsgOldAsm);
+	char settime[] = "00:00-23:59";
+	DWORD AutoDownloadTimeSettingAddr = GetWeChatWinBase() + AutoDownloadTimeSettingOffset;
+	WriteProcessMemory(GetCurrentProcess(), (LPVOID)AutoDownloadTimeSettingAddr, settime, strlen(settime) + 1, 0);
 	ImageMsgHooked = true;
 }
 

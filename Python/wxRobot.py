@@ -15,7 +15,8 @@ import socketserver
 import threading
 from comtypes.client import GetEvents
 from comtypes.client import PumpEvents
-        
+
+
 class WeChatEventSink():
     """
     接收消息的默认回调，可以自定义，并将实例化对象作为StartReceiveMsgByEvent参数
@@ -23,8 +24,7 @@ class WeChatEventSink():
     """
     def OnGetMessageEvent(self,msg,*args,**kwargs):
         print(msg)
-        
-    
+
 class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
@@ -36,7 +36,7 @@ class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
                         ("wxid",comtypes.c_wchar * 80),
                         ("message",comtypes.c_wchar * 0x1000B),
                         ("filepath",comtypes.c_wchar * 260),
-                        ("time",comtypes.c_wchar * 20),
+                        ("time",comtypes.c_wchar * 30)
                         ]
         
     def handle(self):
@@ -44,10 +44,18 @@ class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
         comtypes.CoInitialize()
         while True:
             try:
-                ptrdata = conn.recv(comtypes.sizeof(self.ReceiveMsgStruct))
-                if ptrdata == 'bye'.encode():
-                    break
-                elif ptrdata:
+                ptrdata = conn.recv(1024)
+                try:
+                    if ptrdata.decode() == 'bye':
+                        break
+                except:
+                    pass
+                while len(ptrdata) < comtypes.sizeof(self.ReceiveMsgStruct):
+                    data = conn.recv(1024)
+                    if len(data) == 0:
+                        break
+                    ptrdata += data
+                if ptrdata:
                     pReceiveMsgStruct = comtypes.cast(ptrdata,comtypes.POINTER(self.ReceiveMsgStruct))
                     self.msgcallback(pReceiveMsgStruct.contents)
                 response = "200 OK"
@@ -72,7 +80,6 @@ class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
             userinfo = robot.GetWxUserInfo(data.sender)
         msg['nickname'] = userinfo['wxNickName']
         msg['alias'] = userinfo['wxNumber']
-            
         print(msg)
         # TODO: ...
 
@@ -572,7 +579,7 @@ class WeChatRobot():
             .
 
         """
-        if self.robot.CStartReceiveMessage() != 0:
+        if self.robot.CStartReceiveMessage(0) != 0:
             return
         if self.event is not None:
             sink = EventSink or WeChatEventSink()

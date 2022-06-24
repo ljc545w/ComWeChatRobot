@@ -37,6 +37,6 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
 DLLEXPORT void UnHookAll();
 wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
 void PrintProcAddr();
-wchar_t* GetTimeW();
+wchar_t* GetTimeW(long long timestamp);
 BOOL ProcessIsWeChat();
 BOOL FindOrCreateDirectory(const wchar_t* pszPath);

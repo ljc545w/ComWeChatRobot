@@ -28,7 +28,7 @@ struct ScoketMsgStruct {
 	wchar_t wxid[80];
 	wchar_t message[0x1000B];
 	wchar_t filepath[MAX_PATH];
-	wchar_t time[20];
+	wchar_t time[30];
 };
 
 // 是否开启接收消息HOOK标志
@@ -52,6 +52,10 @@ DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 // 通过socket将消息发送给服务端
 BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 {
+	if (SRVPORT == 0) {
+		delete ms;
+		return false;
+	}
 	SOCKET clientsocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (clientsocket < 0)
 	{
@@ -85,6 +89,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 	memcpy(sms->message, ms->message, ms->l_message * 2);
 	memcpy(sms->filepath, ms->filepath, ms->l_filepath * 2);
 	memcpy(sms->time, ms->time, ms->l_time * 2);
+	wcout << sms->time << endl;
 	int ret = send(clientsocket, (char*)sms, sizeof(ScoketMsgStruct), 0);
 	if (ret == -1 || ret == 0)
 	{
@@ -147,28 +152,21 @@ static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
 }
 #endif
 
-/*
-* 消息处理函数，根据消息缓冲区组装结构并存入容器
-* messageAddr：保存消息的缓冲区地址
-* return：void
-*/
-VOID ReceiveMessage(DWORD messageAddr) {
-	// 此处用于区别是发送的还是接收的消息
+static void dealMessage(DWORD messageAddr) {
 	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
-
 	ReceiveMsgStruct* message = new ReceiveMsgStruct;
 	ZeroMemory(message, sizeof(ReceiveMsgStruct));
 	message->isSendMessage = isSendMessage;
-	message->time = GetTimeW();
+	message->time = GetTimeW(*(DWORD*)(messageAddr + 0x44));
 	message->l_time = wcslen(message->time);
 	message->messagetype = *(DWORD*)(messageAddr + 0x38);
-	
+
 	DWORD length = *(DWORD*)(messageAddr + 0x48 + 0x4);
 	message->sender = new wchar_t[length + 1];
 	ZeroMemory(message->sender, (length + 1) * 2);
-	memcpy(message->sender,(wchar_t*)(*(DWORD*)(messageAddr + 0x48)),length * 2);
+	memcpy(message->sender, (wchar_t*)(*(DWORD*)(messageAddr + 0x48)), length * 2);
 	message->l_sender = length;
-	
+
 	length = *(DWORD*)(messageAddr + 0x170 + 0x4);
 	if (length == 0) {
 		message->wxid = new wchar_t[message->l_sender + 1];
@@ -182,7 +180,7 @@ VOID ReceiveMessage(DWORD messageAddr) {
 		memcpy(message->wxid, (wchar_t*)(*(DWORD*)(messageAddr + 0x170)), length * 2);
 		message->l_wxid = length;
 	}
-	
+
 	length = *(DWORD*)(messageAddr + 0x70 + 0x4);
 	message->message = new wchar_t[length + 1];
 	ZeroMemory(message->message, (length + 1) * 2);
@@ -202,9 +200,22 @@ VOID ReceiveMessage(DWORD messageAddr) {
 	V_ARRAY(&vsaValue) = psaValue;
 	PostComMessage(&vsaValue);
 #endif
-	HANDLE hThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)SendSocketMessage,message,NULL,0);
+	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
 	if (hThread) {
 		CloseHandle(hThread);
+	}
+}
+
+/*
+* 消息处理函数，根据消息缓冲区组装结构并存入容器
+* messageAddr：保存消息的缓冲区地址
+* return：void
+*/
+VOID ReceiveMessage(DWORD messagesAddr) {
+	// 此处用于区别是发送的还是接收的消息
+	DWORD* messages = (DWORD*)messagesAddr;
+	for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298) {
+		dealMessage(messageAddr);
 	}
 }
 
@@ -216,8 +227,8 @@ _declspec(naked) void dealReceiveMessage() {
 	__asm {
 		pushad;
 		pushfd;
-		mov eax, [edi];
-		push eax;
+		// mov eax, [edi];
+		push edi;
 		call ReceiveMessage;
 		add esp, 0x4;
 		popfd;
@@ -235,7 +246,7 @@ _declspec(naked) void dealSendMessage() {
 		pushad;
 		pushfd;
 		push edi;
-		call ReceiveMessage;
+		call dealMessage;
 		add esp, 0x4;
 		popfd;
 		popad;

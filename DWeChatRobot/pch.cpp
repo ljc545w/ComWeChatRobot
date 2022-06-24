@@ -162,12 +162,12 @@ wstring wreplace(wstring source, wchar_t replaced, wstring replaceto) {
 /*
 * 获取当前时间
 */
-wchar_t* GetTimeW() {
+wchar_t* GetTimeW(long long timestamp) {
     wchar_t* wstr = new wchar_t[20];
     memset(wstr, 0, 20 * 2);
-    time_t cTime = time(NULL);
+    // time_t cTime = time(NULL);
     tm tm_out;
-    localtime_s(&tm_out, &cTime);
+    localtime_s(&tm_out, &timestamp);
     swprintf_s(wstr,20, L"%04d-%02d-%02d %02d:%02d:%02d",
         1900 + tm_out.tm_year, tm_out.tm_mon + 1, tm_out.tm_mday,
         tm_out.tm_hour, tm_out.tm_min, tm_out.tm_sec);

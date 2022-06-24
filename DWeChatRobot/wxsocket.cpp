@@ -16,8 +16,11 @@ static void fn(struct mg_connection* c, int ev, void* ev_data, void* fn_data) {
     if (ev == MG_EV_HTTP_MSG) {
         struct mg_http_message* hm = (struct mg_http_message*)ev_data, tmp = { 0 };
         if (mg_http_match_uri(hm, "/api/test/")) {
+            mg_http_reply(c, 200, "", "{\"result\": \"OK\"}", 0, 0);
+            // cout << hm->method.ptr << endl;
+            char* wxid = mg_json_get_str(hm->body, "$.wxid");
+            char* msg = mg_json_get_str(hm->body, "$.msg");
             SendText((wchar_t*)L"filehelper", (wchar_t*)L"≤‚ ‘œ˚œ¢");
-            mg_http_reply(c, 200, "", "{\"result\": \"OK\"}\n", 0, 0);
         }
         else if (mg_http_match_uri(hm, "/api/f2/*")) {
             mg_printf(c, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
@@ -34,6 +37,7 @@ static void fn(struct mg_connection* c, int ev, void* ev_data, void* fn_data) {
 }
 
 void HttpStart() {
+    CreateConsole();
     mg_log_set("2");
     mg_mgr_init(&mgr);
     mg_http_listen(&mgr, s_http_addr, fn, NULL);
