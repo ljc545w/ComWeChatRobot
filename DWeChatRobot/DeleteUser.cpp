@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#define DeleteUserCall1Offset 0x04417570 - 0x04360000
-#define DeleteUserCall2Offset 0x0441D570 - 0x04360000
-#define DeleteUserCall3Offset 0x047C8570 - 0x04360000
+#define DeleteUserCall1Offset 0x100B75D0 - 0x10000000
+#define DeleteUserCall2Offset 0x100BD5C0 - 0x10000000
+#define DeleteUserCall3Offset 0x104685A0 - 0x10000000
 
 BOOL __stdcall DeleteUser(wchar_t* wxid) {
 	DWORD WeChatWinBase = GetWeChatWinBase();

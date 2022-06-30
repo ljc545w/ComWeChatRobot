@@ -1,22 +1,22 @@
 #include "pch.h"
 
 // ¼ì²éºÃÓÑ×´Ì¬CALL1Æ«ÒÆ
-#define CheckFriendStatusCall1Offset 0x594944E0 - 0x593B0000
+#define CheckFriendStatusCall1Offset 0x78784540 - 0x786A0000
 // ¼ì²éºÃÓÑ×´Ì¬CALL2Æ«ÒÆ
-#define CheckFriendStatusCall2Offset 0x59B20890 - 0x593B0000
+#define CheckFriendStatusCall2Offset 0x78E11890 - 0x786A0000
 // ¼ì²éºÃÓÑ×´Ì¬CALL3Æ«ÒÆ
-#define CheckFriendStatusCall3Offset 0x59B20980 - 0x593B0000
+#define CheckFriendStatusCall3Offset 0x78E11980 - 0x786A0000
 // ¼ì²éºÃÓÑ×´Ì¬CALL4Æ«ÒÆ
-#define CheckFriendStatusCall4Offset 0x59813940 - 0x593B0000
+#define CheckFriendStatusCall4Offset 0x78B03970 - 0x786A0000
 // ¼ì²éºÃÓÑ×´Ì¬²ÎÊýÆ«ÒÆ
-#define CheckFriendStatusParamOffset 0x5B7138F4 - 0x593B0000
+#define CheckFriendStatusParamOffset 0x7AA068F4 - 0x786A0000
 
 // ºÃÓÑ×´Ì¬ÂëHOOKµØÖ·Æ«ÒÆ
-#define CheckFriendStatusHookOffset 0x59937373 - 0x593B0000
+#define CheckFriendStatusHookOffset 0x10587373 - 0x10000000
 // HOOKµÄCALLÆ«ÒÆ
-#define CheckFriendStatusNextCallOffset 0x59937410 - 0x593B0000
+#define CheckFriendStatusNextCallOffset 0x10587410 - 0x10000000
 // HOOKÌø×ªµÄµØÖ·Æ«ÒÆ
-#define CheckFriendStatusHookJmpBackOffset 0x59937378 - 0x593B0000
+#define CheckFriendStatusHookJmpBackOffset 0x10587378 - 0x10000000
 
 // HOOKµÄCALLµØÖ·
 DWORD CheckFriendStatusNextCallAddress = GetWeChatWinBase() + CheckFriendStatusNextCallOffset;
@@ -143,10 +143,10 @@ VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
 		mov edi, 0x6;
 		mov esi, 0x0;
 		sub esp, 0x18;
-		mov eax, esp;
-		mov dword ptr[eax], 0x0;
-		mov dword ptr[eax + 0x14], 0xF;
-		mov dword ptr[eax + 0x10], 0x0;
+		mov ecx, esp;
+		mov dword ptr[ecx], 0x0;
+		mov dword ptr[ecx + 0x14], 0xF;
+		mov dword ptr[ecx + 0x10], 0x0;
 		sub esp, 0x18;
 		lea eax, FriendStatusParam;
 		mov ecx, esp;

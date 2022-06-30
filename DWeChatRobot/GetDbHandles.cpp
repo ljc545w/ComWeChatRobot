@@ -1,11 +1,11 @@
 #include "pch.h"
 
 // 联系人相关库偏移
-#define SqlHandleMicroMsgOffset 0x2363934
+#define SqlHandleMicroMsgOffset  0x2366934
 // 公众号相关库偏移
-#define SqlHandlePublicMsgOffset 0x239B3C8
+#define SqlHandlePublicMsgOffset 0x239E3C8
 // 聊天记录相关库偏移
-#define SqlHandleMSGOffset 0x239CF68
+#define SqlHandleMSGOffset 0x239FF68
 
 // 保存数据库信息的容器
 vector<DbInfoStruct> dbs;

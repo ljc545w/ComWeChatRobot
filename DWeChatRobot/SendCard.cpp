@@ -1,9 +1,9 @@
 #include "pch.h"
 
 // 发送名片的CALL偏移
-#define SendCardCallOffset 0x54791D30 - 0x54270000
+#define SendCardCallOffset 0x78BC1D30 - 0x786A0000
 // 清空缓存的CALL偏移
-#define DeleteCardCacheCallOffset 0x54327720 - 0x54270000
+#define DeleteCardCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时提供的参数结构

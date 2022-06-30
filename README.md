@@ -18,8 +18,9 @@ PC微信机器人，实现以下功能：
 # 可用版本
 微信电脑版**3.5.0.46**  
 微信电脑版**3.6.0.18**  
-微信电脑版**3.7.0.26**  
-主分支对应微信3.7.0.26版本，其他版本请查看对应分支。  
+微信电脑版**3.7.0.26**
+微信电脑版**3.7.0.30**  
+主分支对应微信3.7.0.30版本，其他版本请查看对应分支。  
 
 # 编译环境
 **Visual Studio 2019**(平台配置：win32(x86))
@@ -49,7 +50,7 @@ CWeChatRobot.exe /unregserver
 参考[wxRobot.py](/Python/wxRobot.py)  
 **C#：**  
 参考[ComWechatRobotCsharp](https://github.com/RingoStudio/ComWechatRobotCsharp)，感谢@RingoStudio 的贡献  
-**ESDK**  
+**易语言：**  
 参考[ESDK](/ESDK)，感谢@lovezm 的贡献  
 # 更多功能 
 后续计划功能：  
@@ -103,7 +104,9 @@ CWeChatRobot.exe /unregserver
 ## 2022.06.24  
 1. 解决Python脚本中，socket接收数据可能不完整的问题  
 2. 解决心跳时如果同步了同一个人的多条消息，只会返回一条的问题  
-3. 感谢@shangdev 提供的思路，现在开启hook图片的时会修改自动下载图片时段为"00:00-23:59"  
+3. 感谢@shangdev 提供的思路，现在开启hook图片的时会修改自动下载图片时段为全天  
+## 2022.06.30  
+1. 已适配3.7.0.30版本  
 # 打赏作者
 请给作者一个star，感谢感谢  
 # 免责声明

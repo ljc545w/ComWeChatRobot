@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#define HookVoiceMsgAddrOffset 0x610528DA - 0x60AE0000
-#define HookVoiceMsgNextCallOffset 0x620F1040 - 0x60AE0000
+#define HookVoiceMsgAddrOffset 0x105728DA - 0x10000000
+#define HookVoiceMsgNextCallOffset 0x11612540 - 0x10000000
 
 BOOL VoiceMsgHooked = false;
 static DWORD WeChatWinBase = GetWeChatWinBase();

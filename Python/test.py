@@ -5,10 +5,10 @@ Created on Sat Apr 16 14:06:24 2022
 @author: lijinchao-002
 """
 import time
+import os
 from wxRobot import WeChatRobot
     
 def test_SendText():
-    import os
     path = os.path.split(os.path.realpath(__file__))[0]
     # image full path
     imgpath = os.path.join(path,'test\\测试图片.png')
@@ -34,7 +34,6 @@ def test_FriendStatus():
     wx = WeChatRobot()
     wx.StartService()
     FriendList = wx.GetFriendList()
-    wx.CheckFriendStatusInit()
     index = "\t".join(['微信号','昵称','备注','状态','\n'])
     f.writelines(index)
     for Friend in FriendList:

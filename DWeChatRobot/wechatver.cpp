@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#define WeChatVersionOffset 0x2382AF0
+#define WeChatVersionOffset 0x2385AF0
 
 DWORD GetWeChatVerInt()
 {

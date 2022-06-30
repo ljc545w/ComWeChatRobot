@@ -1,20 +1,22 @@
 #include "pch.h"
 
 // 发送文章CALL1偏移
-#define SendArticleCall1Offset 0x54328A10 - 0x54270000
+#define SendArticleCall1Offset 0x78758A70 - 0x786A0000
 // 发送文章CALL2偏移
-#define SendArticleCall2Offset 0x5465D5E0 - 0x54270000
+#define SendArticleCall2Offset 0x78A8D5E0 - 0x786A0000
 // 发送文章CALL3偏移
-#define SendArticleCall3Offset 0x54377EB0 - 0x54270000
+#define SendArticleCall3Offset 0x787A7F00 - 0x786A0000
 // 发送文章CALL4偏移
-#define SendArticleCall4Offset 0x5465D7B0 - 0x54270000
+#define SendArticleCall4Offset 0x78A8D7B0 - 0x786A0000
 // 发送文章CALL参数偏移
-#define SendArticleParamOffset 0x565F3FE4 - 0x54270000
+#define SendArticleParamOffset 0x7AA26FE4 - 0x786A0000
+// 个人WXID偏移
+#define SelfWxidAddrOffset 0x236607C
 
 // 清空缓存CALL1偏移
-#define SendArticleClearCacheCall1Offset 0x54916450 - 0x54270000
+#define SendArticleClearCacheCall1Offset 0x78D46450 - 0x786A0000
 // 清空缓存CALL2偏移
-#define SendArticleClearCacheCall2Offset 0x54327720 - 0x54270000
+#define SendArticleClearCacheCall2Offset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时传递的参数结构
@@ -55,7 +57,7 @@ VOID SendArticleRemote(LPVOID lparameter) {
 * return：DWORD，个人wxid保存地址
 */
 DWORD GetSelfWxIdAddr() {
-	DWORD baseAddr = GetWeChatWinBase() + 0x236307C;
+	DWORD baseAddr = GetWeChatWinBase() + SelfWxidAddrOffset;
 	char wxidbuffer[0x100] = { 0 };
 	DWORD SelfWxIdAddr = 0x0;
 	sprintf_s(wxidbuffer, "%s", (char*)baseAddr);

@@ -4,15 +4,15 @@
 #include <vector>
 
 // 获取好友信息CALL1偏移
-#define GetUserInfoCall1Offset 0x5946D570 - 0x593B0000
+#define GetUserInfoCall1Offset 0x100BD5C0 - 0x10000000
 // 获取好友信息CALL2偏移
-#define GetUserInfoCall2Offset 0x59B20980 - 0x593B0000
+#define GetUserInfoCall2Offset 0x10771980 - 0x10000000
 // 获取好友信息CALL3偏移
-#define GetUserInfoCall3Offset 0x59816270 - 0x593B0000
+#define GetUserInfoCall3Offset 0x104662A0 - 0x10000000
 // 清理好友信息缓存参数
-#define DeleteUserInfoCacheCall1Offset 0x59A752B0 - 0x593B0000
+#define DeleteUserInfoCacheCall1Offset 0x106C52B0 - 0x10000000
 // 清理好友信息缓存CALL2
-#define DeleteUserInfoCacheCall2Offset 0x5946E680 - 0x593B0000
+#define DeleteUserInfoCacheCall2Offset 0x100BE6D0 - 0x10000000
 
 /*
 * 外部调用时的返回类型

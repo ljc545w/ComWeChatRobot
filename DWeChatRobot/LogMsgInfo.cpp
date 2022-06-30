@@ -1,11 +1,11 @@
 #include "pch.h"
 
 // 微信日志HOOK地址偏移
-#define HookLogMsgInfoAddrOffset 0x549DF444 - 0x54270000
+#define HookLogMsgInfoAddrOffset 0x78E10444 - 0x786A0000
 // HOOK的CALL偏移
-#define HookLogMsgInfoNextCallOffset 0x55C7E50E - 0x54270000
+#define HookLogMsgInfoNextCallOffset 0x7A0AF9BE - 0x786A0000
 // HOOK的跳转地址偏移
-#define HookLogMsgJmpBackOffset 0x549DF449 - 0x54270000
+#define HookLogMsgJmpBackOffset 0x78E10449 - 0x786A0000
 
 // 微信日志HOOK地址
 DWORD HookLogMsgInfoAddr = GetWeChatWinBase() + HookLogMsgInfoAddrOffset;

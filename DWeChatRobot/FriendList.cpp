@@ -2,7 +2,7 @@
 #include <vector> 
 
 // 通讯录左树偏移
-#define LeftTreeOffset 0x23638F4
+#define LeftTreeOffset 0x23668F4
 
 // 保存所有好友信息的动态数组
 vector<WxFriendStruct> WxFriendList;
