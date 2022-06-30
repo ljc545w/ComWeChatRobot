@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#define SendAppMsgCall1Offset 0x04421340 - 0x04360000
-#define SendAppMsgCall2Offset 0x04AD0980 - 0x04360000
-#define SendAppMsgCall3Offset 0x04B1BB30 - 0x04360000
+#define SendAppMsgCall1Offset 0x787613A0 - 0x786A0000
+#define SendAppMsgCall2Offset 0x78E11980 - 0x786A0000
+#define SendAppMsgCall3Offset 0x78E5CB30 - 0x786A0000
 
 #ifndef USE_SOCKET
 struct SendAppMsgStruct {

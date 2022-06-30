@@ -10,14 +10,14 @@ using namespace std;
 #define CLTIP "127.0.0.1"
 
 // 接收消息的HOOK地址偏移
-#define ReceiveMessageHookOffset 0x547C0F4C - 0x54270000
+#define ReceiveMessageHookOffset 0x78BF0F4C - 0x786A0000
 // 接收消息HOOK的CALL偏移
-#define ReceiveMessageNextCallOffset 0x54D04E60 - 0x54270000
+#define ReceiveMessageNextCallOffset 0x79136350 - 0x786A0000
 
 // 发送消息的HOOK地址偏移
-#define SendMessageHookOffset 0x102C8E32 - 0x0FDE0000
+#define SendMessageHookOffset 0x78B88E42 - 0x786A0000
 // 发送消息HOOK的CALL偏移
-#define SendMessageNextCallOffset 0x101E8170 - 0x0FDE0000
+#define SendMessageNextCallOffset 0x78AA8170 - 0x786A0000
 
 static int SRVPORT = 0;
 
@@ -60,7 +60,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 	if (clientsocket < 0)
 	{
 #ifdef _DEBUG
-		cout << "create socket error:" << strerror(errno) << " errno:" << errno << endl;
+		cout << "create socket error," << " errno:" << errno << endl;
 #endif
 		return false;
 	}
@@ -74,7 +74,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 	if (connect(clientsocket, reinterpret_cast<sockaddr*>(&clientAddr), sizeof(sockaddr)) < 0)
 	{
 #ifdef _DEBUG
-		cout << "connect error:" << strerror(errno) << " errno:" << errno << endl;
+		cout << "connect error,"<< " errno:" << errno << endl;
 #endif
 		delete ms;
 		return false;
@@ -94,7 +94,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 	if (ret == -1 || ret == 0)
 	{
 #ifdef _DEBUG
-		printf("send fail %s\n", strerror(errno));
+		cout << "send fail," << " errno:" << errno << endl;
 #endif
 		delete ms;
 		delete sms;

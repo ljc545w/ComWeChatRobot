@@ -1,15 +1,15 @@
 #include "pch.h"
 
 // 添加好友CALL1偏移
-#define AddFriendByWxidCall1Offset 0x594944E0 - 0x593B0000
+#define AddFriendByWxidCall1Offset 0x78784540 - 0x786A0000
 // 添加好友CALL2偏移
-#define AddFriendByWxidCall2Offset 0x59B20890 - 0x593B0000
+#define AddFriendByWxidCall2Offset 0x78E11890 - 0x786A0000
 // 添加好友CALL3偏移
-#define AddFriendByWxidCall3Offset 0x59B20980 - 0x593B0000
+#define AddFriendByWxidCall3Offset 0x78E11980 - 0x786A0000
 // 添加好友CALL4偏移
-#define AddFriendByWxidCall4Offset 0x59813940 - 0x593B0000
+#define AddFriendByWxidCall4Offset 0x78B03970 - 0x786A0000
 // 添加好友参数偏移
-#define AddFriendByWxidParamOffset 0x5B7138F4 - 0x593B0000
+#define AddFriendByWxidParamOffset 0x7AA068F4 - 0x786A0000
 
 struct AddFriendByWxidParamStruct {
 	DWORD fill0 = 0x0;

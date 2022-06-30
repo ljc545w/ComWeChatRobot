@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#define AddPublicNoticeCallOffset  0x64DAC1C4 - 0x62D70000
-#define AddPublicNoticeParamOffset 0x64C51DC4 - 0x62D70000
+#define AddPublicNoticeCallOffset  0x1203DB14 - 0x10000000
+#define AddPublicNoticeParamOffset 0x7A583DCC - 0x786A0000
 
 struct AddBrandContactStruct {
 	DWORD handle;

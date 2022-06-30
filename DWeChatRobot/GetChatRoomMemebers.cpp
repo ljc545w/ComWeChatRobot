@@ -1,13 +1,13 @@
 #include "pch.h"
 
 // 获取群成员CALL1偏移
-#define GetChatRoomMembersCall1Offset 0x54926F80 - 0x54270000
+#define GetChatRoomMembersCall1Offset 0x106B6F80 - 0x10000000
 // 获取群成员CALL2偏移
-#define GetChatRoomMembersCall2Offset 0x54352990 - 0x54270000
+#define GetChatRoomMembersCall2Offset 0x100E29F0 - 0x10000000
 // 获取群成员CALL3偏移
-#define GetChatRoomMembersCall3Offset 0x546B88C0 - 0x54270000
+#define GetChatRoomMembersCall3Offset 0x104488C0 - 0x10000000
 // 清空缓存CALL偏移
-#define DeleteGetChatRoomMembersCacheCallOffset 0x549271A0 - 0x54270000
+#define DeleteGetChatRoomMembersCacheCallOffset 0x106B71A0 - 0x10000000
 
 /*
 * 外部调用的返回类型

@@ -1,13 +1,13 @@
 #include "pch.h"
 
-#define SearchContactByNetCall1Offset 0x638BF150 - 0x635C0000
-#define SearchContactByNetCall2Offset 0x63ACF9C0 - 0x635C0000
+#define SearchContactByNetCall1Offset 0x102FF150 - 0x10000000
+#define SearchContactByNetCall2Offset 0x1050F9C0 - 0x10000000
 
-#define HookSearchContactErrcodeAddrOffset 0x04DD97C4 - 0x047A0000
-#define HookSearchContactErrcodeNextCallOffset 0x0425F170 - 0x03AF0000
+#define HookSearchContactErrcodeAddrOffset 0x106397C4 - 0x10000000
+#define HookSearchContactErrcodeNextCallOffset 0x10770170 - 0x10000000
 
-#define HookUserInfoAddrOffset 0x04ABB520 - 0x047A0000
-#define HookUserInfoNextCallOffset 0x04ABB770 - 0x047A0000
+#define HookUserInfoAddrOffset 0x1031B520 - 0x10000000
+#define HookUserInfoNextCallOffset 0x1031B770 - 0x10000000
 
 static BOOL SearchContactHooked = false;
 static char HookSearchContactErrcodeOldAsm[5] = { 0 };

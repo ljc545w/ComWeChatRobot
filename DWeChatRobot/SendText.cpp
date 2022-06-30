@@ -1,9 +1,9 @@
 #include "pch.h"
 
 // 发送文本消息的CALL偏移
-#define SendTextCallOffset 0x67391D30 - 0x66E70000
+#define SendTextCallOffset 0x78BC1D30 - 0x786A0000
 // 清空缓存的CALL偏移
-#define DeleteTextCacheCallOffset 0x54327720 - 0x54270000
+#define DeleteTextCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时传递的参数结构

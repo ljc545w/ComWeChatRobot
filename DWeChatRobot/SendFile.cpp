@@ -1,17 +1,13 @@
 #include "pch.h"
 
 // 发送文件CALL1偏移
-#define SendFileCall1Offset (0x549E0980 - 0x54270000)
+#define SendFileCall1Offset (0x78763B70 - 0x786A0000)
 // 发送文件CALL2偏移
-#define SendFileCall2Offset (0x549E0980 - 0x54270000)
+#define SendFileCall2Offset (0x78E11980 - 0x786A0000)
 // 发送文件CALL3偏移
-#define SendFileCall3Offset (0x5465D8C0 - 0x54270000)
-// 发送文件CALL4偏移
-#define SendFileCall4Offset (0x54698270 - 0x54270000)
-// 发送文件参数偏移
-#define SendFileParamsOffset (0x565D36B0 - 0x54270000)
+#define SendFileCall3Offset (0x78A8D8C0 - 0x786A0000)
 // 清空缓存CALL偏移
-#define DeleteSendFileCacheCallOffset (0x54327720 - 0x54270000)
+#define DeleteSendFileCacheCallOffset (0x78757780 - 0x786A0000)
 
 /*
 * 外部调用时传递的参数结构
@@ -70,33 +66,31 @@ void __stdcall SendFile(wchar_t* receiver, wchar_t* FilePath) {
 	WxBaseStruct pReceiver(receiver);
 	WxBaseStruct pFilePath(FilePath);
 	WxFileStruct esi_(FilePath);
+	WxString nullbuffer = { 0 };
 
 	DWORD WeChatWinBase = GetWeChatWinBase();
 
 	DWORD WxSendFileCall1 = WeChatWinBase + SendFileCall1Offset;
 	DWORD WxSendFileCall2 = WeChatWinBase + SendFileCall2Offset;
 	DWORD WxSendFileCall3 = WeChatWinBase + SendFileCall3Offset;
-	DWORD WxSendFileCall4 = WeChatWinBase + SendFileCall4Offset;
-	DWORD WxSendFileParams = WeChatWinBase + SendFileParamsOffset;
 	DWORD DeleteSendFileCacheCall = WeChatWinBase + DeleteSendFileCacheCallOffset;
-
+	DWORD WxSendFileParams = 0;
+	
 	char buffer[0x3B0] = { 0 };
 
 	DWORD edi_ = pReceiver.length;
 	DWORD ptrReceiver = (DWORD)pReceiver.buffer;
 
-	DWORD tempecx = 0;
-
 	__asm {
 		pushad;
 		pushfd;
+		call WxSendFileCall1;
 		sub esp, 0x14;
-		mov edi, esp;
-		mov dword ptr ds : [edi] , 0x0;
-		mov dword ptr ds : [edi + 0x4] , 0x0;
-		mov dword ptr ds : [edi + 0x8] , 0x0;
-		mov dword ptr ds : [edi + 0xC] , 0x0;
-		mov dword ptr ds : [edi + 0x10] , 0x0;
+		mov WxSendFileParams, eax;
+		lea eax, nullbuffer;
+		mov ecx, esp;
+		push eax;
+		call WxSendFileCall2;
 		push 0x00DBE200;
 		sub esp, 0x14;
 		mov edi, esp;
@@ -109,13 +103,13 @@ void __stdcall SendFile(wchar_t* receiver, wchar_t* FilePath) {
 		lea eax, pFilePath;
 		mov ecx, esp;
 		push eax;
-		call WxSendFileCall1;
+		call WxSendFileCall2;
 		sub esp, 0x14;
 		lea eax, pReceiver;
 		mov ecx, esp;
 		push eax;
 		call WxSendFileCall2;
-		mov ecx, [WxSendFileParams];
+		mov ecx, dword ptr [WxSendFileParams];
 		lea eax, buffer;
 		push eax;
 		call WxSendFileCall3;

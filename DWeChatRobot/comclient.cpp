@@ -8,7 +8,7 @@
 #include <iostream>
 #include <thread>
 
-CComModule m_commodule;
+// CComModule m_commodule;
 
 class CSink :
     public CComObjectRoot,
@@ -48,11 +48,6 @@ BOOL PostComMessage(VARIANT* msg) {
         CComObject<CSink>::CreateInstance(&sinkptr);
         DWORD cookies = 0;
         AtlAdvise(spRobotEvent, sinkptr, __uuidof(_IRobotEventEvents), &cookies);
-        */
-        /*
-        CComVariant varParam;
-        varParam.vt = VT_BSTR;
-        varParam = pmsg;
         */
         int __result = 0;
         spRobotEvent->CPostMessage(msg, &__result);

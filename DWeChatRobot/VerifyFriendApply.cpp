@@ -1,8 +1,8 @@
 #include "pch.h"
 
-#define VerifyFriendApplyCall1Offset 0x6BBC0980 - 0x6B450000
-#define VerifyFriendApplyCall2Offset 0x6B6FE8D0 - 0x6B450000
-#define VerifyFriendApplyParamOffset 0x6D3320D8 - 0x6B450000
+#define VerifyFriendApplyCall1Offset 0x10771980 - 0x10000000
+#define VerifyFriendApplyCall2Offset 0x102AE8D0 - 0x10000000
+#define VerifyFriendApplyParamOffset 0x11EE40E0 - 0x10000000
 
 #ifndef USE_SOCKET
 struct VerifyFriendApplyStruct {

@@ -37,16 +37,16 @@ wstring GetSelfInfo() {
 	wstring selfinfo = L"";
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
-		WeChatWinBase + 0x236307C,
-		WeChatWinBase + 0x2363548,
-		WeChatWinBase + 0x23630F4,
-		*(DWORD*)(WeChatWinBase + 0x236322C),
-		*(DWORD*)(WeChatWinBase + 0x239E11C),
-		*(DWORD*)(WeChatWinBase + 0x23633D4),
-		WeChatWinBase + 0x23632E8,
-		WeChatWinBase + 0x23631FC,
-		WeChatWinBase + 0x2363214,
-		WeChatWinBase + 0x2363128
+		WeChatWinBase + 0x236607C,
+		WeChatWinBase + 0x2366548,
+		WeChatWinBase + 0x23660F4,
+		*(DWORD*)(WeChatWinBase + 0x236622C),
+		*(DWORD*)(WeChatWinBase + 0x23A111C),
+		*(DWORD*)(WeChatWinBase + 0x23663D4),
+		WeChatWinBase + 0x23662E8,
+		WeChatWinBase + 0x23661FC,
+		WeChatWinBase + 0x2366214,
+		WeChatWinBase + 0x2366128
 	};
 
 	vector<wstring> SelfInfoKey = {
