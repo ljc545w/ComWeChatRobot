@@ -43,6 +43,7 @@ extern DWORD VerifyFriendApplyOffset;
 extern DWORD GetSelfInfoOffset;
 extern DWORD DeleteSelfInfoCacheOffset;
 extern wstring SelfInfoString;
+extern DWORD isWxLoginOffset;
 
 extern DWORD CheckFriendStatusRemoteOffset;
 
@@ -89,6 +90,7 @@ extern DWORD ChangeWeChatVerRemoteOffset;
 #define GetSelfInfoRemote				"GetSelfInfoRemote"
 #define DeleteSelfInfoCacheRemote		"DeleteSelfInfoCacheRemote"
 #define SearchContactByNetRemote		"SearchContactByNetRemote"
+#define isWxLoginRemote					"isWxLogin"
 
 #define VerifyFriendApplyRemote			"VerifyFriendApplyRemote"
 

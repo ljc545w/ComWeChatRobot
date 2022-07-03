@@ -21,6 +21,7 @@ DWORD DeleteUserInfoCacheOffset = 0x0;
 DWORD GetSelfInfoOffset = 0x0;
 DWORD DeleteSelfInfoCacheOffset = 0x0;
 DWORD SearchContactByNetRemoteOffset = 0x0;
+DWORD isWxLoginOffset = 0;
 
 DWORD VerifyFriendApplyOffset = 0x0;
 
@@ -144,6 +145,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     DeleteSelfInfoCacheOffset = DeleteSelfInfoCacheProcAddr - WeChatBase;
     DWORD SearchContactByNetRemoteAddr = (DWORD)GetProcAddress(hd, SearchContactByNetRemote);
     SearchContactByNetRemoteOffset = SearchContactByNetRemoteAddr - WeChatBase;
+    DWORD isWxLoginAddr = (DWORD)GetProcAddress(hd, isWxLoginRemote);
+    isWxLoginOffset = isWxLoginAddr - WeChatBase;
 
     DWORD CheckFriendStatusRemoteAddr = (DWORD)GetProcAddress(hd, CheckFriendStatusRemote);
     CheckFriendStatusRemoteOffset = CheckFriendStatusRemoteAddr - WeChatBase;

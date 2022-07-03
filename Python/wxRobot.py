@@ -134,6 +134,18 @@ class WeChatRobot():
         """
         status = self.robot.CStartRobotService()
         return status
+    
+    def IsWxLogin(self) -> int:
+        """
+        获取微信登录状态
+
+        Returns
+        -------
+        bool
+            微信登录状态.
+
+        """
+        return self.robot.CIsWxLogin()
 
     def SendText(self,receiver:str,msg:str) -> int:
         """

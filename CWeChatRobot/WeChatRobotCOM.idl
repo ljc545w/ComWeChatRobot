@@ -50,6 +50,7 @@ interface IWeChatRobot : IDispatch
 	[id(35), helpstring("修改微信版本号")] HRESULT CChangeWeChatVer([in] BSTR verStr, [out, retval] int* __result);
 	[id(36), helpstring("发送小程序")] HRESULT CSendAppMsg([in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
 	[id(37), helpstring("删除好友")] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
+	[id(38), helpstring("获取登录状态")] HRESULT CIsWxLogin([out, retval] int* __result);
 };
 [
 	object,

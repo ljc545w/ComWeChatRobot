@@ -1,6 +1,8 @@
 #include "pch.h"
 #include <vector>
 
+#define CheckLoginOffset 0x2366538
+
 /*
 * 外部调用时的返回类型
 * message：selfinfo.c_str()
@@ -40,6 +42,7 @@ wstring GetSelfInfo() {
 		WeChatWinBase + 0x236607C,
 		WeChatWinBase + 0x2366548,
 		WeChatWinBase + 0x23660F4,
+		WeChatWinBase + 0x23661F8,
 		*(DWORD*)(WeChatWinBase + 0x236622C),
 		*(DWORD*)(WeChatWinBase + 0x23A111C),
 		*(DWORD*)(WeChatWinBase + 0x23663D4),
@@ -53,6 +56,7 @@ wstring GetSelfInfo() {
 		L"\"wxId\"",
 		L"\"wxNumber\"",
 		L"\"wxNickName\"",
+		L"\"Sex\"",
 		L"\"wxSignature\"",
 		L"\"wxBigAvatar\"",
 		L"\"wxSmallAvatar\"",
@@ -88,10 +92,29 @@ wstring GetSelfInfo() {
 				temp = (char*)SelfInfoAddr[i];
 			}
 		}
+		else if (!SelfInfoKey[i].compare(L"\"Sex\"")) {
+			int sex = *(int*)SelfInfoAddr[i];
+			switch (sex) {
+			case 1: {
+				selfinfo = selfinfo + L"男\",";
+				break;
+			}
+			case 2: {
+				selfinfo = selfinfo + L"女\",";
+				break;
+			}
+			default: {
+				selfinfo = selfinfo + L"未知\",";
+				break;
+			}
+			}
+			continue;
+		}
 		else {
 			temp = (char*)SelfInfoAddr[i];
-			if (temp == NULL || strlen(temp) == 0)
+			if (temp == NULL || strlen(temp) == 0) {
 				temp = (char*)"null";
+			}
 		}
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];
 		ZeroMemory(wtemp, (strlen(temp) + 1) * 2);
@@ -110,6 +133,11 @@ wstring GetSelfInfo() {
 	wcout << selfinfo << endl;
 #endif
 	return selfinfo;
+}
+
+BOOL isWxLogin() {
+	DWORD CheckLoginAddr = GetWeChatWinBase() + CheckLoginOffset;
+	return *(BOOL*)CheckLoginAddr;
 }
 
 /*

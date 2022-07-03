@@ -257,6 +257,9 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CIsWxLogin( 
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -492,6 +495,10 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR wxid,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CIsWxLogin )( 
+            IWeChatRobot * This,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -629,6 +636,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CDeleteUser(This,wxid,__result)	\
     ( (This)->lpVtbl -> CDeleteUser(This,wxid,__result) ) 
+
+#define IWeChatRobot_CIsWxLogin(This,__result)	\
+    ( (This)->lpVtbl -> CIsWxLogin(This,__result) ) 
 
 #endif /* COBJMACROS */
 

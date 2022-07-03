@@ -341,9 +341,17 @@ STDMETHODIMP CWeChatRobot::CSendAppMsg(BSTR wxid,BSTR appid,int* __result) {
 
 /*
 * 参数1：要删除的人wxid
-* 参数3：预返回的值，调用时无需提供
+* 参数2：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CDeleteUser(BSTR wxid, int* __result) {
     *__result = DeleteUser(wxid);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CIsWxLogin(int* __result) {
+    *__result = isWxLogin();
     return S_OK;
 }
