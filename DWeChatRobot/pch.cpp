@@ -29,6 +29,23 @@ DWORD GetWeChatWinBase() {
     return (DWORD)GetModuleHandleA("WeChatWin.dll");
 }
 
+BOOL FindOrCreateDirectory(const wchar_t* pszPath)
+{
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(pszPath, &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        FindClose(hFind);
+        return true;
+    }
+
+    if (!::CreateDirectory(pszPath, NULL))
+    {
+        return false;
+    }
+    return true;
+}
+
 /*
 * 将宽字节字符串转换成`std::string`
 */
@@ -115,7 +132,10 @@ void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode)
 void UnHookAll() {
     UnHookLogMsgInfo();
     UnHookReceiveMessage();
-    StopSearchContactHook();
+    UnHookFriendStatusCode();
+    UnHookSearchContact();
+    UnHookVoiceMsg();
+    UnHookImageMsg();
     return;
 }
 
@@ -142,12 +162,12 @@ wstring wreplace(wstring source, wchar_t replaced, wstring replaceto) {
 /*
 * 获取当前时间
 */
-wchar_t* GetTimeW() {
+wchar_t* GetTimeW(long long timestamp) {
     wchar_t* wstr = new wchar_t[20];
     memset(wstr, 0, 20 * 2);
-    time_t cTime = time(NULL);
+    // time_t cTime = time(NULL);
     tm tm_out;
-    localtime_s(&tm_out, &cTime);
+    localtime_s(&tm_out, &timestamp);
     swprintf_s(wstr,20, L"%04d-%02d-%02d %02d:%02d:%02d",
         1900 + tm_out.tm_year, tm_out.tm_mon + 1, tm_out.tm_mday,
         tm_out.tm_hour, tm_out.tm_min, tm_out.tm_sec);
@@ -168,13 +188,13 @@ void PrintProcAddr() {
     printf("CheckFriendStatus 0x%08X\n", (DWORD)CheckFriendStatus);
     printf("GetChatRoomMembers 0x%08X\n", (DWORD)GetChatRoomMembers);
     printf("ExecuteSql 0x%08X\n", (DWORD)ExecuteSQL);
-    printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDBRemote);
+    printf("BackupSQLiteDB 0x%08X\n", (DWORD)BackupSQLiteDB);
     printf("VerifyFriendApply 0x%08X\n", (DWORD)VerifyFriendApply);
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
-    printf("SelectDataRemote 0x%08X\n", (DWORD)SelectDataRemote);
+    printf("AddBrandContact 0x%08X\n", (DWORD)AddBrandContact);
+    printf("SelectData 0x%08X\n", (DWORD)SelectData);
     printf("SearchContactByNet 0x%08X\n", (DWORD)SearchContactByNet);
-    printf("SearchContactByNetRemote 0x%08X\n", (DWORD)SearchContactByNetRemote);
 }
 
 BOOL ProcessIsWeChat()
@@ -203,45 +223,6 @@ BOOL ProcessIsWeChat()
     {
         return TRUE;
     }
-}
-
-DWORD GetWeChatVerInt()
-{
-    WCHAR VersionFilePath[MAX_PATH];
-    BYTE WeChatVersion[4] = { 0 };
-    if (GetModuleFileName((HMODULE)GetWeChatWinBase(), VersionFilePath, MAX_PATH) == 0)
-    {
-        return 0;
-    }
-    
-    VS_FIXEDFILEINFO* pVsInfo;
-    unsigned int iFileInfoSize = sizeof(VS_FIXEDFILEINFO);
-    int iVerInfoSize = GetFileVersionInfoSize(VersionFilePath, NULL);
-    if (iVerInfoSize != 0) {
-        char* pBuf = new char[iVerInfoSize];
-        if (GetFileVersionInfo(VersionFilePath, 0, iVerInfoSize, pBuf)) {
-            if (VerQueryValue(pBuf, TEXT("\\"), (void**)&pVsInfo, &iFileInfoSize)) {
-                WeChatVersion[3] = (BYTE)(0x60 + (pVsInfo->dwFileVersionMS >> 16) & 0x0000FFFF);
-                WeChatVersion[2] = (BYTE)(pVsInfo->dwFileVersionMS & 0x0000FFFF);
-                WeChatVersion[1] = (BYTE)((pVsInfo->dwFileVersionLS >> 16) & 0x0000FFFF);
-                WeChatVersion[0] = (BYTE)(pVsInfo->dwFileVersionLS & 0x0000FFFF);
-            }
-        }
-        delete[] pBuf;
-    }
-    return *(DWORD*)WeChatVersion;
-}
-
-string GetWeChatVerStr() {
-    DWORD WeChatVersion = GetWeChatVerInt();
-    if (WeChatVersion == 0)
-        return "null";
-    string wxver = "";
-    BYTE* pWxVer = (BYTE*)&WeChatVersion;
-    strstream wxVer;
-    wxVer << (int)pWxVer[3] - 0x60 << "." << (int)pWxVer[2] << "." << (int)pWxVer[1] << "." << (int)pWxVer[0];
-    wxVer >> wxver;
-    return wxver;
 }
 
 DWORD OffsetFromIdaAddr(DWORD idaAddr) {

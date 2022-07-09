@@ -10,12 +10,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     case DLL_PROCESS_ATTACH:
     {
-#ifdef _DEBUG
         if (ProcessIsWeChat()) {
+#ifndef USE_SOCKET
+#ifdef _DEBUG
             PrintProcAddr();
-            // HookLogMsgInfo();
-        }
+            HookLogMsgInfo();
 #endif
+#endif
+        }
         break;
     }
     case DLL_THREAD_ATTACH:

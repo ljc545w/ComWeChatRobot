@@ -3,6 +3,18 @@
 BOOL SQLite3_Backup_Init_Patched = FALSE;
 
 /*
+* 外部调用时传递的参数类型
+* DbHandle：要备份的数据库句柄
+* BackupFile：备份的保存位置
+*/
+#ifndef USE_SOCKET
+struct BackupStruct {
+	DWORD DbHandle;
+	char* BackupFile;
+};
+#endif
+
+/*
 * 数据库备份函数
 * return：int，无异常返回`0`，有异常返回非0值
 */
@@ -136,8 +148,10 @@ int BackupSQLiteDB(DWORD DbHandle,const char* BackupFile)
 * lpParameter：`BackupStruct`类型结构体指针
 * return：int，无异常返回`0`，有异常返回非0值
 */
+#ifndef USE_SOCKET
 int BackupSQLiteDBRemote(LPVOID lpParameter) {
 	BackupStruct* param = (BackupStruct*)lpParameter;
 	int rc = BackupSQLiteDB(param->DbHandle,(const char*)param->BackupFile);
 	return rc;
 }
+#endif

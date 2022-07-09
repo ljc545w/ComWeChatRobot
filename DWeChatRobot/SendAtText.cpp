@@ -1,9 +1,9 @@
 #include "pch.h"
 
 // 发送艾特消息CALL偏移
-#define SendAtTextCallOffset 0x67391D30 - 0x66E70000
+#define SendAtTextCallOffset 0x78BC1D30 - 0x786A0000
 // 清空缓存CALL偏移
-#define DeleteAtTextCacheCallOffset 0x54327720 - 0x54270000
+#define DeleteAtTextCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时传递的参数结构
@@ -12,13 +12,16 @@
 * wxmsg：发送的内容保存地址
 * length：艾特的人数量，用于指示wxidlist长度
 */
+#ifndef USE_SOCKET
 struct SendAtTextStruct
 {
     DWORD chatroomid;
     DWORD wxidlist;
     DWORD wxmsg;
     DWORD length;
+    BOOL  AutoNickName;
 };
+#endif
 
 /*
 * 内存中使用的参数结构
@@ -39,17 +42,19 @@ struct AtStruct {
 * lpParameter：SendAtTextStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendAtTextRemote(LPVOID lpParameter) {
     SendAtTextStruct* rp = (SendAtTextStruct*)lpParameter;
     wchar_t* wsChatRoomId = (WCHAR*)rp->chatroomid;
     wchar_t* wsTextMsg = (WCHAR*)rp->wxmsg;
     if (rp->length == 0)
         return;
-    else if(rp->length == 1)
-        SendAtText(wsChatRoomId, (DWORD*)&rp->wxidlist, wsTextMsg,rp->length);
+    else if (rp->length == 1)
+        SendAtText(wsChatRoomId, (DWORD*)&rp->wxidlist, wsTextMsg, rp->length, rp->AutoNickName);
     else
-        SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length);
+        SendAtText(wsChatRoomId, (DWORD*)rp->wxidlist, wsTextMsg, rp->length, rp->AutoNickName);
 }
+#endif
 
 /*
 * 发送艾特消息的具体实现
@@ -57,9 +62,10 @@ void SendAtTextRemote(LPVOID lpParameter) {
 * wsWxId：艾特的人列表
 * wsTextMsg：发送的消息内容
 * length：艾特的人数量
+* AutoNickName：是否自动填充被艾特人昵称
 * return：void
 */
-void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length) {
+void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsTextMsg,int length,BOOL AutoNickName) {
     // +1的作用是补充一个空结构体，将`AtStruct`尾地址设定为空结构的首地址即可
     WxString* AtUsers = new WxString[length + 1];
     wstring AtMessage = L"";
@@ -77,8 +83,10 @@ void __stdcall SendAtText(wchar_t* wsChatRoomId, DWORD wsWxId[], wchar_t* wsText
         temp.buffer = (wchar_t*)wsWxId[i];
         temp.length = wcslen((wchar_t*)wsWxId[i]);
         temp.maxLength = wcslen((wchar_t*)wsWxId[i]) * 2;
-        memcpy(&AtUsers[querySuccess],&temp,sizeof(WxString));
-        AtMessage = AtMessage + L"@" + nickname + L" ";
+        memcpy(&AtUsers[querySuccess], &temp, sizeof(WxString));
+        if (AutoNickName) {
+            AtMessage = AtMessage + L"@" + nickname + L" ";
+        }
         querySuccess++;
     }
     AtMessage += wsTextMsg;

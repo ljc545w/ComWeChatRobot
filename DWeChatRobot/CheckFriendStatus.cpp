@@ -1,22 +1,22 @@
 #include "pch.h"
 
 // 检查好友状态CALL1偏移
-#define CheckFriendStatusCall1Offset 0x594944E0 - 0x593B0000
+#define CheckFriendStatusCall1Offset 0x78784540 - 0x786A0000
 // 检查好友状态CALL2偏移
-#define CheckFriendStatusCall2Offset 0x59B20890 - 0x593B0000
+#define CheckFriendStatusCall2Offset 0x78E11890 - 0x786A0000
 // 检查好友状态CALL3偏移
-#define CheckFriendStatusCall3Offset 0x59B20980 - 0x593B0000
+#define CheckFriendStatusCall3Offset 0x78E11980 - 0x786A0000
 // 检查好友状态CALL4偏移
-#define CheckFriendStatusCall4Offset 0x59813940 - 0x593B0000
+#define CheckFriendStatusCall4Offset 0x78B03970 - 0x786A0000
 // 检查好友状态参数偏移
-#define CheckFriendStatusParamOffset 0x5B7138F4 - 0x593B0000
+#define CheckFriendStatusParamOffset 0x7AA068F4 - 0x786A0000
 
 // 好友状态码HOOK地址偏移
-#define CheckFriendStatusHookOffset 0x59937373 - 0x593B0000
+#define CheckFriendStatusHookOffset 0x10587373 - 0x10000000
 // HOOK的CALL偏移
-#define CheckFriendStatusNextCallOffset 0x59937410 - 0x593B0000
+#define CheckFriendStatusNextCallOffset 0x10587410 - 0x10000000
 // HOOK跳转的地址偏移
-#define CheckFriendStatusHookJmpBackOffset 0x59937378 - 0x593B0000
+#define CheckFriendStatusHookJmpBackOffset 0x10587378 - 0x10000000
 
 // HOOK的CALL地址
 DWORD CheckFriendStatusNextCallAddress = GetWeChatWinBase() + CheckFriendStatusNextCallOffset;
@@ -98,16 +98,9 @@ VOID UnHookFriendStatusCode() {
 	CheckFriendStatusHooked = false;
 }
 
+#ifndef USE_SOCKET
 /*
-* 供外部调用的检查好友状态接口1，启动HOOK
-* return：void
-*/
-VOID CheckFriendStatusInitRemote() {
-	HookFriendStatusCode();
-}
-
-/*
-* 供外部调用的检查好友状态接口2，检查并返回状态码
+* 供外部调用的检查好友状态接口，检查并返回状态码
 * lparameter：要检查的联系人wxid保存地址
 * return：DWORD，好友状态码
 */
@@ -115,14 +108,7 @@ DWORD CheckFriendStatusRemote(LPVOID lparameter) {
 	CheckFriendStatus((wchar_t*)lparameter);
 	return LocalFriendStatus;
 }
-
-/*
-* 供外部调用的检查好友状态接口3，取消HOOK
-* return：void
-*/
-VOID CheckFriendStatusFinishRemote() {
-	UnHookFriendStatusCode();
-}
+#endif
 
 /*
 * 检查好友状态的具体实现
@@ -130,6 +116,8 @@ VOID CheckFriendStatusFinishRemote() {
 * return：void
 */
 VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
+	if (!CheckFriendStatusHooked)
+		HookFriendStatusCode();
 	LocalFriendStatus = 0x0;
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD CheckFriendStatusCall1 = WeChatWinBase + CheckFriendStatusCall1Offset;
@@ -155,10 +143,10 @@ VOID __stdcall CheckFriendStatus(wchar_t* wxid) {
 		mov edi, 0x6;
 		mov esi, 0x0;
 		sub esp, 0x18;
-		mov eax, esp;
-		mov dword ptr[eax], 0x0;
-		mov dword ptr[eax + 0x14], 0xF;
-		mov dword ptr[eax + 0x10], 0x0;
+		mov ecx, esp;
+		mov dword ptr[ecx], 0x0;
+		mov dword ptr[ecx + 0x14], 0xF;
+		mov dword ptr[ecx + 0x10], 0x0;
 		sub esp, 0x18;
 		lea eax, FriendStatusParam;
 		mov ecx, esp;

@@ -1,33 +1,37 @@
 #include "pch.h"
 
 // 发送图片CALL1偏移
-#define SendImageCall1Offset (0x5432D730 - 0x54270000)
+#define SendImageCall1Offset (0x7875D780 - 0x786A0000)
 // 发送图片CALL2偏移
-#define SendImageCall2Offset (0x549E0980 - 0x54270000)
+#define SendImageCall2Offset (0x78E11980 - 0x786A0000)
 // 发送图片CALL3偏移
-#define SendImageCall3Offset (0x54791640 - 0x54270000)
+#define SendImageCall3Offset (0x78BC1640 - 0x786A0000)
 // 清空缓存的CALL偏移
-#define DeleteSendImageCacheCallOffset (0x54327720 - 0x54270000)
+#define DeleteSendImageCacheCallOffset (0x78757780 - 0x786A0000)
 
 /*
 * 外部调用时传递的参数结构
 * wxid：保存wxid的地址
 * imagepath：保存图片绝对路径的地址
 */
+#ifndef USE_SOCKET
 struct ImageParamStruct {
 	DWORD wxid;
 	DWORD imagepath;
 };
+#endif
 
 /*
 * 供外部调用的发送图片消息接口
 * lpParamStruct：ImageParamStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 void SendImageRemote(LPVOID lpParamStruct) {
 	ImageParamStruct* params = (ImageParamStruct*)lpParamStruct;
 	SendImage((WCHAR*)params->wxid, (WCHAR*)params->imagepath);
 }
+#endif
 
 /*
 * 发送图片消息的具体实现
@@ -46,18 +50,19 @@ void __stdcall SendImage(wchar_t* receiver, wchar_t* ImagePath) {
 	WxBaseStruct pReceiver(receiver);
 	WxBaseStruct pImagePath(ImagePath);
 	WxString nullStruct = { 0 };
+	DWORD tempeax = 0;
 	
 	__asm {
 		pushad;
 		call SendImageCall1;
 		sub esp, 0x14;
-		mov ebx, eax;
+		mov tempeax, eax;
 		lea eax, nullStruct;
 		mov ecx, esp;
 		lea edi, pImagePath;
 		push eax;
 		call SendImageCall2;
-		mov ecx, ebx;
+		mov ecx, dword ptr [tempeax] ;
 		lea eax, pReceiver;
 		push edi;
 		push eax;

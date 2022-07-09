@@ -56,19 +56,16 @@ public:
 	STDMETHODIMP CSendImage(BSTR wxid, BSTR imagepath, int* __result);
 	STDMETHODIMP CSendText(BSTR wxid, BSTR wxmsg, int* __result);
 	STDMETHODIMP CSendFile(BSTR wxid, BSTR filepath, int* __result);
-	STDMETHODIMP CSendArticle(BSTR wxid, BSTR title, BSTR abstract, BSTR url, int* __result);
+	STDMETHODIMP CSendArticle(BSTR wxid, BSTR title, BSTR abstract, BSTR url, BSTR imgpath, int* __result);
 	STDMETHODIMP CSendCard(BSTR receiver, BSTR sharedwxid, BSTR nickname, int* __result);
-	STDMETHODIMP CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, int* __result);
+	STDMETHODIMP CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, BOOL AutoNickName, int* __result);
 	STDMETHODIMP CGetFriendList(VARIANT* __result);
 	STDMETHODIMP CGetFriendListString(BSTR* __result);
 	STDMETHODIMP CGetWxUserInfo(BSTR wxid, BSTR* __result);
 	STDMETHODIMP CGetSelfInfo(BSTR* __result);
-	STDMETHODIMP CCheckFriendStatusInit(int* __result);
 	STDMETHODIMP CCheckFriendStatus(BSTR wxid, int* __result);
-	STDMETHODIMP CCheckFriendStatusFinish(int* __result);
 	STDMETHODIMP CGetComWorkPath(BSTR* __result);
-	STDMETHODIMP CStartReceiveMessage(int* __result);
-	STDMETHODIMP CReceiveMessage(VARIANT* __result);
+	STDMETHODIMP CStartReceiveMessage(int port, int* __result);
 	STDMETHODIMP CStopReceiveMessage(int* __result);
 	STDMETHODIMP CGetChatRoomMembers(BSTR chatroomid, VARIANT* __result);
 	STDMETHODIMP CGetDbHandles(VARIANT* __result);
@@ -80,6 +77,15 @@ public:
 	STDMETHODIMP CGetWeChatVer(BSTR* __result);
 	STDMETHODIMP CStartWeChat(int* __result);
 	STDMETHODIMP CSearchContactByNet(BSTR keyword, VARIANT* __result);
+	STDMETHODIMP CAddBrandContact(BSTR PublicId, int* __result);
+	STDMETHODIMP CHookVoiceMsg(BSTR savepath, int* __result);
+	STDMETHODIMP CUnHookVoiceMsg(int* __result);
+	STDMETHODIMP CHookImageMsg(BSTR savepath, int* __result);
+	STDMETHODIMP CUnHookImageMsg(int* __result);
+	STDMETHODIMP CChangeWeChatVer(BSTR verStr, int* __result);
+	STDMETHODIMP CSendAppMsg(BSTR wxid, BSTR appid, int* __result);
+	STDMETHODIMP CDeleteUser(BSTR wxid, int* __result);
+	STDMETHODIMP CIsWxLogin(int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

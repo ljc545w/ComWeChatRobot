@@ -83,6 +83,15 @@
     <Filter Include="好友相关\搜索好友">
       <UniqueIdentifier>{cdd9e8b4-4576-499c-b20e-60e05911f6d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="微信版本">
+      <UniqueIdentifier>{4214a216-3efc-48db-8fda-8a33066b2db2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送小程序">
+      <UniqueIdentifier>{85b30d50-eaf9-4576-9416-c6083438389c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\删除好友">
+      <UniqueIdentifier>{68a69a6f-dba9-412e-9030-a9dc0544d31c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -106,7 +115,7 @@
     <ClInclude Include="WeChatRobot.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="InjertDll.h">
+    <ClInclude Include="InjectDll.h">
       <Filter>注入工具</Filter>
     </ClInclude>
     <ClInclude Include="SendImage.h">
@@ -163,6 +172,21 @@
     <ClInclude Include="AddFriend.h">
       <Filter>好友相关\添加好友</Filter>
     </ClInclude>
+    <ClInclude Include="wechatver.h">
+      <Filter>微信版本</Filter>
+    </ClInclude>
+    <ClInclude Include="SendAppMsg.h">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteUser.h">
+      <Filter>好友相关\删除好友</Filter>
+    </ClInclude>
+    <ClInclude Include="_IRobotEventEvents_CP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RobotEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -180,7 +204,7 @@
     <ClCompile Include="WeChatRobot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="InjertDll.cpp">
+    <ClCompile Include="InjectDll.cpp">
       <Filter>注入工具</Filter>
     </ClCompile>
     <ClCompile Include="SendImage.cpp">
@@ -240,6 +264,27 @@
     <ClCompile Include="SearchContactByNet.cpp">
       <Filter>好友相关\搜索好友</Filter>
     </ClCompile>
+    <ClCompile Include="AddBrandContact.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="HookVoiceMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="HookImageMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="wechatver.cpp">
+      <Filter>微信版本</Filter>
+    </ClCompile>
+    <ClCompile Include="SendAppMsg.cpp">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteUser.cpp">
+      <Filter>好友相关\删除好友</Filter>
+    </ClCompile>
+    <ClCompile Include="RobotEvent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WeChatRobotCOM.rc">
@@ -251,6 +296,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="WeChatRobot.rgs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="RobotEvent.rgs">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

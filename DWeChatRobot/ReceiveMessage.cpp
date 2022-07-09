@@ -1,41 +1,35 @@
 #include "pch.h"
 #include <vector>
+#include <winsock2.h>
+#include <Ws2tcpip.h>
+
+#pragma comment(lib, "ws2_32.lib")
+
+using namespace std;
+
+#define CLTIP "127.0.0.1"
 
 // 接收消息的HOOK地址偏移
-#define ReceiveMessageHookOffset 0x547C0F4C - 0x54270000
+#define ReceiveMessageHookOffset 0x78BF0F4C - 0x786A0000
 // 接收消息HOOK的CALL偏移
-#define ReceiveMessageNextCallOffset 0x54D04E60 - 0x54270000
+#define ReceiveMessageNextCallOffset 0x79136350 - 0x786A0000
 
 // 发送消息的HOOK地址偏移
-#define SendMessageHookOffset 0x102C8E32 - 0x0FDE0000
+#define SendMessageHookOffset 0x78B88E42 - 0x786A0000
 // 发送消息HOOK的CALL偏移
-#define SendMessageNextCallOffset 0x101E8170 - 0x0FDE0000
+#define SendMessageNextCallOffset 0x78AA8170 - 0x786A0000
 
-/*
-* 保存单条信息的结构
-* messagetype：消息类型
-* sender：发送者wxid；l_sender：`sender`字符数
-* wxid：如果sender是群聊id，则此成员保存具体发送人wxid，否则与`sender`一致；l_wxid：`wxid`字符数
-* message：消息内容，非文本消息是xml格式；l_message：`message`字符数
-* filepath：图片、文件及其他资源的保存路径；l_filepath：`filepath`字符数
-*/
-struct messageStruct {
-	DWORD messagetype;
+static int SRVPORT = 0;
+
+struct ScoketMsgStruct {
+	int messagetype;
 	BOOL isSendMessage;
-	wchar_t* sender;
-	DWORD l_sender;
-	wchar_t* wxid;
-	DWORD l_wxid;
-	wchar_t* message;
-	DWORD l_message;
-	wchar_t* filepath;
-	DWORD l_filepath;
-	wchar_t* time;
-	DWORD l_time;
+	wchar_t sender[80];
+	wchar_t wxid[80];
+	wchar_t message[0x1000B];
+	wchar_t filepath[MAX_PATH];
+	wchar_t time[30];
 };
-
-// 保存多条信息的动态数组
-vector<messageStruct> messageVector;
 
 // 是否开启接收消息HOOK标志
 BOOL ReceiveMessageHooked = false;
@@ -55,89 +49,176 @@ DWORD SendMessageNextCall = GetWeChatWinBase() + SendMessageNextCallOffset;
 // 发送HOOK的跳转地址
 DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
+// 通过socket将消息发送给服务端
+BOOL SendSocketMessage(ReceiveMsgStruct* ms)
+{
+	if (SRVPORT == 0) {
+		delete ms;
+		return false;
+	}
+	SOCKET clientsocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (clientsocket < 0)
+	{
+#ifdef _DEBUG
+		cout << "create socket error," << " errno:" << errno << endl;
+#endif
+		return false;
+	}
+	BOOL status = false;
+	sockaddr_in clientAddr;
+	memset(&clientAddr, 0, sizeof(clientAddr));
+	clientAddr.sin_family = AF_INET;
+	clientAddr.sin_port = htons((u_short)SRVPORT);
+	InetPtonA(AF_INET,CLTIP,&clientAddr.sin_addr.s_addr);
+
+	if (connect(clientsocket, reinterpret_cast<sockaddr*>(&clientAddr), sizeof(sockaddr)) < 0)
+	{
+#ifdef _DEBUG
+		cout << "connect error,"<< " errno:" << errno << endl;
+#endif
+		delete ms;
+		return false;
+	}
+	char recvbuf[1024] = { 0 };
+	ScoketMsgStruct* sms = new ScoketMsgStruct;
+	ZeroMemory(sms, sizeof(ScoketMsgStruct));
+	sms->messagetype = ms->messagetype;
+	sms->isSendMessage = ms->isSendMessage;
+	memcpy(sms->wxid, ms->wxid, ms->l_wxid * 2);
+	memcpy(sms->sender, ms->sender, ms->l_sender * 2);
+	memcpy(sms->message, ms->message, ms->l_message * 2);
+	memcpy(sms->filepath, ms->filepath, ms->l_filepath * 2);
+	memcpy(sms->time, ms->time, ms->l_time * 2);
+	wcout << sms->time << endl;
+	int ret = send(clientsocket, (char*)sms, sizeof(ScoketMsgStruct), 0);
+	if (ret == -1 || ret == 0)
+	{
+#ifdef _DEBUG
+		cout << "send fail," << " errno:" << errno << endl;
+#endif
+		delete ms;
+		delete sms;
+		closesocket(clientsocket);
+		return false;
+	}
+	memset(recvbuf, 0, sizeof(recvbuf));
+	ret = recv(clientsocket, recvbuf, sizeof(recvbuf), 0);
+	delete ms;
+	delete sms;
+	closesocket(clientsocket);
+	if (ret == -1 || ret == 0)
+	{
+#ifdef _DEBUG
+		cout << "the server close" << endl;
+#endif
+		return false;
+	}
+	return true;
+}
+
+// 创建广播消息数组
+#ifndef USE_SOCKET
+static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
+	HRESULT hr = S_OK;
+	SAFEARRAY* psaValue;
+	vector<wstring> MessageInfoKey = {
+		L"type",
+		L"isSendMessage",
+		ms->isSendMessage ? L"sendto" : L"from",
+		L"wxid",
+		L"message",
+		L"filepath",
+		L"time"
+	};
+	SAFEARRAYBOUND rgsaBound[2] = { {MessageInfoKey.size(),0},{2,0} };
+	psaValue = SafeArrayCreate(VT_VARIANT, 2, rgsaBound);
+	long keyIndex[2] = { 0,0 };
+	keyIndex[0] = 0; keyIndex[1] = 0;
+	for (unsigned int i = 0; i < MessageInfoKey.size(); i++) {
+		keyIndex[0] = i; keyIndex[1] = 0;
+		_variant_t key = MessageInfoKey[i].c_str();
+		hr = SafeArrayPutElement(psaValue, keyIndex, &key);
+		keyIndex[0] = i; keyIndex[1] = 1;
+		if (i < 2) {
+			_variant_t value = ((DWORD*)ms)[i];
+			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
+		}
+		else {
+			_variant_t value = ((wchar_t**)ms)[i * 2 - 2];
+			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
+		}
+	}
+	return psaValue;
+}
+#endif
+
+static void dealMessage(DWORD messageAddr) {
+	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
+	ReceiveMsgStruct* message = new ReceiveMsgStruct;
+	ZeroMemory(message, sizeof(ReceiveMsgStruct));
+	message->isSendMessage = isSendMessage;
+	message->time = GetTimeW(*(DWORD*)(messageAddr + 0x44));
+	message->l_time = wcslen(message->time);
+	message->messagetype = *(DWORD*)(messageAddr + 0x38);
+
+	DWORD length = *(DWORD*)(messageAddr + 0x48 + 0x4);
+	message->sender = new wchar_t[length + 1];
+	ZeroMemory(message->sender, (length + 1) * 2);
+	memcpy(message->sender, (wchar_t*)(*(DWORD*)(messageAddr + 0x48)), length * 2);
+	message->l_sender = length;
+
+	length = *(DWORD*)(messageAddr + 0x170 + 0x4);
+	if (length == 0) {
+		message->wxid = new wchar_t[message->l_sender + 1];
+		ZeroMemory(message->wxid, (message->l_sender + 1) * 2);
+		memcpy(message->wxid, (wchar_t*)(*(DWORD*)(messageAddr + 0x48)), message->l_sender * 2);
+		message->l_wxid = message->l_sender;
+	}
+	else {
+		message->wxid = new wchar_t[length + 1];
+		ZeroMemory(message->wxid, (length + 1) * 2);
+		memcpy(message->wxid, (wchar_t*)(*(DWORD*)(messageAddr + 0x170)), length * 2);
+		message->l_wxid = length;
+	}
+
+	length = *(DWORD*)(messageAddr + 0x70 + 0x4);
+	message->message = new wchar_t[length + 1];
+	ZeroMemory(message->message, (length + 1) * 2);
+	memcpy(message->message, (wchar_t*)(*(DWORD*)(messageAddr + 0x70)), length * 2);
+	message->l_message = length;
+
+	length = *(DWORD*)(messageAddr + 0x1AC + 0x4);
+	message->filepath = new wchar_t[length + 1];
+	ZeroMemory(message->filepath, (length + 1) * 2);
+	memcpy(message->filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
+	message->l_filepath = length;
+#ifdef USE_COM
+	// 通过连接点，将消息广播给客户端
+	SAFEARRAY* psaValue = CreateMessageArray(message);
+	VARIANT vsaValue;
+	vsaValue.vt = VT_ARRAY | VT_VARIANT;
+	V_ARRAY(&vsaValue) = psaValue;
+	PostComMessage(&vsaValue);
+#endif
+	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
+	if (hThread) {
+		CloseHandle(hThread);
+	}
+}
+
 /*
 * 消息处理函数，根据消息缓冲区组装结构并存入容器
 * messageAddr：保存消息的缓冲区地址
 * return：void
 */
-VOID ReceiveMessage(DWORD messageAddr) {
+VOID ReceiveMessage(DWORD messagesAddr) {
 	// 此处用于区别是发送的还是接收的消息
-	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
-
-	messageStruct message = { 0 };
-	message.isSendMessage = isSendMessage;
-	message.time = GetTimeW();
-	message.l_time = wcslen(message.time);
-	message.messagetype = *(DWORD*)(messageAddr + 0x38);
-	
-	DWORD length = *(DWORD*)(messageAddr + 0x48 + 0x4);
-	message.sender = new wchar_t[length + 1];
-	ZeroMemory(message.sender, (length + 1) * 2);
-	memcpy(message.sender,(wchar_t*)(*(DWORD*)(messageAddr + 0x48)),length * 2);
-	message.l_sender = length;
-	
-	length = *(DWORD*)(messageAddr + 0x170 + 0x4);
-	if (length == 0) {
-		message.wxid = new wchar_t[message.l_sender + 1];
-		ZeroMemory(message.wxid, (message.l_sender + 1) * 2);
-		memcpy(message.wxid, (wchar_t*)(*(DWORD*)(messageAddr + 0x48)), message.l_sender * 2);
-		message.l_wxid = message.l_sender;
+	DWORD* messages = (DWORD*)messagesAddr;
+	for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298) {
+		dealMessage(messageAddr);
 	}
-	else {
-		message.wxid = new wchar_t[length + 1];
-		ZeroMemory(message.wxid, (length + 1) * 2);
-		memcpy(message.wxid, (wchar_t*)(*(DWORD*)(messageAddr + 0x170)), length * 2);
-		message.l_wxid = length;
-	}
-	
-	length = *(DWORD*)(messageAddr + 0x70 + 0x4);
-	message.message = new wchar_t[length + 1];
-	ZeroMemory(message.message, (length + 1) * 2);
-	memcpy(message.message, (wchar_t*)(*(DWORD*)(messageAddr + 0x70)), length * 2);
-	message.l_message = length;
-
-	length = *(DWORD*)(messageAddr + 0x1AC + 0x4);
-	message.filepath = new wchar_t[length + 1];
-	ZeroMemory(message.filepath, (length + 1) * 2);
-	memcpy(message.filepath, (wchar_t*)(*(DWORD*)(messageAddr + 0x1AC)), length * 2);
-	message.l_filepath = length;
-#ifdef _DEBUG
-	wcout << message.time << endl;
-#endif
-
-	messageVector.push_back(message);
 }
 
-/*
-* 供外部调用的获取消息接口，优先返回较早消息
-* return：DWORD，messageVector第一个成员地址
-*/
-DWORD GetHeadMessage() {
-	if (messageVector.size() == 0)
-		return 0;
-	return (DWORD)&messageVector[0].messagetype;
-}
-
-/*
-* 供外部调用的删除消息接口，用于删除messageVector第一个成员，每读一条需要执行一次
-* return：void
-*/
-VOID PopHeadMessage() {
-	if (messageVector.size() == 0)
-		return;
-	delete[] messageVector[0].message;
-	messageVector[0].message = NULL;
-	delete[] messageVector[0].sender;
-	messageVector[0].sender = NULL;
-	delete[] messageVector[0].wxid;
-	messageVector[0].wxid = NULL;
-	delete[] messageVector[0].filepath;
-	messageVector[0].filepath = NULL;
-	delete[] messageVector[0].time;
-	messageVector[0].time = NULL;
-	vector<messageStruct>::iterator k = messageVector.begin();
-	messageVector.erase(k);
-}
 
 /*
 * HOOK的具体实现，接收到消息后调用处理函数
@@ -146,8 +227,8 @@ _declspec(naked) void dealReceiveMessage() {
 	__asm {
 		pushad;
 		pushfd;
-		mov eax, [edi];
-		push eax;
+		// mov eax, [edi];
+		push edi;
 		call ReceiveMessage;
 		add esp, 0x4;
 		popfd;
@@ -165,7 +246,7 @@ _declspec(naked) void dealSendMessage() {
 		pushad;
 		pushfd;
 		push edi;
-		call ReceiveMessage;
+		call dealMessage;
 		add esp, 0x4;
 		popfd;
 		popad;
@@ -178,7 +259,8 @@ _declspec(naked) void dealSendMessage() {
 * 开始接收消息HOOK
 * return：void
 */
-VOID HookReceiveMessage() {
+VOID HookReceiveMessage(int port) {
+	SRVPORT = port;
 	if (ReceiveMessageHooked)
 		return;
 	HookAnyAddress(ReceiveMessageHookAddress,(LPVOID)dealReceiveMessage,OldReceiveMessageAsmCode);
@@ -191,6 +273,7 @@ VOID HookReceiveMessage() {
 * return：void
 */
 VOID UnHookReceiveMessage() {
+	SRVPORT = 0;
 	if (!ReceiveMessageHooked)
 		return;
 	UnHookAnyAddress(ReceiveMessageHookAddress,OldReceiveMessageAsmCode);

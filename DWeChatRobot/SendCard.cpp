@@ -1,9 +1,9 @@
 #include "pch.h"
 
 // 发送名片的CALL偏移
-#define SendCardCallOffset 0x54791D30 - 0x54270000
+#define SendCardCallOffset 0x78BC1D30 - 0x786A0000
 // 清空缓存的CALL偏移
-#define DeleteCardCacheCallOffset 0x54327720 - 0x54270000
+#define DeleteCardCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时提供的参数结构
@@ -11,17 +11,20 @@
 * sharedwxid：被推荐人的wxid保存地址
 * nickname：名片显示的昵称保存地址
 */
+#ifndef USE_SOCKET
 struct SendCardStruct {
 	DWORD receiver;
 	DWORD sharedwxid;
 	DWORD nickname;
 };
+#endif
 
 /*
 * 供外部调用的发送名片接口
 * lparameter：SendCardStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 VOID SendCardRemote(LPVOID lparameter) {
 	SendCardStruct* scs = (SendCardStruct*)lparameter;
 	wchar_t* receiver = (WCHAR*)scs->receiver;
@@ -29,6 +32,7 @@ VOID SendCardRemote(LPVOID lparameter) {
 	wchar_t* nickname = (WCHAR*)scs->nickname;
 	SendCard(receiver,sharedwxid,nickname);
 }
+#endif
 
 /*
 * 发送名片消息的具体实现

@@ -1,44 +1,20 @@
 #include "pch.h"
 
-#define SearchContactByNetCall1Offset 0x638BF150 - 0x635C0000
-#define SearchContactByNetCall2Offset 0x63ACF9C0 - 0x635C0000
+#define SearchContactByNetCall1Offset 0x102FF150 - 0x10000000
+#define SearchContactByNetCall2Offset 0x1050F9C0 - 0x10000000
 
-#define HookSearchContactErrcodeAddrOffset 0x04DD97C4 - 0x047A0000
-#define HookSearchContactErrcodeNextCallOffset 0x0425F170 - 0x03AF0000
+#define HookSearchContactErrcodeAddrOffset 0x106397C4 - 0x10000000
+#define HookSearchContactErrcodeNextCallOffset 0x10770170 - 0x10000000
 
-#define HookUserInfoAddrOffset 0x04ABB520 - 0x047A0000
-#define HookUserInfoNextCallOffset 0x04ABB770 - 0x047A0000
+#define HookUserInfoAddrOffset 0x1031B520 - 0x10000000
+#define HookUserInfoNextCallOffset 0x1031B770 - 0x10000000
 
 static BOOL SearchContactHooked = false;
 static char HookSearchContactErrcodeOldAsm[5] = { 0 };
 static char HookUserInfoOldAsm[5] = { 0 };
 static DWORD WeChatWinBase = GetWeChatWinBase();
 
-static struct UserInfo {
-	int errcode;
-	wchar_t* keyword;
-	int l_keyword;
-	wchar_t* v3;
-	int l_v3;
-	wchar_t* NickName;
-	int l_NickName;
-	wchar_t* Signature;
-	int l_Signature;
-	wchar_t* v2;
-	int l_v2;
-	wchar_t* Nation;
-	int l_Nation;
-	wchar_t* Province;
-	int l_Province;
-	wchar_t* City;
-	int l_City;
-	wchar_t* BigAvatar;
-	int l_BigAvatar;
-	wchar_t* SmallAvatar;
-	int l_SmallAvatar;
-	DWORD sex;
-	BOOL over;
-} userinfo;
+static UserInfo userinfo;
 
 DWORD HookSearchContactErrcodeNextCall = WeChatWinBase + HookSearchContactErrcodeNextCallOffset;
 DWORD HookSearchContactErrcodeAddr = WeChatWinBase + HookSearchContactErrcodeAddrOffset;
@@ -165,7 +141,7 @@ __declspec(naked) void dealUserInfo() {
 	}
 }
 
-static void StartSearchContactHook() {
+static void HookSearchContact() {
 	if (SearchContactHooked)
 		return;
 	HookAnyAddress(HookSearchContactErrcodeAddr, (LPVOID)dealSearchContactErrcode, HookSearchContactErrcodeOldAsm);
@@ -173,7 +149,7 @@ static void StartSearchContactHook() {
 	SearchContactHooked = true;
 }
 
-void StopSearchContactHook() {
+void UnHookSearchContact() {
 	if (!SearchContactHooked)
 		return;
 	UnHookAnyAddress(HookSearchContactErrcodeAddr, HookSearchContactErrcodeOldAsm);
@@ -217,8 +193,8 @@ static void DeleteUserInfoCache() {
 }
 
 
-void __stdcall SearchContactByNet(wchar_t* keyword) {
-	StartSearchContactHook();
+void* __stdcall SearchContactByNet(wchar_t* keyword) {
+	HookSearchContact();
 	DeleteUserInfoCache();
 	DWORD SearchContactByNetCall1 = GetWeChatWinBase() + SearchContactByNetCall1Offset;
 	DWORD SearchContactByNetCall2 = GetWeChatWinBase() + SearchContactByNetCall2Offset;
@@ -248,9 +224,12 @@ void __stdcall SearchContactByNet(wchar_t* keyword) {
 		wcout << userinfo.v3 << endl;
 #endif
 	}
+	return &userinfo;
 }
 
+#ifndef USE_SOCKET
 DWORD SearchContactByNetRemote(LPVOID keyword) {
 	SearchContactByNet((wchar_t*)keyword);
 	return (DWORD)&userinfo;
 }
+#endif

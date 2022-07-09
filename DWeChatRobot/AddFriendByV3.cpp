@@ -1,15 +1,15 @@
 #include "pch.h"
 
 // Ìí¼ÓºÃÓÑCALL1Æ«ÒÆ
-#define AddFriendByV3Call1Offset 0x594944E0 - 0x593B0000
+#define AddFriendByV3Call1Offset 0x78784540 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL2Æ«ÒÆ
-#define AddFriendByV3Call2Offset 0x59B20890 - 0x593B0000
+#define AddFriendByV3Call2Offset 0x78E11890 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL3Æ«ÒÆ
-#define AddFriendByV3Call3Offset 0x59B20980 - 0x593B0000
+#define AddFriendByV3Call3Offset 0x78E11980 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL4Æ«ÒÆ
-#define AddFriendByV3Call4Offset 0x63A23940 - 0x635C0000
+#define AddFriendByV3Call4Offset 0x78B03970 - 0x786A0000
 // Ìí¼ÓºÃÓÑ²ÎÊýÆ«ÒÆ
-#define AddFriendByV3ParamOffset 0x5B7138F4 - 0x593B0000
+#define AddFriendByV3ParamOffset 0x7AA068F4 - 0x786A0000
 
 struct AddFriendByV3ParamStruct {
 	DWORD fill0 = 0x0;
@@ -21,17 +21,21 @@ struct AddFriendByV3ParamStruct {
 	char nullbuffer[0xC] = { 0 };
 };
 
+#ifndef USE_SOCKET
 struct AddFriendByV3Struct {
 	wchar_t* wxid;
 	wchar_t* message;
 	int AddType;
 };
+#endif
 
+#ifndef USE_SOCKET
 BOOL AddFriendByV3Remote(LPVOID lpParameter) {
 	AddFriendByV3Struct* afbvs = (AddFriendByV3Struct*)lpParameter;
 	BOOL isSuccess = AddFriendByV3(afbvs->wxid, afbvs->message,afbvs->AddType);
 	return isSuccess;
 }
+#endif
 
 BOOL __stdcall AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
@@ -73,7 +77,7 @@ BOOL __stdcall AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
 		mov edi, pmessage;
 		sub esp, 0x14;
 		mov ecx, esp;
-		push - 0x1;
+		push -0x1;
 		mov eax, edi;
 		push eax;
 		call AddFriendByV3Call2;

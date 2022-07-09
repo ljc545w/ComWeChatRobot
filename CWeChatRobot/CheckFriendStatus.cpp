@@ -1,33 +1,5 @@
 #include "pch.h"
 
-BOOL CheckFriendStatusInit() {
-    if (!hProcess)
-        return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
-    DWORD dwId = 0;
-    DWORD CheckFriendStatusInitRemoteAddr = WeChatRobotBase + CheckFriendStatusInitRemoteOffset;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)CheckFriendStatusInitRemoteAddr, NULL, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    return 0;
-}
-
-BOOL CheckFriendStatusFinish() {
-    if (!hProcess)
-        return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
-    DWORD dwId = 0;
-    DWORD CheckFriendStatusFinishRemoteAddr = WeChatRobotBase + CheckFriendStatusFinishRemoteOffset;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)CheckFriendStatusFinishRemoteAddr, NULL, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    return 0;
-}
-
 DWORD CheckFriendStatus(wchar_t* wxid) {
     if (!hProcess)
         return 1;

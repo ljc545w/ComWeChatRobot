@@ -4,37 +4,35 @@
 #include <vector>
 
 // 获取好友信息CALL1偏移
-#define GetUserInfoCall1Offset 0x5946D570 - 0x593B0000
+#define GetUserInfoCall1Offset 0x100BD5C0 - 0x10000000
 // 获取好友信息CALL2偏移
-#define GetUserInfoCall2Offset 0x59B20980 - 0x593B0000
+#define GetUserInfoCall2Offset 0x10771980 - 0x10000000
 // 获取好友信息CALL3偏移
-#define GetUserInfoCall3Offset 0x59816270 - 0x593B0000
+#define GetUserInfoCall3Offset 0x104662A0 - 0x10000000
 // 清理好友信息缓存参数
-#define DeleteUserInfoCacheCall1Offset 0x59A752B0 - 0x593B0000
+#define DeleteUserInfoCacheCall1Offset 0x106C52B0 - 0x10000000
 // 清理好友信息缓存CALL2
-#define DeleteUserInfoCacheCall2Offset 0x5946E680 - 0x593B0000
+#define DeleteUserInfoCacheCall2Offset 0x100BE6D0 - 0x10000000
 
 /*
 * 外部调用时的返回类型
 * message：wUserInfo.c_str()
 * length：wUserInfo字符串长度
 */
+#ifndef USE_SOCKET
 struct GetUserInfoStruct {
 	DWORD message;
 	DWORD length;
-};
-
-// 保存好友信息的字符串
-wstring wUserInfo = L"";
-// 外部调用时的具体返回对象
-GetUserInfoStruct ret = { 0 };
+} ret;
+#endif
 
 /*
 * 根据缓冲区内容拼接好友信息
 * address：缓冲区地址
 * return：void
 */
-VOID WxUserInfo(DWORD address) {
+static wstring WxUserInfo(DWORD address) {
+	wstring wUserInfo = L"";
 	vector<DWORD> InfoType{
 		address + 0x10,
 		address + 0x24,
@@ -77,6 +75,7 @@ VOID WxUserInfo(DWORD address) {
 	wcout.imbue(locale("chs"));
 	wcout << wUserInfo.c_str() << endl;
 #endif
+	return wUserInfo;
 }
 
 /*
@@ -84,35 +83,40 @@ VOID WxUserInfo(DWORD address) {
 * lparamter：保存好友wxid的地址
 * return：DWORD，`ret`的首地址
 */
+#ifndef USE_SOCKET
 DWORD GetWxUserInfoRemote(LPVOID lparamter) {
 	wchar_t* userwxid = (wchar_t*)lparamter;
 	
-	if (!GetUserInfoByWxId(userwxid)) {
-		return 0;
-	}
-	ret.message = (DWORD)wUserInfo.c_str();
-	ret.length = (DWORD)wUserInfo.length();
+	wstring wUserInfo = GetUserInfoByWxId(userwxid);
+
+	ZeroMemory(&ret, sizeof(GetUserInfoStruct));
+	wchar_t* message = new wchar_t[wUserInfo.length() + 1];
+	memcpy(message, wUserInfo.c_str(), (wUserInfo.length() + 1) * 2);
+	ret.message = (DWORD)message;
+	ret.length = wUserInfo.length();
 	return (DWORD)&ret;
 }
-
+#endif
 /*
 * 供外部调用的清空好友信息缓存的接口
 * return：void
 */
+#ifndef USE_SOCKET
 VOID DeleteUserInfoCacheRemote() {
 	if (ret.length) {
-		ZeroMemory((wchar_t*)ret.message, ret.length * 2 + 2);
-		ret.length = 0;
-		wUserInfo = L"";
+		delete[](wchar_t*)ret.message;
+		ZeroMemory(&ret, sizeof(GetUserInfoStruct));
 	}
 }
+#endif
 
 /*
 * 根据wxid获取好友信息的具体实现
 * wxid：好友wxid
-* return：BOOL，成功返回`1`，失败返回`0`
+* return：wstring，成功返回好友信息，失败返回空字符串
 */
-BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
+wstring __stdcall GetUserInfoByWxId(wchar_t* wxid) {
+	wstring wUserInfo = L"";
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD WxGetUserInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
 	DWORD WxGetUserInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
@@ -142,7 +146,8 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 		popad;
 	}
 	if(isSuccess)
-		WxUserInfo(address);
+		wUserInfo = WxUserInfo(address);
+
 	char deletebuffer[0x410] = { 0 };
 	__asm {
 		pushad;
@@ -154,7 +159,7 @@ BOOL __stdcall GetUserInfoByWxId(wchar_t* wxid) {
 		call DeleteUserInfoCacheCall2;
 		popad;
 	}
-	return isSuccess;
+	return wUserInfo;
 }
 
 /*

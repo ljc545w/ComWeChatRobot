@@ -5,20 +5,10 @@ Created on Sat Apr 16 14:06:24 2022
 @author: lijinchao-002
 """
 import time
+import os
 from wxRobot import WeChatRobot
-
-# 一个示例回调，将收到的文本消息转发给filehelper
-def ReceiveMessageCallBack(robot,message):
-    chatwith = message.get('sendto') or message.get('from')
-    if message['type'] == 1 and not message['isSendMessage'] and chatwith != 'filehelper':
-        robot.robot.CSendText('filehelper',message['message'])
-    chatwith = message.get('sendto') or message.get('from')
-    wxSender = robot.GetWxUserInfo(chatwith)
-    sender = wxSender['wxNickName'] if wxSender['wxNickName'] != 'null' else chatwith
-    print("来自 {}\n".format(sender),message)
     
 def test_SendText():
-    import os
     path = os.path.split(os.path.realpath(__file__))[0]
     # image full path
     imgpath = os.path.join(path,'test\\测试图片.png')
@@ -44,7 +34,6 @@ def test_FriendStatus():
     wx = WeChatRobot()
     wx.StartService()
     FriendList = wx.GetFriendList()
-    wx.CheckFriendStatusInit()
     index = "\t".join(['微信号','昵称','备注','状态','\n'])
     f.writelines(index)
     for Friend in FriendList:
@@ -57,18 +46,6 @@ def test_FriendStatus():
         time.sleep(1)
         break
     f.close()
-    wx.StopService()
-    
-def test_ReceiveMessage():
-    wx = WeChatRobot()
-    wx.StartService()
-    wx.robot.CStartReceiveMessage()
-    wx.StartReceiveMessage(CallBackFunc = ReceiveMessageCallBack)
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
     wx.StopService()
     
 def test_ExecuteSQL():
@@ -102,5 +79,8 @@ def test_BackupDb():
 
 if __name__ == '__main__':
     wx = WeChatRobot()
+    print([i for i in dir(wx.robot) if '_' not in i and i[0] == 'C'])
     print(wx.GetWeChatVer())
+    wx.StartService()
+    wx.StartReceiveMessage()
     wx.StopService()

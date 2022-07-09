@@ -1,15 +1,15 @@
 #include "pch.h"
 
 // Ìí¼ÓºÃÓÑCALL1Æ«ÒÆ
-#define AddFriendByWxidCall1Offset 0x594944E0 - 0x593B0000
+#define AddFriendByWxidCall1Offset 0x78784540 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL2Æ«ÒÆ
-#define AddFriendByWxidCall2Offset 0x59B20890 - 0x593B0000
+#define AddFriendByWxidCall2Offset 0x78E11890 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL3Æ«ÒÆ
-#define AddFriendByWxidCall3Offset 0x59B20980 - 0x593B0000
+#define AddFriendByWxidCall3Offset 0x78E11980 - 0x786A0000
 // Ìí¼ÓºÃÓÑCALL4Æ«ÒÆ
-#define AddFriendByWxidCall4Offset 0x59813940 - 0x593B0000
+#define AddFriendByWxidCall4Offset 0x78B03970 - 0x786A0000
 // Ìí¼ÓºÃÓÑ²ÎÊýÆ«ÒÆ
-#define AddFriendByWxidParamOffset 0x5B7138F4 - 0x593B0000
+#define AddFriendByWxidParamOffset 0x7AA068F4 - 0x786A0000
 
 struct AddFriendByWxidParamStruct {
 	DWORD fill0 = 0x0;
@@ -21,16 +21,20 @@ struct AddFriendByWxidParamStruct {
 	char nullbuffer[0xC] = { 0 };
 };
 
+#ifndef USE_SOCKET
 struct AddFriendByWxidStruct {
 	wchar_t* wxid;
 	wchar_t* message;
 };
+#endif
 
+#ifndef USE_SOCKET
 BOOL AddFriendByWxidRemote(LPVOID lpParameter) {
 	AddFriendByWxidStruct* afbws = (AddFriendByWxidStruct*)lpParameter;
 	BOOL isSuccess = AddFriendByWxid(afbws->wxid, afbws->message);
 	return isSuccess;
 }
+#endif
 
 BOOL __stdcall AddFriendByWxid(wchar_t* wxid,wchar_t* message) {
 	DWORD WeChatWinBase = GetWeChatWinBase();

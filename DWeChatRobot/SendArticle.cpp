@@ -1,20 +1,22 @@
 #include "pch.h"
 
 // 发送文章CALL1偏移
-#define SendArticleCall1Offset 0x54328A10 - 0x54270000
+#define SendArticleCall1Offset 0x78758A70 - 0x786A0000
 // 发送文章CALL2偏移
-#define SendArticleCall2Offset 0x5465D5E0 - 0x54270000
+#define SendArticleCall2Offset 0x78A8D5E0 - 0x786A0000
 // 发送文章CALL3偏移
-#define SendArticleCall3Offset 0x54377EB0 - 0x54270000
+#define SendArticleCall3Offset 0x787A7F00 - 0x786A0000
 // 发送文章CALL4偏移
-#define SendArticleCall4Offset 0x5465D7B0 - 0x54270000
+#define SendArticleCall4Offset 0x78A8D7B0 - 0x786A0000
 // 发送文章CALL参数偏移
-#define SendArticleParamOffset 0x565F3FE4 - 0x54270000
+#define SendArticleParamOffset 0x7AA26FE4 - 0x786A0000
+// 个人WXID偏移
+#define SelfWxidAddrOffset 0x236607C
 
 // 清空缓存CALL1偏移
-#define SendArticleClearCacheCall1Offset 0x54916450 - 0x54270000
+#define SendArticleClearCacheCall1Offset 0x78D46450 - 0x786A0000
 // 清空缓存CALL2偏移
-#define SendArticleClearCacheCall2Offset 0x54327720 - 0x54270000
+#define SendArticleClearCacheCall2Offset 0x78757780 - 0x786A0000
 
 /*
 * 外部调用时传递的参数结构
@@ -23,33 +25,39 @@
 * abstract：文章摘要的保存地址
 * url：文章链接的保存地址
 */
+#ifndef USE_SOCKET
 struct SendArticleStruct {
 	DWORD wxid;
 	DWORD title;
 	DWORD abstract;
 	DWORD url;
+	DWORD imgpath;
 };
+#endif
 
 /*
 * 供外部调用的发送文章消息接口
 * lparameter：SendArticleStruct类型结构体指针
 * return：void
 */
+#ifndef USE_SOCKET
 VOID SendArticleRemote(LPVOID lparameter) {
 	SendArticleStruct* sas = (SendArticleStruct*)lparameter;
 	wchar_t* wxid = (wchar_t*)sas->wxid;
 	wchar_t* title = (wchar_t*)sas->title;
 	wchar_t* abstract = (wchar_t*)sas->abstract;
 	wchar_t* url = (wchar_t*)sas->url;
-	SendArticle(wxid,title,abstract,url);
+	wchar_t* imgpath = sas->imgpath ? (wchar_t*)sas->imgpath : NULL;
+	SendArticle(wxid,title,abstract,url, imgpath);
 }
+#endif
 
 /*
 * 获取自己的wxid保存地址
 * return：DWORD，个人wxid保存地址
 */
 DWORD GetSelfWxIdAddr() {
-	DWORD baseAddr = GetWeChatWinBase() + 0x236307C;
+	DWORD baseAddr = GetWeChatWinBase() + SelfWxidAddrOffset;
 	char wxidbuffer[0x100] = { 0 };
 	DWORD SelfWxIdAddr = 0x0;
 	sprintf_s(wxidbuffer, "%s", (char*)baseAddr);
@@ -72,7 +80,7 @@ DWORD GetSelfWxIdAddr() {
 * url：文章链接
 * return：BOOL，成功返回`1`，失败返回`0`
 */
-BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url) {
+BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wchar_t* url,wchar_t* imgpath) {
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SendArticleCall1 = WeChatWinBase + SendArticleCall1Offset;
 	DWORD SendArticleCall2 = WeChatWinBase + SendArticleCall2Offset;
@@ -99,6 +107,11 @@ BOOL __stdcall SendArticle(wchar_t* wxid,wchar_t* title, wchar_t* abstract, wcha
 	WxBaseStruct pXml(xmlbuffer);
 	WxBaseStruct pReceiver(wxid);
 	WxString imgbuffer = { 0 };
+	if (imgpath) {
+		imgbuffer.buffer = imgpath;
+		imgbuffer.length = wcslen(imgpath);
+		imgbuffer.maxLength = wcslen(imgpath) * 2;
+	}
 	WxString nullStruct = { 0 };
 	char buffer[0xFF0] = { 0 };
 	DWORD isSuccess = 0x0;

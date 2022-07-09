@@ -1,42 +1,62 @@
 #include "pch.h"
 #include <vector>
 
-// 保存个人信息的字符串
-wstring selfinfo = L"";
+#define CheckLoginOffset 0x2366538
 
 /*
 * 外部调用时的返回类型
 * message：selfinfo.c_str()
 * length：selfinfo字符串长度
 */
+#ifndef USE_SOCKET
 struct SelfInfoStruct {
 	DWORD message;
 	DWORD length;
 } ret;
+#endif // !USE_SOCKET
+
 
 /*
 * 供外部调用的获取个人信息接口
 * return：DWORD，ret的首地址
 */
+#ifndef USE_SOCKET
 DWORD GetSelfInfoRemote() {
+	ZeroMemory(&ret, sizeof(SelfInfoStruct));
+	wstring selfinfo = GetSelfInfo();
+	wchar_t* message = new wchar_t[selfinfo.length() + 1];
+	memcpy(message,selfinfo.c_str(),(selfinfo.length() + 1) * 2);
+	ret.message = (DWORD)message;
+	ret.length = selfinfo.length();
+	return (DWORD)&ret;
+}
+#endif
+
+/*
+* 获取个人信息
+*/
+wstring GetSelfInfo() {
+	wstring selfinfo = L"";
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	vector<DWORD> SelfInfoAddr = {
-		WeChatWinBase + 0x236307C,
-		WeChatWinBase + 0x2363548,
-		WeChatWinBase + 0x23630F4,
-		*(DWORD*)(WeChatWinBase + 0x236322C),
-		*(DWORD*)(WeChatWinBase + 0x239E11C),
-		*(DWORD*)(WeChatWinBase + 0x23633D4),
-		WeChatWinBase + 0x23632E8,
-		WeChatWinBase + 0x23631FC,
-		WeChatWinBase + 0x2363214,
-		WeChatWinBase + 0x2363128
+		WeChatWinBase + 0x236607C,
+		WeChatWinBase + 0x2366548,
+		WeChatWinBase + 0x23660F4,
+		WeChatWinBase + 0x23661F8,
+		*(DWORD*)(WeChatWinBase + 0x236622C),
+		*(DWORD*)(WeChatWinBase + 0x23A111C),
+		*(DWORD*)(WeChatWinBase + 0x23663D4),
+		WeChatWinBase + 0x23662E8,
+		WeChatWinBase + 0x23661FC,
+		WeChatWinBase + 0x2366214,
+		WeChatWinBase + 0x2366128
 	};
 
 	vector<wstring> SelfInfoKey = {
 		L"\"wxId\"",
 		L"\"wxNumber\"",
 		L"\"wxNickName\"",
+		L"\"Sex\"",
 		L"\"wxSignature\"",
 		L"\"wxBigAvatar\"",
 		L"\"wxSmallAvatar\"",
@@ -45,9 +65,7 @@ DWORD GetSelfInfoRemote() {
 		L"\"wxCity\"",
 		L"\"PhoneNumber\""
 	};
-#ifdef _DEBUG
-	wcout.imbue(locale("chs"));
-#endif
+
 	selfinfo = selfinfo + L"{";
 	for (unsigned int i = 0; i < SelfInfoAddr.size(); i++) {
 		selfinfo = selfinfo + SelfInfoKey[i] + L":";
@@ -74,10 +92,29 @@ DWORD GetSelfInfoRemote() {
 				temp = (char*)SelfInfoAddr[i];
 			}
 		}
+		else if (!SelfInfoKey[i].compare(L"\"Sex\"")) {
+			int sex = *(int*)SelfInfoAddr[i];
+			switch (sex) {
+			case 1: {
+				selfinfo = selfinfo + L"男\",";
+				break;
+			}
+			case 2: {
+				selfinfo = selfinfo + L"女\",";
+				break;
+			}
+			default: {
+				selfinfo = selfinfo + L"未知\",";
+				break;
+			}
+			}
+			continue;
+		}
 		else {
 			temp = (char*)SelfInfoAddr[i];
-			if (temp == NULL || strlen(temp) == 0)
+			if (temp == NULL || strlen(temp) == 0) {
 				temp = (char*)"null";
+			}
 		}
 		wchar_t* wtemp = new wchar_t[strlen(temp) + 1];
 		ZeroMemory(wtemp, (strlen(temp) + 1) * 2);
@@ -91,22 +128,27 @@ DWORD GetSelfInfoRemote() {
 		wtemp = NULL;
 	}
 	selfinfo = selfinfo + L"}";
-	ret.message = (DWORD)selfinfo.c_str();
-	ret.length = selfinfo.length();
 #ifdef _DEBUG
+	wcout.imbue(locale("chs"));
 	wcout << selfinfo << endl;
 #endif
-	return (DWORD)&ret;
+	return selfinfo;
+}
+
+BOOL isWxLogin() {
+	DWORD CheckLoginAddr = GetWeChatWinBase() + CheckLoginOffset;
+	return *(BOOL*)CheckLoginAddr;
 }
 
 /*
 * 删除个人信息缓存
 * return：void
 */
+#ifndef USE_SOCKET
 VOID DeleteSelfInfoCacheRemote() {
 	if (ret.length) {
-		ZeroMemory((wchar_t*)ret.message, ret.length*2 + 2);
-		ret.length = 0;
-		selfinfo = L"";
+		delete[] (wchar_t*)ret.message;
+		ZeroMemory(&ret, sizeof(SelfInfoStruct));
 	}
 }
+#endif

@@ -48,3 +48,17 @@ std::wstring GetSelfInfo() {
 	DeleteSelfInfoCache();
 	return SelfInfoString;
 }
+
+BOOL isWxLogin() {
+	if (!hProcess)
+		return false;
+	DWORD isWxLoginAddr = GetWeChatRobotBase() + isWxLoginOffset;
+	DWORD dwId, dwRet = 0;
+	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)isWxLoginAddr, NULL, 0, &dwId);
+	if (hThread) {
+		WaitForSingleObject(hThread, INFINITE);
+		GetExitCodeThread(hThread, &dwRet);
+		CloseHandle(hThread);
+	}
+	return dwRet == 1;
+}

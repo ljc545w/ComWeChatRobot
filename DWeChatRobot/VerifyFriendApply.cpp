@@ -1,13 +1,15 @@
 #include "pch.h"
 
-#define VerifyFriendApplyCall1Offset 0x6BBC0980 - 0x6B450000
-#define VerifyFriendApplyCall2Offset 0x6B6FE8D0 - 0x6B450000
-#define VerifyFriendApplyParamOffset 0x6D3320D8 - 0x6B450000
+#define VerifyFriendApplyCall1Offset 0x10771980 - 0x10000000
+#define VerifyFriendApplyCall2Offset 0x102AE8D0 - 0x10000000
+#define VerifyFriendApplyParamOffset 0x11EE40E0 - 0x10000000
 
+#ifndef USE_SOCKET
 struct VerifyFriendApplyStruct {
 	wchar_t* v3_data;
 	wchar_t* v4_data;
 };
+#endif
 
 struct VerifyFriendApplyParamStruct {
 	DWORD handle;
@@ -17,11 +19,13 @@ struct VerifyFriendApplyParamStruct {
 	char buffer[0x3C] = { 0 };
 };
 
+#ifndef USE_SOCKET
 BOOL VerifyFriendApplyRemote(LPVOID lparameter) {
 	VerifyFriendApplyStruct* vfas = (VerifyFriendApplyStruct*)lparameter;
 	BOOL isSuccess = VerifyFriendApply(vfas->v3_data, vfas->v4_data);
 	return isSuccess;
 }
+#endif
 
 BOOL __stdcall VerifyFriendApply(wchar_t* v3_data, wchar_t* v4_data) {
 	WxBaseStruct v3(v3_data);

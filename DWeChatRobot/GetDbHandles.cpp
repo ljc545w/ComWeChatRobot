@@ -1,11 +1,11 @@
 #include "pch.h"
 
 // 联系人相关库偏移
-#define SqlHandleMicroMsgOffset 0x2363934
+#define SqlHandleMicroMsgOffset  0x2366934
 // 公众号相关库偏移
-#define SqlHandlePublicMsgOffset 0x239B3C8
+#define SqlHandlePublicMsgOffset 0x239E3C8
 // 聊天记录相关库偏移
-#define SqlHandleMSGOffset 0x239CF68
+#define SqlHandleMSGOffset 0x239FF68
 
 // 保存数据库信息的容器
 vector<DbInfoStruct> dbs;
@@ -29,17 +29,19 @@ DWORD GetDbHandleByDbName(wchar_t* dbname) {
 * 供外部调用的获取数据库信息接口
 * return：DWORD，`dbs`首个成员地址
 */
+#ifndef USE_SOCKET
 DWORD GetDbHandlesRemote() {
 	if (dbs.size() == 0)
 		GetDbHandles();
 	return (DWORD)dbs.data() ;
 }
+#endif
 
 /*
 * 获取数据库信息的具体实现
 * return：void
 */
-void GetDbHandles() {
+void* GetDbHandles() {
 	dbs.clear();
 	DWORD WeChatWinBase = GetWeChatWinBase();
 	DWORD SqlHandleBaseAddr = WeChatWinBase + SqlHandleMicroMsgOffset;
@@ -121,4 +123,5 @@ void GetDbHandles() {
 		cout << endl;
 	}
 #endif
+	return dbs.data();
 }

@@ -32,7 +32,7 @@ bool InjectDll(DWORD dwId, WCHAR* szPath)//参数1：目标进程PID  参数2：DLL路径
     return 0;
 }
 
-bool Injert(DWORD dwPid,wchar_t* workPath) {
+bool Inject(DWORD dwPid,wchar_t* workPath) {
     wchar_t* dllpath = new wchar_t[MAX_PATH];
     swprintf_s(dllpath, MAX_PATH, L"%ws%ws%ws", workPath, L"\\", dllname);
     string name = _com_util::ConvertBSTRToString((BSTR)workPath); 

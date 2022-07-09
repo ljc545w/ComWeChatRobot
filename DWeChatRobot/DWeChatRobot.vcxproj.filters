@@ -25,9 +25,6 @@
     <Filter Include="发送消息\发送文件">
       <UniqueIdentifier>{069b8c09-e473-4bba-a49e-571f35f2efef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="自动功能">
-      <UniqueIdentifier>{25f77de8-b12c-4f2b-a3ac-0260b6a16897}</UniqueIdentifier>
-    </Filter>
     <Filter Include="好友相关">
       <UniqueIdentifier>{8ad1ff87-550b-4942-8ebd-afbe1cfaddc9}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,21 @@
     </Filter>
     <Filter Include="好友相关\搜索好友">
       <UniqueIdentifier>{564cc9ef-a939-4bfd-a420-a08b3072d198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="微信版本">
+      <UniqueIdentifier>{820d8228-ee6c-43ad-87ec-4e349d7a549a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\删除好友">
+      <UniqueIdentifier>{cf1ddfc9-e181-43e5-ba92-998439becadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送小程序">
+      <UniqueIdentifier>{2e1bef8d-a840-4318-a728-29f1e8e68336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wxsocket">
+      <UniqueIdentifier>{aa631fe9-d228-4c2b-a317-0b0914bed451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="comclient">
+      <UniqueIdentifier>{79c2ec41-70f9-445a-8681-5a2dbfe01eca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +157,27 @@
       <Filter>好友相关\添加好友</Filter>
     </ClInclude>
     <ClInclude Include="sqlite3.h">
+      <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="wechatver.h">
+      <Filter>微信版本</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteUser.h">
+      <Filter>好友相关\删除好友</Filter>
+    </ClInclude>
+    <ClInclude Include="SendAppMsg.h">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClInclude>
+    <ClInclude Include="comclient.h">
+      <Filter>comclient</Filter>
+    </ClInclude>
+    <ClInclude Include="wxsocketapi.h">
+      <Filter>wxsocket</Filter>
+    </ClInclude>
+    <ClInclude Include="wxdata.h">
+      <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="wxapi.h">
       <Filter>通用标头</Filter>
     </ClInclude>
   </ItemGroup>
@@ -214,6 +247,30 @@
     </ClCompile>
     <ClCompile Include="SearchContactByNet.cpp">
       <Filter>好友相关\搜索好友</Filter>
+    </ClCompile>
+    <ClCompile Include="AddBrandContact.cpp">
+      <Filter>好友相关\添加好友</Filter>
+    </ClCompile>
+    <ClCompile Include="HookImageMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="HookVoiceMessage.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="wechatver.cpp">
+      <Filter>微信版本</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteUser.cpp">
+      <Filter>好友相关\删除好友</Filter>
+    </ClCompile>
+    <ClCompile Include="SendAppMsg.cpp">
+      <Filter>发送消息\发送小程序</Filter>
+    </ClCompile>
+    <ClCompile Include="wxsocket.cpp">
+      <Filter>wxsocket</Filter>
+    </ClCompile>
+    <ClCompile Include="comclient.cpp">
+      <Filter>comclient</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

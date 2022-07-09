@@ -37,14 +37,14 @@ STDMETHODIMP CWeChatRobot::CSendText(BSTR wxid, BSTR wxmsg, int* __result) {
 * 参数3：文本消息内容
 * 参数4：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, int* __result) {
+STDMETHODIMP CWeChatRobot::CSendAtText(BSTR chatroomid, VARIANT* wxid, BSTR wxmsg, BOOL AutoNickName, int* __result) {
     *__result = 0;
     if (wxid->vt == VT_BSTR) {
-        *__result = SendAtText(chatroomid,wxid->bstrVal, wxmsg);
+        *__result = SendAtText(chatroomid, wxid->bstrVal, wxmsg, AutoNickName);
     }
-    else if(wxid->vt == (VT_ARRAY | VT_VARIANT)) {
+    else if (wxid->vt == (VT_ARRAY | VT_VARIANT)) {
         SAFEARRAY* psaValue = wxid->parray;
-        *__result = SendAtText(chatroomid, psaValue, wxmsg);
+        *__result = SendAtText(chatroomid, psaValue, wxmsg, AutoNickName);
     }
     return S_OK;
 }
@@ -76,8 +76,8 @@ STDMETHODIMP CWeChatRobot::CSendFile(BSTR wxid, BSTR filepath, int* __result) {
 * 参数4：文章链接
 * 参数5：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR url, int* __result) {
-    *__result = SendArticle(wxid, title,abstract,url);
+STDMETHODIMP CWeChatRobot::CSendArticle(BSTR wxid, BSTR title,BSTR abstract,BSTR url, BSTR imgpath, int* __result) {
+    *__result = SendArticle(wxid, title,abstract,url,imgpath);
     return S_OK;
 }
 
@@ -135,27 +135,11 @@ STDMETHODIMP CWeChatRobot::CGetSelfInfo(BSTR* __result) {
 }
 
 /*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CCheckFriendStatusInit(int* __result) {
-    *__result = CheckFriendStatusInit();
-    return S_OK;
-}
-
-/*
 * 参数1：查询的wxid
 * 参数2：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CCheckFriendStatus(BSTR wxid,int* __result) {
     *__result = CheckFriendStatus((wchar_t*)wxid);
-    return S_OK;
-}
-
-/*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CCheckFriendStatusFinish(int* __result) {
-    *__result = CheckFriendStatusFinish();
     return S_OK;
 }
 
@@ -171,19 +155,8 @@ STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR* __result) {
 /*
 * 参数1：预返回的值，调用时无需提供
 */
-STDMETHODIMP CWeChatRobot::CStartReceiveMessage(int* __result) {
-    *__result = StartReceiveMessage();
-    return S_OK;
-}
-
-/*
-* 参数1：预返回的值，调用时无需提供
-*/
-STDMETHODIMP CWeChatRobot::CReceiveMessage(VARIANT* __result) {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = ReceiveMessage();
-    *__result = vsaValue;
+STDMETHODIMP CWeChatRobot::CStartReceiveMessage(int port,int* __result) {
+    *__result = StartReceiveMessage(port);
     return S_OK;
 }
 
@@ -299,5 +272,86 @@ STDMETHODIMP CWeChatRobot::CSearchContactByNet(BSTR keyword, VARIANT* __result) 
     vsaValue.vt = VT_ARRAY | VT_VARIANT;
     V_ARRAY(&vsaValue) = SearchContactByNet(keyword);
     *__result = vsaValue;
+    return S_OK;
+}
+
+/*
+* 参数1：公众号id
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CAddBrandContact(BSTR PublicId, int* __result) {
+    *__result = AddBrandContact(PublicId);
+    return S_OK;
+}
+
+/*
+* 参数1：保存路径
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CHookVoiceMsg(BSTR savepath, int* __result) {
+    *__result = HookVoiceMsg(savepath);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CUnHookVoiceMsg(int* __result) {
+    UnHookVoiceMsg();
+    *__result = 0;
+    return S_OK;
+}
+
+/*
+* 参数1：保存路径
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CHookImageMsg(BSTR savepath, int* __result) {
+    *__result = HookImageMsg(savepath);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CUnHookImageMsg(int* __result) {
+    UnHookImageMsg();
+    *__result = 0;
+    return S_OK;
+}
+
+/*
+* 参数1：版本号
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CChangeWeChatVer(BSTR verStr, int* __result) {
+    *__result = ChangeWeChatVer(verStr);
+    return S_OK;
+}
+
+/*
+* 参数1：接收人wxid
+* 参数2：小程序id
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSendAppMsg(BSTR wxid,BSTR appid,int* __result) {
+    *__result = SendAppMsg(wxid,appid);
+    return S_OK;
+}
+
+/*
+* 参数1：要删除的人wxid
+* 参数2：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CDeleteUser(BSTR wxid, int* __result) {
+    *__result = DeleteUser(wxid);
+    return S_OK;
+}
+
+/*
+* 参数1：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CIsWxLogin(int* __result) {
+    *__result = isWxLogin();
     return S_OK;
 }

@@ -9,6 +9,7 @@ DWORD SendFileOffset = 0x0;
 DWORD SendArticleOffset = 0x0;
 DWORD SendCardOffset = 0x0;
 DWORD SendAtTextOffset = 0x0;
+DWORD SendAppMsgRemoteOffset = 0x0;
 
 DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
@@ -20,17 +21,14 @@ DWORD DeleteUserInfoCacheOffset = 0x0;
 DWORD GetSelfInfoOffset = 0x0;
 DWORD DeleteSelfInfoCacheOffset = 0x0;
 DWORD SearchContactByNetRemoteOffset = 0x0;
+DWORD isWxLoginOffset = 0;
 
 DWORD VerifyFriendApplyOffset = 0x0;
 
-DWORD CheckFriendStatusInitRemoteOffset = 0x0;
 DWORD CheckFriendStatusRemoteOffset = 0x0;
-DWORD CheckFriendStatusFinishRemoteOffset = 0x0;
 
 DWORD HookReceiveMessageRemoteOffset = 0x0;
 DWORD UnHookReceiveMessageRemoteOffset = 0x0;
-DWORD GetHeadMessageRemoteOffset = 0x0;
-DWORD PopHeadMessageRemoteOffset = 0x0;
 
 DWORD GetChatRoomMembersRemoteOffset = 0x0;
 
@@ -41,6 +39,15 @@ DWORD BackupSQLiteDBRemoteOffset = 0x0;
 
 DWORD AddFriendByWxidRemoteOffset = 0x0;
 DWORD AddFriendByV3RemoteOffset = 0x0;
+DWORD DeleteUserRemoteOffset = 0x0;
+DWORD AddBrandContactRemoteOffset = 0x0;
+
+DWORD HookImageMsgRemoteOffset = 0x0;
+DWORD UnHookImageMsgRemoteOffset = 0x0;
+DWORD HookVoiceMsgRemoteOffset = 0x0;
+DWORD UnHookVoiceMsgRemoteOffset = 0x0;
+
+DWORD ChangeWeChatVerRemoteOffset = 0x0;
 
 wstring SelfInfoString = L"";
 
@@ -114,6 +121,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     SendCardOffset = SendCardProcAddr - WeChatBase;
     DWORD SendAtTextProcAddr = (DWORD)GetProcAddress(hd, SendAtTextRemote);
     SendAtTextOffset = SendAtTextProcAddr - WeChatBase;
+    DWORD SendAppMsgProcAddr = (DWORD)GetProcAddress(hd, SendAppMsgRemote);
+    SendAppMsgRemoteOffset = SendAppMsgProcAddr - WeChatBase;
 
     DWORD GetFriendListInitProcAddr = (DWORD)GetProcAddress(hd, GetFriendListInit);
     GetFriendListInitOffset = GetFriendListInitProcAddr - WeChatBase;
@@ -136,22 +145,16 @@ BOOL GetProcOffset(wchar_t* workPath) {
     DeleteSelfInfoCacheOffset = DeleteSelfInfoCacheProcAddr - WeChatBase;
     DWORD SearchContactByNetRemoteAddr = (DWORD)GetProcAddress(hd, SearchContactByNetRemote);
     SearchContactByNetRemoteOffset = SearchContactByNetRemoteAddr - WeChatBase;
+    DWORD isWxLoginAddr = (DWORD)GetProcAddress(hd, isWxLoginRemote);
+    isWxLoginOffset = isWxLoginAddr - WeChatBase;
 
-    DWORD CheckFriendStatusInitRemoteAddr = (DWORD)GetProcAddress(hd, CheckFriendStatusInitRemote);
-    CheckFriendStatusInitRemoteOffset = CheckFriendStatusInitRemoteAddr - WeChatBase;
     DWORD CheckFriendStatusRemoteAddr = (DWORD)GetProcAddress(hd, CheckFriendStatusRemote);
     CheckFriendStatusRemoteOffset = CheckFriendStatusRemoteAddr - WeChatBase;
-    DWORD CheckFriendStatusFinishRemoteAddr = (DWORD)GetProcAddress(hd, CheckFriendStatusFinishRemote);
-    CheckFriendStatusFinishRemoteOffset = CheckFriendStatusFinishRemoteAddr - WeChatBase;
 
     DWORD HookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, HookReceiveMessageRemote);
     HookReceiveMessageRemoteOffset = HookReceiveMessageRemoteAddr - WeChatBase;
     DWORD UnHookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, UnHookReceiveMessageRemote);
     UnHookReceiveMessageRemoteOffset = UnHookReceiveMessageRemoteAddr - WeChatBase;
-    DWORD GetHeadMessageRemoteAddr = (DWORD)GetProcAddress(hd, GetHeadMessageRemote);
-    GetHeadMessageRemoteOffset = GetHeadMessageRemoteAddr - WeChatBase;
-    DWORD PopHeadMessageRemoteAddr = (DWORD)GetProcAddress(hd, PopHeadMessageRemote);
-    PopHeadMessageRemoteOffset = PopHeadMessageRemoteAddr - WeChatBase;
 
     DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
     GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;
@@ -169,6 +172,22 @@ BOOL GetProcOffset(wchar_t* workPath) {
     AddFriendByWxidRemoteOffset = AddFriendByWxidRemoteAddr - WeChatBase;
     DWORD AddFriendByV3RemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByV3Remote);
     AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
+    DWORD DeleteUserRemoteAddr = (DWORD)GetProcAddress(hd, DeleteUserRemote);
+    DeleteUserRemoteOffset = DeleteUserRemoteAddr - WeChatBase;
+    DWORD AddBrandContactRemoteAddr = (DWORD)GetProcAddress(hd, AddBrandContactRemote);
+    AddBrandContactRemoteOffset = AddBrandContactRemoteAddr - WeChatBase;
+
+    DWORD HookImageMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookImageMsgRemote);
+    HookImageMsgRemoteOffset = HookImageMsgRemoteAddr - WeChatBase;
+    DWORD UnHookImageMsgAddr = (DWORD)GetProcAddress(hd, UnHookImageMsgRemote);
+    UnHookImageMsgRemoteOffset = UnHookImageMsgAddr - WeChatBase;
+    DWORD HookVoiceMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookVoiceMsgRemote);
+    HookVoiceMsgRemoteOffset = HookVoiceMsgRemoteAddr - WeChatBase;
+    DWORD UnHookVoiceMsgAddr = (DWORD)GetProcAddress(hd, UnHookVoiceMsgRemote);
+    UnHookVoiceMsgRemoteOffset = UnHookVoiceMsgAddr - WeChatBase;
+
+    DWORD ChangeWeChatVerRemoteAddr = (DWORD)GetProcAddress(hd, ChangeWeChatVerRemote);
+    ChangeWeChatVerRemoteOffset = ChangeWeChatVerRemoteAddr - WeChatBase;
 
     FreeLibrary(hd);
     delete[] dllpath;
@@ -203,9 +222,10 @@ DWORD StartRobotService() {
     };
     if(!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
-    bool status = Injert(wxPid, workPath);
+    bool status = Inject(wxPid, workPath);
     if (status == 1) {
         CloseHandle(hProcess);
+        hProcess = NULL;
         return status;
     }
     return status;
@@ -214,13 +234,16 @@ DWORD StartRobotService() {
 DWORD StopRobotService() {
     DWORD cpid = GetCurrentProcessId();
     DWORD wxPid = GetWeChatPid();
-    if (!wxPid)
+    if (!wxPid) {
+        hProcess = NULL;
         return cpid;
+    }
     if (!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     RemoveDll(wxPid);
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     CloseHandle(hProcess);
+    hProcess = NULL;
     StopReceiveMessage();
     return cpid;
 }
