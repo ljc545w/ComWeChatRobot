@@ -212,28 +212,35 @@ DWORD StartRobotService() {
         MessageBoxA(NULL, "请先启动目标程序", "提示", MB_ICONWARNING);
         return 1;
     }
+    return StartRobotServiceByWxPid(wxPid);
+}
+
+DWORD StartRobotServiceByWxPid(DWORD wxPid) {
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
     if (!GetProcOffset(workPath)) {
         wchar_t info[200] = { 0 };
         swprintf_s(info, 200, L"COM无法加载位于%ws的%ws!", workPath, dllname);
         MessageBox(NULL, info, L"致命错误!", MB_ICONWARNING);
-        return 1;
+        return -1;
     };
-    if(!hProcess)
+    if (!hProcess)
         hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
     bool status = Inject(wxPid, workPath);
     if (status == 1) {
         CloseHandle(hProcess);
         hProcess = NULL;
-        return status;
     }
-    return status;
+    return wxPid;
 }
 
 DWORD StopRobotService() {
-    DWORD cpid = GetCurrentProcessId();
     DWORD wxPid = GetWeChatPid();
+    return StopRobotServiceByWxPid(wxPid);
+}
+
+DWORD StopRobotServiceByWxPid(DWORD wxPid) {
+    DWORD cpid = GetCurrentProcessId();
     if (!wxPid) {
         hProcess = NULL;
         return cpid;
@@ -253,7 +260,7 @@ wstring GetComWorkPath() {
     GetModuleFileName(NULL, szFilePath, MAX_PATH);
     wstring wpath = szFilePath;
     int pos = wpath.find_last_of(L"\\");
-    wpath = wpath.substr(0,pos);
+    wpath = wpath.substr(0, pos);
     return wpath;
 }
 

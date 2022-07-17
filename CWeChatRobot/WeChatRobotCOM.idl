@@ -16,7 +16,7 @@ import "ocidl.idl";
 ]
 interface IWeChatRobot : IDispatch
 {
-	[id(1), helpstring("启动服务")] HRESULT CStartRobotService([out, retval] int* __result);
+	[id(1), helpstring("启动服务")] HRESULT CStartRobotService([out, retval] DWORD* __result);
 	[id(2), helpstring("关闭服务")] HRESULT CStopRobotService([out, retval] int* __result);
 	[id(3), helpstring("发送文本")] HRESULT CSendText([in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
 	[id(4), helpstring("发送图片")] HRESULT CSendImage([in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
@@ -51,6 +51,8 @@ interface IWeChatRobot : IDispatch
 	[id(36), helpstring("发送小程序")] HRESULT CSendAppMsg([in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
 	[id(37), helpstring("删除好友")] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
 	[id(38), helpstring("获取登录状态")] HRESULT CIsWxLogin([out, retval] int* __result);
+	[id(39), helpstring("指定微信进程来启动服务")] HRESULT CStartRobotServiceByWxPid([in] DWORD wxPid, [out, retval] int* __result);
+	[id(40), helpstring("指定微信进程来停止服务")] HRESULT CStopRobotServiceByWxPid([in] DWORD wxPid, [out, retval] int* __result);
 };
 [
 	object,
@@ -84,7 +86,7 @@ library WeChatRobotCOMLib
 	{
 		properties:
 		methods:
-			[id(1), helpstring("连接点回调，需要在客户端实现")] HRESULT OnGetMessageEvent(VARIANT* msg);
+			[id(1), helpstring("连接点回调，需要在客户端实现")] HRESULT OnGetMessageEvent(VARIANT * msg);
 	};
 	[
 		uuid(178001e8-5e64-4cec-8032-1de28801df55)

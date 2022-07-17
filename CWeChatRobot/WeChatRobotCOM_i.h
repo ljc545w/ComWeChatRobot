@@ -115,7 +115,7 @@ EXTERN_C const IID IID_IWeChatRobot;
     {
     public:
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartRobotService( 
-            /* [retval][out] */ int *__result) = 0;
+            /* [retval][out] */ DWORD *__result) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStopRobotService( 
             /* [retval][out] */ int *__result) = 0;
@@ -260,6 +260,14 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CIsWxLogin( 
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStartRobotServiceByWxPid( 
+            /* [in] */ DWORD wxPid,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CStopRobotServiceByWxPid( 
+            /* [in] */ DWORD wxPid,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -320,7 +328,7 @@ EXTERN_C const IID IID_IWeChatRobot;
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartRobotService )( 
             IWeChatRobot * This,
-            /* [retval][out] */ int *__result);
+            /* [retval][out] */ DWORD *__result);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStopRobotService )( 
             IWeChatRobot * This,
@@ -499,6 +507,16 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStartRobotServiceByWxPid )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD wxPid,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CStopRobotServiceByWxPid )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD wxPid,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -639,6 +657,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CIsWxLogin(This,__result)	\
     ( (This)->lpVtbl -> CIsWxLogin(This,__result) ) 
+
+#define IWeChatRobot_CStartRobotServiceByWxPid(This,wxPid,__result)	\
+    ( (This)->lpVtbl -> CStartRobotServiceByWxPid(This,wxPid,__result) ) 
+
+#define IWeChatRobot_CStopRobotServiceByWxPid(This,wxPid,__result)	\
+    ( (This)->lpVtbl -> CStopRobotServiceByWxPid(This,wxPid,__result) ) 
 
 #endif /* COBJMACROS */
 

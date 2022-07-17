@@ -28,13 +28,13 @@ public:
 	{
 	}
 
-DECLARE_REGISTRY_RESOURCEID(106)
+	DECLARE_REGISTRY_RESOURCEID(106)
 
 
-BEGIN_COM_MAP(CWeChatRobot)
-	COM_INTERFACE_ENTRY(IWeChatRobot)
-	COM_INTERFACE_ENTRY(IDispatch)
-END_COM_MAP()
+	BEGIN_COM_MAP(CWeChatRobot)
+		COM_INTERFACE_ENTRY(IWeChatRobot)
+		COM_INTERFACE_ENTRY(IDispatch)
+	END_COM_MAP()
 
 
 
@@ -51,7 +51,7 @@ END_COM_MAP()
 
 public:
 
-	STDMETHODIMP CStartRobotService(int* __result);
+	STDMETHODIMP CStartRobotService(DWORD* __result);
 	STDMETHODIMP CStopRobotService(int* __result);
 	STDMETHODIMP CSendImage(BSTR wxid, BSTR imagepath, int* __result);
 	STDMETHODIMP CSendText(BSTR wxid, BSTR wxmsg, int* __result);
@@ -86,6 +86,8 @@ public:
 	STDMETHODIMP CSendAppMsg(BSTR wxid, BSTR appid, int* __result);
 	STDMETHODIMP CDeleteUser(BSTR wxid, int* __result);
 	STDMETHODIMP CIsWxLogin(int* __result);
+	STDMETHODIMP CStartRobotServiceByWxPid(DWORD wxPid, int* __result);
+	STDMETHODIMP CStopRobotServiceByWxPid(DWORD wxPid, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

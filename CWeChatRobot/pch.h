@@ -40,7 +40,9 @@ BOOL isFileExists_stat(string& name);
 DWORD GetWeChatRobotBase();
 DWORD GetWeChatPid();
 DWORD StartRobotService();
+DWORD StartRobotServiceByWxPid(DWORD wxPid);
 DWORD StopRobotService();
+DWORD StopRobotServiceByWxPid(DWORD pid);
 BOOL CreateConsole();
 wstring GetComWorkPath();
 

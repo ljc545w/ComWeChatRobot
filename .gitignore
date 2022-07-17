@@ -18,3 +18,4 @@
 packages
 mongoose.c
 mongoose.h
+.vscode
