@@ -55,9 +55,6 @@
     <Filter Include="群相关">
       <UniqueIdentifier>{5bb967a4-4dc2-4b95-a3da-2795edc30b1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="群相关\获取群成员">
-      <UniqueIdentifier>{fabe98aa-4f28-4bc6-b368-68808145a135}</UniqueIdentifier>
-    </Filter>
     <Filter Include="数据库">
       <UniqueIdentifier>{430d3dd8-bbd5-4ec2-85dc-7d853ea0096d}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,30 @@
     </Filter>
     <Filter Include="comclient">
       <UniqueIdentifier>{79c2ec41-70f9-445a-8681-5a2dbfe01eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="好友相关\修改备注">
+      <UniqueIdentifier>{23a3ba8c-2be4-4020-af6d-99f95ccf41c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\删除成员">
+      <UniqueIdentifier>{97a29e84-9ac8-4a48-9fc6-040f93fc2239}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\修改群公告">
+      <UniqueIdentifier>{e675d10e-10a3-47b5-a64f-d430df80a612}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\添加成员">
+      <UniqueIdentifier>{a727c65d-1b9f-46f7-b343-4d9256129902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\修改群聊名称">
+      <UniqueIdentifier>{40cc017b-9cfc-43eb-8576-8244bd46f2c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\修改群内昵称">
+      <UniqueIdentifier>{78f3a991-b957-43d0-9f21-669b33f28942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\获取群成员列表">
+      <UniqueIdentifier>{fabe98aa-4f28-4bc6-b368-68808145a135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="群相关\获取群成员昵称">
+      <UniqueIdentifier>{cb62e2bc-3505-49dd-9b35-def28c95ff8c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +160,7 @@
       <Filter>发送消息\发送艾特</Filter>
     </ClInclude>
     <ClInclude Include="GetChatRoomMembers.h">
-      <Filter>群相关\获取群成员</Filter>
+      <Filter>群相关\获取群成员列表</Filter>
     </ClInclude>
     <ClInclude Include="DbExecuteSql.h">
       <Filter>数据库\执行SQL</Filter>
@@ -179,6 +200,27 @@
     </ClInclude>
     <ClInclude Include="wxapi.h">
       <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="EditRemark.h">
+      <Filter>好友相关\修改备注</Filter>
+    </ClInclude>
+    <ClInclude Include="DelChatRoomMember.h">
+      <Filter>群相关\删除成员</Filter>
+    </ClInclude>
+    <ClInclude Include="AddChatRoomMember.h">
+      <Filter>群相关\添加成员</Filter>
+    </ClInclude>
+    <ClInclude Include="SetChatRoomAnnouncement.h">
+      <Filter>群相关\修改群公告</Filter>
+    </ClInclude>
+    <ClInclude Include="SetChatRoomSelfNickname.h">
+      <Filter>群相关\修改群内昵称</Filter>
+    </ClInclude>
+    <ClInclude Include="SetChatRoomName.h">
+      <Filter>群相关\修改群聊名称</Filter>
+    </ClInclude>
+    <ClInclude Include="GetChatRoomMemberNickname.h">
+      <Filter>群相关\获取群成员昵称</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +267,7 @@
       <Filter>发送消息\发送艾特</Filter>
     </ClCompile>
     <ClCompile Include="GetChatRoomMemebers.cpp">
-      <Filter>群相关\获取群成员</Filter>
+      <Filter>群相关\获取群成员列表</Filter>
     </ClCompile>
     <ClCompile Include="DbExecuteSql.cpp">
       <Filter>数据库\执行SQL</Filter>
@@ -271,6 +313,27 @@
     </ClCompile>
     <ClCompile Include="comclient.cpp">
       <Filter>comclient</Filter>
+    </ClCompile>
+    <ClCompile Include="EditRemark.cpp">
+      <Filter>好友相关\修改备注</Filter>
+    </ClCompile>
+    <ClCompile Include="DelChatRoomMember.cpp">
+      <Filter>群相关\删除成员</Filter>
+    </ClCompile>
+    <ClCompile Include="AddChatRoomMember.cpp">
+      <Filter>群相关\添加成员</Filter>
+    </ClCompile>
+    <ClCompile Include="SetChatRoomAnnouncement.cpp">
+      <Filter>群相关\修改群公告</Filter>
+    </ClCompile>
+    <ClCompile Include="SetChatRoomSelfNickname.cpp">
+      <Filter>群相关\修改群内昵称</Filter>
+    </ClCompile>
+    <ClCompile Include="SetChatRoomName.cpp">
+      <Filter>群相关\修改群聊名称</Filter>
+    </ClCompile>
+    <ClCompile Include="GetChatRoomMemberNickname.cpp">
+      <Filter>群相关\获取群成员昵称</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -86,6 +86,13 @@ public:
 	STDMETHODIMP CSendAppMsg(BSTR wxid, BSTR appid, int* __result);
 	STDMETHODIMP CDeleteUser(BSTR wxid, int* __result);
 	STDMETHODIMP CIsWxLogin(int* __result);
+	STDMETHODIMP CEditRemark(BSTR wxid,BSTR remark,int* __result);
+	STDMETHODIMP CSetChatRoomName(BSTR chatroomid, BSTR name, int* __result);
+	STDMETHODIMP CSetChatRoomAnnouncement(BSTR chatroomid, BSTR announcement, int* __result);
+	STDMETHODIMP CSetChatRoomSelfNickname(BSTR chatroomid, BSTR nickname, int* __result);
+	STDMETHODIMP CGetChatRoomMemberNickname(BSTR chatroomid, BSTR wxid, BSTR* __result);
+	STDMETHODIMP CDelChatRoomMember(BSTR chatroomid, VARIANT* wxids, int* __result);
+	STDMETHODIMP CAddChatRoomMember(BSTR chatroomid, VARIANT* wxids, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

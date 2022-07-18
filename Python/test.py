@@ -79,8 +79,10 @@ def test_BackupDb():
 
 if __name__ == '__main__':
     wx = WeChatRobot()
-    print([i for i in dir(wx.robot) if '_' not in i and i[0] == 'C'])
     print(wx.GetWeChatVer())
+    interfaces = [i for i in dir(wx.robot) if '_' not in i and i[0] == 'C']
+    for interface in interfaces:
+        print(interface)
     wx.StartService()
     wx.StartReceiveMessage()
     wx.StopService()

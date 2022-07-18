@@ -15,6 +15,7 @@ DWORD GetFriendListInitOffset = 0x0;
 DWORD GetFriendListRemoteOffset = 0x0;
 DWORD GetFriendListFinishOffset = 0x0;
 
+DWORD EditRemarkRemoteOffset = 0x0;
 DWORD GetWxUserInfoOffset = 0x0;
 DWORD DeleteUserInfoCacheOffset = 0x0;
 
@@ -30,7 +31,13 @@ DWORD CheckFriendStatusRemoteOffset = 0x0;
 DWORD HookReceiveMessageRemoteOffset = 0x0;
 DWORD UnHookReceiveMessageRemoteOffset = 0x0;
 
+DWORD GetChatRoomMemberNicknameRemoteOffset = 0x0;
 DWORD GetChatRoomMembersRemoteOffset = 0x0;
+DWORD DelChatRoomMemberRemoteOffset = 0x0;
+DWORD AddChatRoomMemberRemoteOffset = 0x0;
+DWORD SetChatRoomAnnouncementRemoteOffset = 0x0;
+DWORD SetChatRoomNameRemoteOffset = 0x0;
+DWORD SetChatRoomSelfNicknameRemoteOffset = 0x0;
 
 DWORD GetDbHandlesRemoteOffset = 0x0;
 DWORD ExecuteSQLRemoteOffset = 0x0;
@@ -131,6 +138,8 @@ BOOL GetProcOffset(wchar_t* workPath) {
     DWORD GetFriendListFinishProcAddr = (DWORD)GetProcAddress(hd, GetFriendListFinish);
     GetFriendListFinishOffset = GetFriendListFinishProcAddr - WeChatBase;
 
+    DWORD EditRemarkRemoteAddr = (DWORD)GetProcAddress(hd, EditRemarkRemote);
+    EditRemarkRemoteOffset = EditRemarkRemoteAddr - WeChatBase;
     DWORD GetWxUserInfoProcAddr = (DWORD)GetProcAddress(hd, GetWxUserInfoRemote);
     GetWxUserInfoOffset = GetWxUserInfoProcAddr - WeChatBase;
     DWORD DeleteUserInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteUserInfoCacheRemote);
@@ -156,8 +165,21 @@ BOOL GetProcOffset(wchar_t* workPath) {
     DWORD UnHookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, UnHookReceiveMessageRemote);
     UnHookReceiveMessageRemoteOffset = UnHookReceiveMessageRemoteAddr - WeChatBase;
 
+    DWORD GetChatRoomMemberNicknameRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMemberNicknameRemote);
+    GetChatRoomMemberNicknameRemoteOffset = GetChatRoomMemberNicknameRemoteAddr - WeChatBase;
     DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
     GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;
+
+    DWORD DelChatRoomMemberRemoteAddr = (DWORD)GetProcAddress(hd, DelChatRoomMemberRemote);
+    DelChatRoomMemberRemoteOffset = DelChatRoomMemberRemoteAddr - WeChatBase;
+    DWORD AddChatRoomMemberRemoteAddr = (DWORD)GetProcAddress(hd, AddChatRoomMemberRemote);
+    AddChatRoomMemberRemoteOffset = AddChatRoomMemberRemoteAddr - WeChatBase;
+    DWORD SetChatRoomAnnouncementRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomAnnouncementRemote);
+    SetChatRoomAnnouncementRemoteOffset = SetChatRoomAnnouncementRemoteAddr - WeChatBase;
+    DWORD SetChatRoomNameRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomNameRemote);
+    SetChatRoomNameRemoteOffset = SetChatRoomNameRemoteAddr - WeChatBase;
+    DWORD SetChatRoomSelfNicknameRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomSelfNicknameRemote);
+    SetChatRoomSelfNicknameRemoteOffset = SetChatRoomSelfNicknameRemoteAddr - WeChatBase;
 
     DWORD GetDbHandlesRemoteAddr = (DWORD)GetProcAddress(hd, GetDbHandlesRemote);
     GetDbHandlesRemoteOffset = GetDbHandlesRemoteAddr - WeChatBase;

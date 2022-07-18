@@ -51,6 +51,13 @@ interface IWeChatRobot : IDispatch
 	[id(36), helpstring("发送小程序")] HRESULT CSendAppMsg([in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
 	[id(37), helpstring("删除好友")] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
 	[id(38), helpstring("获取登录状态")] HRESULT CIsWxLogin([out, retval] int* __result);
+	[id(39), helpstring("修改好友备注")] HRESULT CEditRemark([in] BSTR wxid, [in] BSTR remark, [out, retval] int* __result);
+	[id(40), helpstring("修改群聊名称")] HRESULT CSetChatRoomName([in] BSTR chatroomid, [in] BSTR name, [out, retval] int* __result);
+	[id(41), helpstring("修改群公告")] HRESULT CSetChatRoomAnnouncement([in] BSTR chatroomid, [in] BSTR announcement, [out, retval] int* __result);
+	[id(42), helpstring("修改群聊个人昵称")] HRESULT CSetChatRoomSelfNickname([in] BSTR chatroomid, [in] BSTR nickname, [out, retval] int* __result);
+	[id(43), helpstring("获取指定群成员昵称")] HRESULT CGetChatRoomMemberNickname([in] BSTR chatroomid, [in] BSTR wxid, [out, retval] BSTR* __result);
+	[id(44), helpstring("删除群成员")] HRESULT CDelChatRoomMember([in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
+	[id(45), helpstring("添加群成员")] HRESULT CAddChatRoomMember([in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
 };
 [
 	object,

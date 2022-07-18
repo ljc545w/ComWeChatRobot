@@ -20,9 +20,16 @@ struct WxBaseStruct
     DWORD fill2;
 
     WxBaseStruct(wchar_t* pStr) {
-        buffer = pStr;
-        length = wcslen(pStr);
-        maxLength = wcslen(pStr) * 2;
+        if (pStr) {
+            buffer = pStr;
+            length = wcslen(pStr);
+            maxLength = wcslen(pStr) * 2;
+        }
+        else {
+            buffer = NULL;
+            length = 0x0;
+            maxLength = 0x0;
+        }
         fill1 = 0x0;
         fill2 = 0x0;
     }

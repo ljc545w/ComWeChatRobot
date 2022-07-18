@@ -2,6 +2,8 @@
 #include <vector>
 
 #define CheckLoginOffset 0x2366538
+// 个人WXID偏移
+#define SelfWxidAddrOffset 0x236607C
 
 /*
 * 外部调用时的返回类型
@@ -31,6 +33,30 @@ DWORD GetSelfInfoRemote() {
 	return (DWORD)&ret;
 }
 #endif
+
+wstring GetSelfWxid() {
+	DWORD baseAddr = GetWeChatWinBase() + SelfWxidAddrOffset;
+	char wxidbuffer[0x100] = { 0 };
+	DWORD SelfWxIdAddr = 0x0;
+	sprintf_s(wxidbuffer, "%s", (char*)baseAddr);
+	if (strlen(wxidbuffer) < 0x6 || strlen(wxidbuffer) > 0x14)
+	{
+		SelfWxIdAddr = *(DWORD*)baseAddr;
+	}
+	else
+	{
+		SelfWxIdAddr = baseAddr;
+	}
+	if (SelfWxIdAddr == 0) {
+		return L"";
+	}
+	char* sselfwxid = (char*)SelfWxIdAddr;
+	wchar_t* wselfwxid = new wchar_t[strlen(sselfwxid) + 1];
+	MultiByteToWideChar(CP_ACP, 0, sselfwxid, -1, wselfwxid, strlen(sselfwxid) + 1);
+	wstring wxid(wselfwxid);
+	delete[] wselfwxid;
+	return wxid;
+}
 
 /*
 * 获取个人信息
