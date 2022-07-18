@@ -260,6 +260,41 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CIsWxLogin( 
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CEditRemark( 
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR remark,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSetChatRoomName( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR name,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSetChatRoomAnnouncement( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR announcement,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSetChatRoomSelfNickname( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR nickname,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetChatRoomMemberNickname( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ BSTR *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CDelChatRoomMember( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ VARIANT *wxids,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CAddChatRoomMember( 
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ VARIANT *wxids,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -499,6 +534,48 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CEditRemark )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR remark,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSetChatRoomName )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR name,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSetChatRoomAnnouncement )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR announcement,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSetChatRoomSelfNickname )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR nickname,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetChatRoomMemberNickname )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ BSTR wxid,
+            /* [retval][out] */ BSTR *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CDelChatRoomMember )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ VARIANT *wxids,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CAddChatRoomMember )( 
+            IWeChatRobot * This,
+            /* [in] */ BSTR chatroomid,
+            /* [in] */ VARIANT *wxids,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -639,6 +716,27 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CIsWxLogin(This,__result)	\
     ( (This)->lpVtbl -> CIsWxLogin(This,__result) ) 
+
+#define IWeChatRobot_CEditRemark(This,wxid,remark,__result)	\
+    ( (This)->lpVtbl -> CEditRemark(This,wxid,remark,__result) ) 
+
+#define IWeChatRobot_CSetChatRoomName(This,chatroomid,name,__result)	\
+    ( (This)->lpVtbl -> CSetChatRoomName(This,chatroomid,name,__result) ) 
+
+#define IWeChatRobot_CSetChatRoomAnnouncement(This,chatroomid,announcement,__result)	\
+    ( (This)->lpVtbl -> CSetChatRoomAnnouncement(This,chatroomid,announcement,__result) ) 
+
+#define IWeChatRobot_CSetChatRoomSelfNickname(This,chatroomid,nickname,__result)	\
+    ( (This)->lpVtbl -> CSetChatRoomSelfNickname(This,chatroomid,nickname,__result) ) 
+
+#define IWeChatRobot_CGetChatRoomMemberNickname(This,chatroomid,wxid,__result)	\
+    ( (This)->lpVtbl -> CGetChatRoomMemberNickname(This,chatroomid,wxid,__result) ) 
+
+#define IWeChatRobot_CDelChatRoomMember(This,chatroomid,wxids,__result)	\
+    ( (This)->lpVtbl -> CDelChatRoomMember(This,chatroomid,wxids,__result) ) 
+
+#define IWeChatRobot_CAddChatRoomMember(This,chatroomid,wxids,__result)	\
+    ( (This)->lpVtbl -> CAddChatRoomMember(This,chatroomid,wxids,__result) ) 
 
 #endif /* COBJMACROS */
 

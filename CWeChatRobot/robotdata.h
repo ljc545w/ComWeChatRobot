@@ -20,6 +20,13 @@
 #include "wechatver.h"
 #include "DeleteUser.h"
 #include "SendAppMsg.h"
+#include "EditRemark.h"
+#include "SetChatRoomName.h"
+#include "SetChatRoomAnnouncement.h"
+#include "SetChatRoomSelfNickname.h"
+#include "GetChatRoomMemberNickname.h"
+#include "DelChatRoomMember.h"
+#include "AddChatRoomMember.h"
 
 extern HANDLE hProcess;
 extern DWORD SendImageOffset;
@@ -34,6 +41,7 @@ extern DWORD GetFriendListInitOffset;
 extern DWORD GetFriendListRemoteOffset;
 extern DWORD GetFriendListFinishOffset;
 
+extern DWORD EditRemarkRemoteOffset;
 extern DWORD GetWxUserInfoOffset;
 extern DWORD DeleteUserInfoCacheOffset;
 extern DWORD SearchContactByNetRemoteOffset;
@@ -50,7 +58,13 @@ extern DWORD CheckFriendStatusRemoteOffset;
 extern DWORD HookReceiveMessageRemoteOffset;
 extern DWORD UnHookReceiveMessageRemoteOffset;
 
+extern DWORD GetChatRoomMemberNicknameRemoteOffset;
 extern DWORD GetChatRoomMembersRemoteOffset;
+extern DWORD DelChatRoomMemberRemoteOffset;
+extern DWORD AddChatRoomMemberRemoteOffset;
+extern DWORD SetChatRoomAnnouncementRemoteOffset;
+extern DWORD SetChatRoomNameRemoteOffset;
+extern DWORD SetChatRoomSelfNicknameRemoteOffset;
 
 extern DWORD GetDbHandlesRemoteOffset;
 extern DWORD ExecuteSQLRemoteOffset;
@@ -84,6 +98,7 @@ extern DWORD ChangeWeChatVerRemoteOffset;
 #define GetFriendListRemote				"GetFriendListRemote"
 #define GetFriendListFinish				"GetFriendListFinish"
 
+#define EditRemarkRemote				"EditRemarkRemote"
 #define GetWxUserInfoRemote				"GetWxUserInfoRemote"
 #define DeleteUserInfoCacheRemote		"DeleteUserInfoCacheRemote"
 
@@ -99,7 +114,13 @@ extern DWORD ChangeWeChatVerRemoteOffset;
 #define HookReceiveMessageRemote		"HookReceiveMessage"
 #define UnHookReceiveMessageRemote		"UnHookReceiveMessage"
 
+#define GetChatRoomMemberNicknameRemote	"GetChatRoomMemberNicknameRemote"
 #define GetChatRoomMembersRemote		"GetChatRoomMembersRemote"
+#define DelChatRoomMemberRemote			"DelChatRoomMemberRemote"
+#define AddChatRoomMemberRemote			"AddChatRoomMemberRemote"
+#define SetChatRoomAnnouncementRemote	"SetChatRoomAnnouncementRemote"
+#define SetChatRoomNameRemote			"SetChatRoomNameRemote"
+#define SetChatRoomSelfNicknameRemote	"SetChatRoomSelfNicknameRemote"
 
 #define GetDbHandlesRemote				"GetDbHandlesRemote"
 #define ExecuteSQLRemote				"ExecuteSQLRemote"

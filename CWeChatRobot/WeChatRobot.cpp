@@ -355,3 +355,86 @@ STDMETHODIMP CWeChatRobot::CIsWxLogin(int* __result) {
     *__result = isWxLogin();
     return S_OK;
 }
+
+/*
+* 参数1：wxid或群聊id
+* 参数2：备注内容
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CEditRemark(BSTR wxid,BSTR remark,int* __result) {
+    *__result = EditRemark(wxid,remark);
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：群聊名称
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSetChatRoomName(BSTR chatroomid, BSTR name, int* __result) {
+    *__result = SetChatRoomName(chatroomid, name);
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：公告内容
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSetChatRoomAnnouncement(BSTR chatroomid, BSTR announcement, int* __result) {
+    *__result = SetChatRoomAnnouncement(chatroomid, announcement);
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：个人昵称
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CSetChatRoomSelfNickname(BSTR chatroomid, BSTR nickname, int* __result) {
+    *__result = SetChatRoomSelfNickname(chatroomid, nickname);
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：群成员wxid
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CGetChatRoomMemberNickname(BSTR chatroomid, BSTR wxid, BSTR* __result) {
+    wstring nickname = GetChatRoomMemberNickname(chatroomid, wxid);
+    *__result = (_bstr_t)nickname.c_str();
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：wxid列表
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CDelChatRoomMember(BSTR chatroomid, VARIANT* wxids, int* __result) {
+    if (wxids->vt == VT_BSTR) {
+        *__result = DelChatRoomMember(chatroomid, wxids->bstrVal);
+    }
+    else if (wxids->vt == (VT_ARRAY | VT_VARIANT)) {
+        SAFEARRAY* psaValue = wxids->parray;
+        *__result = DelChatRoomMember(chatroomid, psaValue);
+    }
+    return S_OK;
+}
+
+/*
+* 参数1：群聊id
+* 参数2：wxid列表
+* 参数3：预返回的值，调用时无需提供
+*/
+STDMETHODIMP CWeChatRobot::CAddChatRoomMember(BSTR chatroomid, VARIANT* wxids, int* __result) {
+    if (wxids->vt == VT_BSTR) {
+        *__result = AddChatRoomMember(chatroomid, wxids->bstrVal);
+    }
+    else if (wxids->vt == (VT_ARRAY | VT_VARIANT)) {
+        SAFEARRAY* psaValue = wxids->parray;
+        *__result = AddChatRoomMember(chatroomid, psaValue);
+    }
+    return S_OK;
+}

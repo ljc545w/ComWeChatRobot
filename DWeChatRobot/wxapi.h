@@ -21,6 +21,13 @@
 #include "wechatver.h"
 #include "DeleteUser.h"
 #include "SendAppMsg.h"
+#include "EditRemark.h"
+#include "DelChatRoomMember.h"
+#include "AddChatRoomMember.h"
+#include "SetChatRoomAnnouncement.h"
+#include "SetChatRoomSelfNickname.h"
+#include "SetChatRoomName.h"
+#include "GetChatRoomMemberNickname.h"
 
 using namespace std;
 #pragma comment(lib,"version.lib")

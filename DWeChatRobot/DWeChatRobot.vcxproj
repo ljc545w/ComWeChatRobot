@@ -298,14 +298,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AddChatRoomMember.h" />
     <ClInclude Include="AddFriend.h" />
     <ClInclude Include="comclient.h" />
     <ClInclude Include="CheckFriendStatus.h" />
     <ClInclude Include="DbBackup.h" />
     <ClInclude Include="DbExecuteSql.h" />
+    <ClInclude Include="DelChatRoomMember.h" />
     <ClInclude Include="DeleteUser.h" />
+    <ClInclude Include="EditRemark.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
+    <ClInclude Include="GetChatRoomMemberNickname.h" />
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
     <ClInclude Include="LogMsgInfo.h" />
@@ -320,6 +324,9 @@
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
     <ClInclude Include="SearchContact.h" />
+    <ClInclude Include="SetChatRoomAnnouncement.h" />
+    <ClInclude Include="SetChatRoomName.h" />
+    <ClInclude Include="SetChatRoomSelfNickname.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="wechatver.h" />
@@ -328,6 +335,7 @@
     <ClInclude Include="wxsocketapi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AddChatRoomMember.cpp" />
     <ClCompile Include="AddFriendByV3.cpp" />
     <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="AddBrandContact.cpp" />
@@ -335,9 +343,12 @@
     <ClCompile Include="comclient.cpp" />
     <ClCompile Include="DbBackup.cpp" />
     <ClCompile Include="DbExecuteSql.cpp" />
+    <ClCompile Include="DelChatRoomMember.cpp" />
     <ClCompile Include="DeleteUser.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="EditRemark.cpp" />
     <ClCompile Include="FriendList.cpp" />
+    <ClCompile Include="GetChatRoomMemberNickname.cpp" />
     <ClCompile Include="GetChatRoomMemebers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
@@ -364,6 +375,9 @@
     <ClCompile Include="SendText.cpp" />
     <ClCompile Include="SearchContactByCache.cpp" />
     <ClCompile Include="LogMsgInfo.cpp" />
+    <ClCompile Include="SetChatRoomAnnouncement.cpp" />
+    <ClCompile Include="SetChatRoomName.cpp" />
+    <ClCompile Include="SetChatRoomSelfNickname.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
     <ClCompile Include="wechatver.cpp" />
     <ClCompile Include="wxsocket.cpp" />

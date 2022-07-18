@@ -195,6 +195,11 @@ void PrintProcAddr() {
     printf("AddBrandContact 0x%08X\n", (DWORD)AddBrandContact);
     printf("SelectData 0x%08X\n", (DWORD)SelectData);
     printf("SearchContactByNet 0x%08X\n", (DWORD)SearchContactByNet);
+    printf("AddChatRoomMember 0x%08X\n", (DWORD)AddChatRoomMember);
+    printf("DelChatRoomMember 0x%08X\n", (DWORD)DelChatRoomMember);
+    printf("SetChatRoomAnnouncement 0x%08X\n", (DWORD)SetChatRoomAnnouncement);
+    printf("SetChatRoomSelfNickname 0x%08X\n", (DWORD)SetChatRoomSelfNickname);
+    printf("SetChatRoomName 0x%08X\n", (DWORD)SetChatRoomName);
 }
 
 BOOL ProcessIsWeChat()

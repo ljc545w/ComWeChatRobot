@@ -932,3 +932,136 @@ class WeChatRobot():
 
         """
         return self.robot.CSendAppMsg(wxid,appid)
+    
+    def EditRemark(self,wxid:str,remark:str or None) -> int:
+        """
+        修改好友或群聊备注
+
+        Parameters
+        ----------
+        wxid : str
+            wxid或chatroomid.
+        remark : str or None
+            要修改的备注.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CEditRemark(wxid,remark)
+    
+    def SetChatRoomName(self,chatroomid:str,name:str) -> int:
+        """
+        修改群名称.请确认具有相关权限再调用。
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        name : str
+            要修改为的群名称.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CSetChatRoomName(chatroomid,name)
+    
+    def SetChatRoomAnnouncement(self,chatroomid:str,announcement:str or None) -> int:
+        """
+        设置群公告.请确认具有相关权限再调用。
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        announcement : str or None
+            公告内容.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CSetChatRoomAnnouncement(chatroomid,announcement)
+    
+    def SetChatRoomSelfNickname(self,chatroomid:str,nickname:str) -> int:
+        """
+        设置群内个人昵称
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        nickname : str
+            要修改为的昵称.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CSetChatRoomSelfNickname(chatroomid,nickname)
+    
+    def GetChatRoomMemberNickname(self,chatroomid:str,wxid:str) -> str:
+        """
+        获取群成员昵称
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        wxid : str
+            群成员wxid.
+
+        Returns
+        -------
+        str
+            成功返回群成员昵称,失败返回空字符串.
+
+        """
+        return self.robot.CGetChatRoomMemberNickname(chatroomid,wxid)
+    
+    def DelChatRoomMember(self,chatroomid:str,wxids:str or list or tuple) -> str:
+        """
+        删除群成员.请确认具有相关权限再调用。
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        wxids : str or list or tuple
+            要删除的成员wxid或wxid列表.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CDelChatRoomMember(chatroomid,wxids)
+    
+    def AddChatRoomMember(self,chatroomid:str,wxids:str or list or tuple) -> str:
+        """
+        添加群成员.请确认具有相关权限再调用。
+
+        Parameters
+        ----------
+        chatroomid : str
+            群聊id.
+        wxids : str or list or tuple
+            要添加的成员wxid或wxid列表.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.CAddChatRoomMember(chatroomid,wxids)
