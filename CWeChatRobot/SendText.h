@@ -1,4 +1,4 @@
 #pragma once
 #include<windows.h>
 
-int SendText(wchar_t* wxid, wchar_t* wxmsg);
+int SendText(DWORD pid,wchar_t* wxid, wchar_t* wxmsg);

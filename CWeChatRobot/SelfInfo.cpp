@@ -5,11 +5,13 @@ struct GetSelfInfoStruct {
 	DWORD length;
 };
 
-VOID DeleteSelfInfoCache() {
-	if (!hProcess)
-		return;
+VOID DeleteSelfInfoCache(DWORD pid,HANDLE hProcess) {
 	DWORD dwId = 0;
-	DWORD DeleteSelfInfoCacheProcAddr = GetWeChatRobotBase() + DeleteSelfInfoCacheOffset;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		return;
+	}
+	DWORD DeleteSelfInfoCacheProcAddr = WeChatRobotBase + DeleteSelfInfoCacheOffset;
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)DeleteSelfInfoCacheProcAddr, NULL, 0, &dwId);
 	if (hThread) {
 		WaitForSingleObject(hThread, INFINITE);
@@ -17,13 +19,19 @@ VOID DeleteSelfInfoCache() {
 	}
 }
 
-std::wstring GetSelfInfo() {
-	if (!hProcess)
-		return L"{}";
+std::wstring GetSelfInfo(DWORD pid) {
 	if (SelfInfoString.compare(L"")) {
 		return SelfInfoString;
 	}
-	DWORD GetSelfInfoProcAddr = GetWeChatRobotBase() + GetSelfInfoOffset;
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+	if (!hProcess)
+		return L"{}";
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return L"{}";
+	}
+	DWORD GetSelfInfoProcAddr = WeChatRobotBase + GetSelfInfoOffset;
 	DWORD dwWriteSize = 0;
 	DWORD dwId = 0;
 	DWORD dwHandle = 0;
@@ -45,14 +53,21 @@ std::wstring GetSelfInfo() {
 		wmessage = NULL;
 	}
 
-	DeleteSelfInfoCache();
+	DeleteSelfInfoCache(pid,hProcess);
+	CloseHandle(hProcess);
 	return SelfInfoString;
 }
 
-BOOL isWxLogin() {
+BOOL isWxLogin(DWORD pid) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return false;
-	DWORD isWxLoginAddr = GetWeChatRobotBase() + isWxLoginOffset;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return false;
+	}
+	DWORD isWxLoginAddr = WeChatRobotBase + isWxLoginOffset;
 	DWORD dwId, dwRet = 0;
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)isWxLoginAddr, NULL, 0, &dwId);
 	if (hThread) {
@@ -60,5 +75,6 @@ BOOL isWxLogin() {
 		GetExitCodeThread(hThread, &dwRet);
 		CloseHandle(hThread);
 	}
+	CloseHandle(hProcess);
 	return dwRet == 1;
 }

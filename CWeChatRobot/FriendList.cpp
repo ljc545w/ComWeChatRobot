@@ -16,7 +16,7 @@ struct WxFriendStruct {
 
 WxFriendStruct* WxFriendList;
 
-void ReadFriendMessageByAddress(WxFriendAddrStruct* lpWxFriendAddr, WxFriendStruct* lpWxFriend) {
+void ReadFriendMessageByAddress(HANDLE hProcess,WxFriendAddrStruct* lpWxFriendAddr, WxFriendStruct* lpWxFriend) {
 	DWORD length = 0;
 	DWORD bufferaddr = 0;
 
@@ -119,12 +119,18 @@ SAFEARRAY* CreateFriendArray(int FriendCount) {
 	return psaValue;
 }
 
-SAFEARRAY* GetFriendList() {
+SAFEARRAY* GetFriendList(DWORD pid) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return NULL;
-	DWORD GetFriendListInitAddr = GetWeChatRobotBase() + GetFriendListInitOffset;
-	DWORD GetFriendListRemoteAddr = GetWeChatRobotBase() + GetFriendListRemoteOffset;
-	DWORD GetFriendListFinishAddr = GetWeChatRobotBase() + GetFriendListFinishOffset;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return NULL;
+	}
+	DWORD GetFriendListInitAddr = WeChatRobotBase + GetFriendListInitOffset;
+	DWORD GetFriendListRemoteAddr = WeChatRobotBase + GetFriendListRemoteOffset;
+	DWORD GetFriendListFinishAddr = WeChatRobotBase + GetFriendListFinishOffset;
 	DWORD FriendCount = 0;
 	DWORD dwId, dwHandle = 0;
 	// 获取好友列表的长度
@@ -150,12 +156,13 @@ SAFEARRAY* GetFriendList() {
 			WxFriendList[i] = { 0 };
 			ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
 			ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
-			ReadFriendMessageByAddress(&WxFriendAddr, &WxFriendList[i]);
+			ReadFriendMessageByAddress(hProcess,&WxFriendAddr, &WxFriendList[i]);
 			// 保存下一个好友数据的结构体
 			dwHandle += sizeof(WxFriendAddrStruct);
 		}
 	}
 	else {
+		CloseHandle(hProcess);
 		return NULL;
 	}
 	// 清除微信进程空间中的缓存
@@ -171,15 +178,22 @@ SAFEARRAY* GetFriendList() {
 	}
 	delete[] WxFriendList;
 	WxFriendList = NULL;
+	CloseHandle(hProcess);
 	return psaValue;
 }
 
-std::wstring GetFriendListString() {
+std::wstring GetFriendListString(DWORD pid) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return L"[]";
-	DWORD GetFriendListInitAddr = GetWeChatRobotBase() + GetFriendListInitOffset;
-	DWORD GetFriendListRemoteAddr = GetWeChatRobotBase() + GetFriendListRemoteOffset;
-	DWORD GetFriendListFinishAddr = GetWeChatRobotBase() + GetFriendListFinishOffset;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return L"[]";
+	}
+	DWORD GetFriendListInitAddr = WeChatRobotBase + GetFriendListInitOffset;
+	DWORD GetFriendListRemoteAddr = WeChatRobotBase + GetFriendListRemoteOffset;
+	DWORD GetFriendListFinishAddr = WeChatRobotBase + GetFriendListFinishOffset;
 	DWORD FriendCount = 0;
 	DWORD dwId, dwHandle = 0;
 	// 获取好友列表的长度
@@ -205,12 +219,13 @@ std::wstring GetFriendListString() {
 			WxFriendList[i] = { 0 };
 			ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
 			ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
-			ReadFriendMessageByAddress(&WxFriendAddr, &WxFriendList[i]);
+			ReadFriendMessageByAddress(hProcess,&WxFriendAddr, &WxFriendList[i]);
 			// 保存下一个好友数据的结构体
 			dwHandle += sizeof(WxFriendAddrStruct);
 		}
 	}
 	else {
+		CloseHandle(hProcess);
 		return L"[]";
 	}
 	// 清除微信进程空间中的缓存
@@ -235,5 +250,6 @@ std::wstring GetFriendListString() {
 	// 释放全局变量
 	delete[] WxFriendList;
 	WxFriendList = NULL;
+	CloseHandle(hProcess);
 	return message;
 }

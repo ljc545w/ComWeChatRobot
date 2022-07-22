@@ -6,10 +6,15 @@ struct SendTextStruct
     DWORD wxmsg;
 };
 
-int SendText(wchar_t* wxid, wchar_t* wxmsg) {
+int SendText(DWORD pid,wchar_t* wxid, wchar_t* wxmsg) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     SendTextStruct params;
@@ -18,6 +23,7 @@ int SendText(wchar_t* wxid, wchar_t* wxmsg) {
     LPVOID wxmsgaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     SendTextStruct* paramAndFunc = (SendTextStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendTextStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!wxidaddr || !wxmsgaddr || !paramAndFunc || !WeChatRobotBase) {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD dwTId = 0;
@@ -32,12 +38,10 @@ int SendText(wchar_t* wxid, wchar_t* wxmsg) {
     params.wxmsg = (DWORD)wxmsgaddr;
 
     if (paramAndFunc) {
-        if (!::WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId))
-        {
-            return 1;
-        }
+        WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -47,11 +51,13 @@ int SendText(wchar_t* wxid, wchar_t* wxmsg) {
         WaitForSingleObject(hThread, INFINITE);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     CloseHandle(hThread);
     VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, wxmsgaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return 0;
 }

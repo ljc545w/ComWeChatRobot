@@ -6,10 +6,15 @@ struct SendCardStruct {
 	DWORD nickname;
 };
 
-BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
+BOOL SendCard(DWORD pid,wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return 1;
-	DWORD WeChatRobotBase = GetWeChatRobotBase();
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return 1;
+	}
 	DWORD dwId = 0;
 	DWORD dwWriteSize = 0;
 	SendCardStruct params;
@@ -22,6 +27,7 @@ BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
 	if (!receiveraddr || !sharedwxidaddr || !nicknameaddr ||
 		!paramAndFunc || !WeChatRobotBase)
 	{
+		CloseHandle(hProcess);
 		return 1;
 	}
 	if (receiveraddr)
@@ -45,5 +51,6 @@ BOOL SendCard(wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
 	VirtualFreeEx(hProcess, sharedwxidaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, nicknameaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+	CloseHandle(hProcess);
 	return 0;
 }

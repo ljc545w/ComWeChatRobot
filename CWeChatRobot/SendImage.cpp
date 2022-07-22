@@ -5,10 +5,15 @@ struct ImageParamStruct {
     DWORD imagepath;
 };
 
-int SendImage(wchar_t* wxid, wchar_t* imagepath) {
+int SendImage(DWORD pid,wchar_t* wxid, wchar_t* imagepath) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     ImageParamStruct params;
@@ -17,6 +22,7 @@ int SendImage(wchar_t* wxid, wchar_t* imagepath) {
     LPVOID imagepathaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     ImageParamStruct* paramAndFunc = (ImageParamStruct*)::VirtualAllocEx(hProcess, 0, sizeof(ImageParamStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!wxidaddr || !imagepathaddr || !paramAndFunc || !WeChatRobotBase) {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD dwTId = 0;
@@ -31,12 +37,10 @@ int SendImage(wchar_t* wxid, wchar_t* imagepath) {
     params.imagepath = (DWORD)imagepathaddr;
 
     if (paramAndFunc) {
-        if (!::WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId))
-        {
-            return 1;
-        }
+        WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -46,11 +50,13 @@ int SendImage(wchar_t* wxid, wchar_t* imagepath) {
         WaitForSingleObject(hThread, INFINITE);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     CloseHandle(hThread);
     VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, imagepathaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return 0;
 }

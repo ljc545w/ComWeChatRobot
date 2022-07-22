@@ -7,10 +7,15 @@ struct AddChatRoomMemberStruct
     DWORD length;
 };
 
-BOOL AddChatRoomMember(wchar_t* chatroomid, wchar_t* wxid) {
+BOOL AddChatRoomMember(DWORD pid,wchar_t* chatroomid, wchar_t* wxid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwRet = 0;
@@ -19,7 +24,8 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, wchar_t* wxid) {
     LPVOID chatroomidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     AddChatRoomMemberStruct* paramAndFunc = (AddChatRoomMemberStruct*)::VirtualAllocEx(hProcess, 0, sizeof(AddChatRoomMemberStruct), MEM_COMMIT, PAGE_READWRITE);
-    if (!chatroomidaddr || !wxidaddr || !paramAndFunc || !WeChatRobotBase) {
+    if (!chatroomidaddr || !wxidaddr || !paramAndFunc) {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD dwTId = 0;
@@ -38,6 +44,7 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, wchar_t* wxid) {
         WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(AddChatRoomMemberStruct), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -49,17 +56,17 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, wchar_t* wxid) {
         CloseHandle(hThread);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwRet == 0;
 }
 
-BOOL AddChatRoomMember(wchar_t* chatroomid, SAFEARRAY* psaValue) {
-    if (!hProcess)
-        return 1;
+BOOL AddChatRoomMember(DWORD pid,wchar_t* chatroomid, SAFEARRAY* psaValue) {
     VARIANT rgvar;
     rgvar.vt = VT_BSTR;
     HRESULT hr = S_OK;
@@ -69,17 +76,25 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, SAFEARRAY* psaValue) {
         VariantInit(&rgvar);
         long pIndex = 0;
         hr = SafeArrayGetElement(psaValue, &pIndex, &rgvar);
-        return AddChatRoomMember(chatroomid, rgvar.bstrVal);
+        return AddChatRoomMember(pid,chatroomid, rgvar.bstrVal);
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if (!hProcess)
+        return 1;
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
     }
     vector<void*> wxidptrs;
     DWORD dwWriteSize = 0;
     DWORD dwTId = 0; DWORD dwId = 0; DWORD dwRet = 0;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
     AddChatRoomMemberStruct params = { 0 };
     LPVOID chatroomidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     LPVOID wxidptrsaddr = VirtualAllocEx(hProcess, NULL, sizeof(void*) * cElements, MEM_COMMIT, PAGE_READWRITE);
     AddChatRoomMemberStruct* paramAndFunc = (AddChatRoomMemberStruct*)::VirtualAllocEx(hProcess, 0, sizeof(AddChatRoomMemberStruct), MEM_COMMIT, PAGE_READWRITE);
-    if (!chatroomidaddr || !wxidptrsaddr || !paramAndFunc || !WeChatRobotBase) {
+    if (!chatroomidaddr || !wxidptrsaddr || !paramAndFunc) {
+        CloseHandle(hProcess);
         return 1;
     }
     for (long i = lLbound; i < lLbound + cElements; i++) {
@@ -104,6 +119,7 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, SAFEARRAY* psaValue) {
         WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(AddChatRoomMemberStruct), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD AddChatRoomMemberAddr = WeChatRobotBase + AddChatRoomMemberRemoteOffset;
@@ -114,6 +130,7 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, SAFEARRAY* psaValue) {
         CloseHandle(hThread);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     for (unsigned int i = 0; i < wxidptrs.size(); i++) {
@@ -122,5 +139,6 @@ BOOL AddChatRoomMember(wchar_t* chatroomid, SAFEARRAY* psaValue) {
     VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, wxidptrsaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwRet == 0;
 }

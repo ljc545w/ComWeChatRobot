@@ -3,4 +3,4 @@
 #include<iostream>
 using namespace std;
 
-wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid);
+wstring GetChatRoomMemberNickname(DWORD pid,wchar_t* chatroomid, wchar_t* wxid);

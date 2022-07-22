@@ -5,10 +5,15 @@ struct FileParamStruct {
     DWORD filepath;
 };
 
-int SendFile(wchar_t* wxid, wchar_t* filepath) {
+int SendFile(DWORD pid,wchar_t* wxid, wchar_t* filepath) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     FileParamStruct params;
@@ -17,6 +22,7 @@ int SendFile(wchar_t* wxid, wchar_t* filepath) {
     LPVOID filepathaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     FileParamStruct* paramAndFunc = (FileParamStruct*)::VirtualAllocEx(hProcess, 0, sizeof(FileParamStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!wxidaddr || !filepathaddr || !paramAndFunc || !WeChatRobotBase) {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD dwTId = 0;
@@ -31,12 +37,10 @@ int SendFile(wchar_t* wxid, wchar_t* filepath) {
     params.filepath = (DWORD)filepathaddr;
 
     if (paramAndFunc) {
-        if (!::WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId))
-        {
-            return 1;
-        }
+        WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -46,11 +50,13 @@ int SendFile(wchar_t* wxid, wchar_t* filepath) {
         WaitForSingleObject(hThread, INFINITE);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     CloseHandle(hThread);
     VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, filepathaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return 0;
 }

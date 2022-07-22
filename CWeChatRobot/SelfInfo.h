@@ -2,5 +2,5 @@
 #include <windows.h>
 #include <iostream>
 using namespace std;
-std::wstring GetSelfInfo();
-BOOL isWxLogin();
+std::wstring GetSelfInfo(DWORD pid);
+BOOL isWxLogin(DWORD pid);

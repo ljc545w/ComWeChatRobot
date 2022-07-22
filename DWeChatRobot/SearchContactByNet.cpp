@@ -142,8 +142,16 @@ __declspec(naked) void dealUserInfo() {
 }
 
 static void HookSearchContact() {
-	if (SearchContactHooked)
+	WeChatWinBase = GetWeChatWinBase();
+	if (SearchContactHooked || WeChatWinBase == 0)
 		return;
+	HookSearchContactErrcodeNextCall = WeChatWinBase + HookSearchContactErrcodeNextCallOffset;
+	HookSearchContactErrcodeAddr = WeChatWinBase + HookSearchContactErrcodeAddrOffset;
+	HookSearchContactErrcodeJmpBackAddr = HookSearchContactErrcodeAddr + 0x5;
+
+	HookUserInfoNextCall = WeChatWinBase + HookUserInfoNextCallOffset;
+	HookUserInfoAddr = WeChatWinBase + HookUserInfoAddrOffset;
+	HookUserInfoJmpBackAddr = HookUserInfoAddr + 0x5;
 	HookAnyAddress(HookSearchContactErrcodeAddr, (LPVOID)dealSearchContactErrcode, HookSearchContactErrcodeOldAsm);
 	HookAnyAddress(HookUserInfoAddr,(LPVOID)dealUserInfo, HookUserInfoOldAsm);
 	SearchContactHooked = true;

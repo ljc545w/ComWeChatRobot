@@ -5,11 +5,14 @@ struct GetUserInfoStruct {
 	DWORD length;
 };
 
-VOID DeleteUserInfoCache() {
-	if (!hProcess)
-		return;
+VOID DeleteUserInfoCache(DWORD pid,HANDLE hProcess) {
 	DWORD dwId = 0;
-	DWORD DeleteUserInfoCacheProcAddr = GetWeChatRobotBase() + DeleteUserInfoCacheOffset;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return;
+	}
+	DWORD DeleteUserInfoCacheProcAddr = WeChatRobotBase + DeleteUserInfoCacheOffset;
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)DeleteUserInfoCacheProcAddr, NULL, 0, &dwId);
 	if (hThread) {
 		WaitForSingleObject(hThread, INFINITE);
@@ -17,18 +20,26 @@ VOID DeleteUserInfoCache() {
 	}
 }
 
-std::wstring GetWxUserInfo(wchar_t* wxid) {
+std::wstring GetWxUserInfo(DWORD pid,wchar_t* wxid) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return L"{}";
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return L"{}";
+	}
 	wstring WString = L"";
-	DWORD GetUserInfoProcAddr = GetWeChatRobotBase() + GetWxUserInfoOffset;
+	DWORD GetUserInfoProcAddr = WeChatRobotBase + GetWxUserInfoOffset;
 	LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	DWORD dwWriteSize = 0;
 	DWORD dwId = 0;
 	DWORD dwHandle = 0;
 	GetUserInfoStruct userinfo = { 0 };
-	if (!wxidaddr)
+	if (!wxidaddr) {
+		CloseHandle(hProcess);
 		return L"{}";
+	}
 	WriteProcessMemory(hProcess, wxidaddr, wxid, wcslen(wxid) * 2 + 2, &dwWriteSize);
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetUserInfoProcAddr, wxidaddr, 0, &dwId);
 	if (hThread) {
@@ -49,7 +60,8 @@ std::wstring GetWxUserInfo(wchar_t* wxid) {
 	}
 
 	VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
-	DeleteUserInfoCache();
+	DeleteUserInfoCache(pid,hProcess);
+	CloseHandle(hProcess);
 	return WString;
 }
 

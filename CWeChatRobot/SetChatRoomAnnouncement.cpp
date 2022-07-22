@@ -6,10 +6,15 @@ struct ChatRoomAnnouncementStruct
     DWORD announcement;
 };
 
-BOOL SetChatRoomAnnouncement(wchar_t* chatroomid, wchar_t* announcement) {
+BOOL SetChatRoomAnnouncement(DWORD pid,wchar_t* chatroomid, wchar_t* announcement) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwRet = 0;
@@ -19,6 +24,7 @@ BOOL SetChatRoomAnnouncement(wchar_t* chatroomid, wchar_t* announcement) {
     LPVOID announcementaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     ChatRoomAnnouncementStruct* paramAndFunc = (ChatRoomAnnouncementStruct*)::VirtualAllocEx(hProcess, 0, sizeof(ChatRoomAnnouncementStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!chatroomidaddr || !announcementaddr || !paramAndFunc) {
+        CloseHandle(hProcess);
         return 1;
     }
     DWORD dwTId = 0;
@@ -36,6 +42,7 @@ BOOL SetChatRoomAnnouncement(wchar_t* chatroomid, wchar_t* announcement) {
         WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -47,10 +54,12 @@ BOOL SetChatRoomAnnouncement(wchar_t* chatroomid, wchar_t* announcement) {
         CloseHandle(hThread);
     }
     else {
+        CloseHandle(hProcess);
         return 1;
     }
     VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, announcementaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwRet == 0;
 }

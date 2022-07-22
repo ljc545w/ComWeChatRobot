@@ -1,3 +1,3 @@
 #pragma once
 #include<windows.h>
-BOOL ChangeWeChatVer(wchar_t* verStr);
+BOOL ChangeWeChatVer(DWORD pid,wchar_t* verStr);

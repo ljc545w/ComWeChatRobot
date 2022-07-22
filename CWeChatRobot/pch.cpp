@@ -58,8 +58,6 @@ DWORD ChangeWeChatVerRemoteOffset = 0x0;
 
 wstring SelfInfoString = L"";
 
-HANDLE hProcess = NULL;
-
 BOOL isFileExists_stat(string& name) {
     struct stat buffer;
     return (stat(name.c_str(), &buffer) == 0);
@@ -78,7 +76,8 @@ BOOL CreateConsole() {
     return 1;
 }
 
-DWORD GetWeChatRobotBase() {
+DWORD GetWeChatRobotBase(DWORD pid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 0;
     DWORD dwWriteSize = 0;
@@ -88,8 +87,7 @@ DWORD GetWeChatRobotBase() {
     else
         return 0;
     DWORD dwHandle, dwID;
-    LPVOID pFunc = GetModuleHandleW;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, pRemoteAddress, 0, &dwID);
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetModuleHandleW, pRemoteAddress, 0, &dwID);
     if (hThread) {
         WaitForSingleObject(hThread, INFINITE);
         GetExitCodeThread(hThread, &dwHandle);
@@ -99,6 +97,32 @@ DWORD GetWeChatRobotBase() {
     }
     CloseHandle(hThread);
     VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
+    return dwHandle;
+}
+
+DWORD GetWeChatWinBase(DWORD pid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    if (!hProcess)
+        return 0;
+    DWORD dwWriteSize = 0;
+    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
+    if (pRemoteAddress)
+        WriteProcessMemory(hProcess, pRemoteAddress, L"WeChatWin.dll", wcslen(L"WeChatWin.dll") * 2 + 2, &dwWriteSize);
+    else
+        return 0;
+    DWORD dwHandle, dwID;
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetModuleHandleW, pRemoteAddress, 0, &dwID);
+    if (hThread) {
+        WaitForSingleObject(hThread, INFINITE);
+        GetExitCodeThread(hThread, &dwHandle);
+    }
+    else {
+        return 0;
+    }
+    CloseHandle(hThread);
+    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwHandle;
 }
 
@@ -228,12 +252,7 @@ DWORD GetWeChatPid() {
     return wxPid;
 }
 
-DWORD StartRobotService() {
-    DWORD wxPid = GetWeChatPid();
-    if (!wxPid) {
-        MessageBoxA(NULL, "请先启动目标程序", "提示", MB_ICONWARNING);
-        return 1;
-    }
+DWORD StartRobotService(DWORD pid) {
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
     if (!GetProcOffset(workPath)) {
@@ -242,32 +261,17 @@ DWORD StartRobotService() {
         MessageBox(NULL, info, L"致命错误!", MB_ICONWARNING);
         return 1;
     };
-    if(!hProcess)
-        hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
-    bool status = Inject(wxPid, workPath);
-    if (status == 1) {
-        CloseHandle(hProcess);
-        hProcess = NULL;
-        return status;
-    }
+    bool status = Inject(pid, workPath);
     return status;
 }
 
-DWORD StopRobotService() {
+DWORD StopRobotService(DWORD pid) {
     DWORD cpid = GetCurrentProcessId();
-    DWORD wxPid = GetWeChatPid();
-    if (!wxPid) {
-        hProcess = NULL;
+    if (pid == 0)
         return cpid;
-    }
-    if (!hProcess)
-        hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, wxPid);
-    RemoveDll(wxPid);
+    RemoveDll(pid);
     ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
-    CloseHandle(hProcess);
-    hProcess = NULL;
-    StopReceiveMessage();
-    return cpid;
+    return 0;
 }
 
 wstring GetComWorkPath() {
@@ -320,11 +324,34 @@ tstring GetWeChatVerStr() {
     return verStr;
 }
 
-VOID StartWeChat()
+static bool CloseAllWxProcessMutexHandle() 
 {
+    HANDLE  hsnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hsnapshot == INVALID_HANDLE_VALUE)
+    {
+        return false;
+    }
+    PROCESSENTRY32 pe;
+    pe.dwSize = sizeof(PROCESSENTRY32);
+    int flag = Process32First(hsnapshot, &pe);
+    while (flag != 0)
+    {
+        if (lstrcmp(pe.szExeFile, L"WeChat.exe") == 0)
+        {
+            CloseProcessHandle(pe.th32ProcessID, L"_WeChat_App_Instance_Identity_Mutex_Name");
+        }
+        flag = Process32Next(hsnapshot, &pe);
+    }
+    CloseHandle(hsnapshot);
+    return true;
+}
+
+DWORD StartWeChat()
+{
+    CloseAllWxProcessMutexHandle();
     tstring szAppName = GetWeChatInstallDir();
     if (szAppName.length() == 0)
-        return;
+        return 0;
     szAppName += TEXT("\\WeChat.exe");
     STARTUPINFO StartInfo;
     ZeroMemory(&StartInfo, sizeof(StartInfo));
@@ -336,4 +363,11 @@ VOID StartWeChat()
         CloseHandle(procStruct.hProcess);
         CloseHandle(procStruct.hThread);
     }
+    if (procStruct.dwProcessId == 0)
+        return 0;
+    DWORD WeChatWinBase = 0;
+    while ((WeChatWinBase = GetWeChatWinBase(procStruct.dwProcessId)) == 0) {
+        Sleep(500);
+    }
+    return procStruct.dwProcessId;
 }

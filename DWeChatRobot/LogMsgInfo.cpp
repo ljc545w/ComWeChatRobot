@@ -7,17 +7,25 @@
 // HOOK的跳转地址偏移
 #define HookLogMsgJmpBackOffset 0x78E10449 - 0x786A0000
 
+static DWORD WeChatWinBase = GetWeChatWinBase();
 // 微信日志HOOK地址
-DWORD HookLogMsgInfoAddr = GetWeChatWinBase() + HookLogMsgInfoAddrOffset;
+static DWORD HookLogMsgInfoAddr = WeChatWinBase + HookLogMsgInfoAddrOffset;
 // HOOK的CALL地址
-DWORD NextCallAddr = GetWeChatWinBase() + HookLogMsgInfoNextCallOffset;
+static DWORD NextCallAddr = WeChatWinBase + HookLogMsgInfoNextCallOffset;
 // HOOK的跳转地址
-DWORD JmpBackAddr = GetWeChatWinBase() + HookLogMsgJmpBackOffset;
+static DWORD JmpBackAddr = WeChatWinBase + HookLogMsgJmpBackOffset;
 
 // 是否开启日志HOOK标志
-BOOL LogMsgHooked = false;
+static BOOL LogMsgHooked = false;
 // 保存HOOK前的指令用于恢复
 char LogOldAsmCode[5] = { 0 };
+
+static void SendLogToComServer(wchar_t* logmsg) {
+	// _variant_t log = logmsg;
+	// PostComMessage(WX_LOG_MESSAGE, &log);
+	delete[] logmsg;
+	logmsg = NULL;
+}
 
 /*
 * 处理函数，打印日志信息
@@ -27,6 +35,7 @@ char LogOldAsmCode[5] = { 0 };
 VOID PrintMsg(DWORD msg) {
 	if (!msg)
 		return;
+	DWORD dwId = 0;
 	char* utf8_message = (char*)msg;
 	int c_size = MultiByteToWideChar(CP_UTF8, 0, utf8_message, -1, 0, 0);
 	wchar_t* wmessage = new wchar_t[c_size + 1];
@@ -36,9 +45,17 @@ VOID PrintMsg(DWORD msg) {
 	char* message = new char[c_size + 1];
 	memset(message, 0, c_size + 1);
 	WideCharToMultiByte(CP_ACP, 0, wmessage, -1, message, c_size, 0, 0);
+#ifndef USE_SOCKET
+	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendLogToComServer, wmessage, NULL, &dwId);
+	if (hThread)
+		CloseHandle(hThread);
+#else
 	delete[] wmessage;
 	wmessage = NULL;
+#endif
+#ifdef _DEBUG
 	cout << message;
+#endif
 	delete[] message;
 	message = NULL;
 	return;
@@ -66,8 +83,12 @@ __declspec(naked) void doprintmsg(){
 * return：void
 */
 VOID HookLogMsgInfo() {
-	if (LogMsgHooked)
+	WeChatWinBase = GetWeChatWinBase();
+	if (LogMsgHooked || !WeChatWinBase)
 		return;
+	HookLogMsgInfoAddr = WeChatWinBase + HookLogMsgInfoAddrOffset;
+	NextCallAddr = WeChatWinBase + HookLogMsgInfoNextCallOffset;
+	JmpBackAddr = WeChatWinBase + HookLogMsgJmpBackOffset;
 	HookAnyAddress(HookLogMsgInfoAddr,(LPVOID)doprintmsg, LogOldAsmCode);
 	LogMsgHooked = true;
 }

@@ -17,10 +17,6 @@ typedef int(__cdecl* Sqlite3_exec)(
 	char**                  /* Write error messages here */
 );
 
-DWORD WeChatWinBase = GetWeChatWinBase();
-// sqlite3_exec函数地址
-DWORD sqlite3_execAddr = WeChatWinBase + OffsetFromIdaAddr(IDA_SQLITE3_EXEC_ADDRESS);
-
 /*
 * 外部调用时传递的参数结构
 * ptrDb：数据库句柄
@@ -184,6 +180,8 @@ void ClearResultArray() {
 * return：void*，执行成功返回数组指针，执行失败返回`0`
 */
 void* ExecuteSQL(DWORD ptrDb,const char* sql,DWORD callback,void* data) {
+	DWORD WeChatWinBase = GetWeChatWinBase();
+	DWORD sqlite3_execAddr = WeChatWinBase + OffsetFromIdaAddr(IDA_SQLITE3_EXEC_ADDRESS);
 	Sqlite3_exec p_Sqlite3_exec = (Sqlite3_exec)sqlite3_execAddr;
 	int status = p_Sqlite3_exec(ptrDb,sql, (sqlite3_callback)callback,data,0);
 	if (status != SQLITE_OK)

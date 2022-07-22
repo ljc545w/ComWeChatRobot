@@ -16,48 +16,48 @@ import "ocidl.idl";
 ]
 interface IWeChatRobot : IDispatch
 {
-	[id(1), helpstring("启动服务")] HRESULT CStartRobotService([out, retval] int* __result);
-	[id(2), helpstring("关闭服务")] HRESULT CStopRobotService([out, retval] int* __result);
-	[id(3), helpstring("发送文本")] HRESULT CSendText([in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
-	[id(4), helpstring("发送图片")] HRESULT CSendImage([in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
-	[id(5), helpstring("发送文件")] HRESULT CSendFile([in] BSTR wxid, [in] BSTR filepath, [out, retval] int* __result);
-	[id(6), helpstring("发送XML文章")] HRESULT CSendArticle([in] BSTR wxid, [in] BSTR title, [in] BSTR abstract, [in] BSTR url, [in] BSTR imgpath, [out, retval] int* __result);
-	[id(7), helpstring("发送名片")] HRESULT CSendCard([in] BSTR receiver, [in] BSTR sharedwxid, [in] BSTR nickname, [out, retval] int* __result);
-	[id(8), helpstring("获取联系人列表，返回数组")] HRESULT CGetFriendList([out, retval] VARIANT* __result);
-	[id(9), helpstring("获取联系人列表，返回JSON")] HRESULT CGetFriendListString([out, retval] BSTR* __result);
-	[id(10), helpstring("wxid查询好友信息")] HRESULT CGetWxUserInfo([in] BSTR wxid, [out, retval] BSTR* __result);
-	[id(11), helpstring("获取个人信息")] HRESULT CGetSelfInfo([out, retval] BSTR* __result);
-	[id(13), helpstring("检查是否被好友删除")] HRESULT CCheckFriendStatus([in] BSTR wxid, [out, retval] int* __result);
+	[id(1), helpstring("启动服务")] HRESULT CStartRobotService([in] DWORD pid, [out, retval] int* __result);
+	[id(2), helpstring("关闭服务")] HRESULT CStopRobotService([in] DWORD pid, [out, retval] int* __result);
+	[id(3), helpstring("发送文本")] HRESULT CSendText([in] DWORD pid, [in] BSTR wxid, [in] BSTR wxmsg, [out, retval] int* __result);
+	[id(4), helpstring("发送图片")] HRESULT CSendImage([in] DWORD pid, [in] BSTR wxid, [in] BSTR imagepath, [out, retval] int* __result);
+	[id(5), helpstring("发送文件")] HRESULT CSendFile([in] DWORD pid, [in] BSTR wxid, [in] BSTR filepath, [out, retval] int* __result);
+	[id(6), helpstring("发送XML文章")] HRESULT CSendArticle([in] DWORD pid, [in] BSTR wxid, [in] BSTR title, [in] BSTR abstract, [in] BSTR url, [in] BSTR imgpath, [out, retval] int* __result);
+	[id(7), helpstring("发送名片")] HRESULT CSendCard([in] DWORD pid, [in] BSTR receiver, [in] BSTR sharedwxid, [in] BSTR nickname, [out, retval] int* __result);
+	[id(8), helpstring("获取联系人列表，返回数组")] HRESULT CGetFriendList([in] DWORD pid, [out, retval] VARIANT* __result);
+	[id(9), helpstring("获取联系人列表，返回JSON")] HRESULT CGetFriendListString([in] DWORD pid, [out, retval] BSTR* __result);
+	[id(10), helpstring("wxid查询好友信息")] HRESULT CGetWxUserInfo([in] DWORD pid, [in] BSTR wxid, [out, retval] BSTR* __result);
+	[id(11), helpstring("获取个人信息")] HRESULT CGetSelfInfo([in] DWORD pid, [out, retval] BSTR* __result);
+	[id(13), helpstring("检查是否被好友删除")] HRESULT CCheckFriendStatus([in] DWORD pid, [in] BSTR wxid, [out, retval] int* __result);
 	[id(15), helpstring("获取COM的工作目录")] HRESULT CGetComWorkPath([out, retval] BSTR* __result);
-	[id(16), helpstring("启动接收消息Hook")] HRESULT CStartReceiveMessage([in] int port, [out, retval] int* __result);
-	[id(18), helpstring("停止接收消息Hook")] HRESULT CStopReceiveMessage([out, retval] int* __result);
-	[id(19), helpstring("发送艾特消息")] HRESULT CSendAtText([in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [in] BOOL AutoNickName, [out, retval] int* __result);
-	[id(20), helpstring("获取群成员wxid")] HRESULT CGetChatRoomMembers([in] BSTR chatroomid, [out, retval] VARIANT* __result);
-	[id(21), helpstring("获取数据库句柄")] HRESULT CGetDbHandles([out, retval] VARIANT* __result);
-	[id(22), helpstring("执行SQL")] HRESULT CExecuteSQL([in] DWORD DbHandle, [in] BSTR sql, [out, retval] VARIANT* __result);
-	[id(23), helpstring("备份数据库")] HRESULT CBackupSQLiteDB([in] DWORD DbHandle, [in] BSTR savepath, [out, retval] int* __result);
-	[id(24), helpstring("通过好友请求")] HRESULT CVerifyFriendApply([in] BSTR v3, [in] BSTR v4, [out, retval] int* __result);
-	[id(25), helpstring("wxid加好友")] HRESULT CAddFriendByWxid([in] BSTR wxid, [in] BSTR message, [out, retval] int* __result);
-	[id(26), helpstring("v3数据加好友")] HRESULT CAddFriendByV3([in] BSTR v3, [in] BSTR message, [in] int AddType, [out, retval] int* __result);
+	[id(16), helpstring("启动接收消息Hook")] HRESULT CStartReceiveMessage([in] DWORD pid, [in] int port, [out, retval] int* __result);
+	[id(18), helpstring("停止接收消息Hook")] HRESULT CStopReceiveMessage([in] DWORD pid, [out, retval] int* __result);
+	[id(19), helpstring("发送艾特消息")] HRESULT CSendAtText([in] DWORD pid, [in] BSTR chatroomid, [in] VARIANT* wxid, [in] BSTR wxmsg, [in] BOOL AutoNickName, [out, retval] int* __result);
+	[id(20), helpstring("获取群成员wxid")] HRESULT CGetChatRoomMembers([in] DWORD pid, [in] BSTR chatroomid, [out, retval] VARIANT* __result);
+	[id(21), helpstring("获取数据库句柄")] HRESULT CGetDbHandles([in] DWORD pid, [out, retval] VARIANT* __result);
+	[id(22), helpstring("执行SQL")] HRESULT CExecuteSQL([in] DWORD pid, [in] DWORD DbHandle, [in] BSTR sql, [out, retval] VARIANT* __result);
+	[id(23), helpstring("备份数据库")] HRESULT CBackupSQLiteDB([in] DWORD pid, [in] DWORD DbHandle, [in] BSTR savepath, [out, retval] int* __result);
+	[id(24), helpstring("通过好友请求")] HRESULT CVerifyFriendApply([in] DWORD pid, [in] BSTR v3, [in] BSTR v4, [out, retval] int* __result);
+	[id(25), helpstring("wxid加好友")] HRESULT CAddFriendByWxid([in] DWORD pid, [in] BSTR wxid, [in] BSTR message, [out, retval] int* __result);
+	[id(26), helpstring("v3数据加好友")] HRESULT CAddFriendByV3([in] DWORD pid, [in] BSTR v3, [in] BSTR message, [in] int AddType, [out, retval] int* __result);
 	[id(27), helpstring("获取微信版本号（注册表）")] HRESULT CGetWeChatVer([out, retval] BSTR* __result);
 	[id(28), helpstring("启动微信")] HRESULT CStartWeChat([out, retval] int* __result);
-	[id(29), helpstring("网络查询用户信息")] HRESULT CSearchContactByNet([in] BSTR keyword, [out, retval] VARIANT* __result);
-	[id(30), helpstring("关注公众号")] HRESULT CAddBrandContact([in] BSTR PublicId, [out, retval] int* __result);
-	[id(31), helpstring("Hook语音消息")] HRESULT CHookVoiceMsg([in] BSTR savepath, [out, retval] int* __result);
-	[id(32), helpstring("取消Hook语音消息")] HRESULT CUnHookVoiceMsg([out, retval] int* __result);
-	[id(33), helpstring("Hook图片消息")] HRESULT CHookImageMsg([in] BSTR savepath, [out, retval] int* __result);
-	[id(34), helpstring("取消Hook图片消息")] HRESULT CUnHookImageMsg([out, retval] int* __result);
-	[id(35), helpstring("修改微信版本号")] HRESULT CChangeWeChatVer([in] BSTR verStr, [out, retval] int* __result);
-	[id(36), helpstring("发送小程序")] HRESULT CSendAppMsg([in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
-	[id(37), helpstring("删除好友")] HRESULT CDeleteUser([in] BSTR wxid, [out, retval] int* __result);
-	[id(38), helpstring("获取登录状态")] HRESULT CIsWxLogin([out, retval] int* __result);
-	[id(39), helpstring("修改好友备注")] HRESULT CEditRemark([in] BSTR wxid, [in] BSTR remark, [out, retval] int* __result);
-	[id(40), helpstring("修改群聊名称")] HRESULT CSetChatRoomName([in] BSTR chatroomid, [in] BSTR name, [out, retval] int* __result);
-	[id(41), helpstring("修改群公告")] HRESULT CSetChatRoomAnnouncement([in] BSTR chatroomid, [in] BSTR announcement, [out, retval] int* __result);
-	[id(42), helpstring("修改群聊个人昵称")] HRESULT CSetChatRoomSelfNickname([in] BSTR chatroomid, [in] BSTR nickname, [out, retval] int* __result);
-	[id(43), helpstring("获取指定群成员昵称")] HRESULT CGetChatRoomMemberNickname([in] BSTR chatroomid, [in] BSTR wxid, [out, retval] BSTR* __result);
-	[id(44), helpstring("删除群成员")] HRESULT CDelChatRoomMember([in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
-	[id(45), helpstring("添加群成员")] HRESULT CAddChatRoomMember([in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
+	[id(29), helpstring("网络查询用户信息")] HRESULT CSearchContactByNet([in] DWORD pid, [in] BSTR keyword, [out, retval] VARIANT* __result);
+	[id(30), helpstring("关注公众号")] HRESULT CAddBrandContact([in] DWORD pid, [in] BSTR PublicId, [out, retval] int* __result);
+	[id(31), helpstring("Hook语音消息")] HRESULT CHookVoiceMsg([in] DWORD pid, [in] BSTR savepath, [out, retval] int* __result);
+	[id(32), helpstring("取消Hook语音消息")] HRESULT CUnHookVoiceMsg([in] DWORD pid, [out, retval] int* __result);
+	[id(33), helpstring("Hook图片消息")] HRESULT CHookImageMsg([in] DWORD pid, [in] BSTR savepath, [out, retval] int* __result);
+	[id(34), helpstring("取消Hook图片消息")] HRESULT CUnHookImageMsg([in] DWORD pid, [out, retval] int* __result);
+	[id(35), helpstring("修改微信版本号")] HRESULT CChangeWeChatVer([in] DWORD pid, [in] BSTR verStr, [out, retval] int* __result);
+	[id(36), helpstring("发送小程序")] HRESULT CSendAppMsg([in] DWORD pid, [in] BSTR wxid, [in] BSTR appid, [out, retval] int* __result);
+	[id(37), helpstring("删除好友")] HRESULT CDeleteUser([in] DWORD pid, [in] BSTR wxid, [out, retval] int* __result);
+	[id(38), helpstring("获取登录状态")] HRESULT CIsWxLogin([in] DWORD pid, [out, retval] int* __result);
+	[id(39), helpstring("修改好友备注")] HRESULT CEditRemark([in] DWORD pid, [in] BSTR wxid, [in] BSTR remark, [out, retval] int* __result);
+	[id(40), helpstring("修改群聊名称")] HRESULT CSetChatRoomName([in] DWORD pid, [in] BSTR chatroomid, [in] BSTR name, [out, retval] int* __result);
+	[id(41), helpstring("修改群公告")] HRESULT CSetChatRoomAnnouncement([in] DWORD pid, [in] BSTR chatroomid, [in] BSTR announcement, [out, retval] int* __result);
+	[id(42), helpstring("修改群聊个人昵称")] HRESULT CSetChatRoomSelfNickname([in] DWORD pid, [in] BSTR chatroomid, [in] BSTR nickname, [out, retval] int* __result);
+	[id(43), helpstring("获取指定群成员昵称")] HRESULT CGetChatRoomMemberNickname([in] DWORD pid, [in] BSTR chatroomid, [in] BSTR wxid, [out, retval] BSTR* __result);
+	[id(44), helpstring("删除群成员")] HRESULT CDelChatRoomMember([in] DWORD pid, [in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
+	[id(45), helpstring("添加群成员")] HRESULT CAddChatRoomMember([in] DWORD pid, [in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
 };
 [
 	object,
@@ -68,7 +68,7 @@ interface IWeChatRobot : IDispatch
 ]
 interface IRobotEvent : IDispatch
 {
-	[id(1), helpstring("用于微信主动推送消息")] HRESULT CPostMessage([in] VARIANT* msg, [out, retval] int* __result);
+	[id(1), helpstring("用于微信主动推送消息")] HRESULT CPostMessage([in] int msgtype, [in] VARIANT* msg, [out, retval] int* __result);
 };
 [
 	uuid(721abb35-141a-4aa2-94f2-762e2833fa6c),

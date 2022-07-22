@@ -7,10 +7,15 @@ struct ChatRoomMemberNicknameStruct
     DWORD nickname;
 };
 
-wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
+wstring GetChatRoomMemberNickname(DWORD pid,wchar_t* chatroomid, wchar_t* wxid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return L"";
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return L"";
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwRet = 0;
@@ -21,6 +26,7 @@ wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
     LPVOID nicknameaddr = VirtualAllocEx(hProcess, NULL, 33 * 2, MEM_COMMIT, PAGE_READWRITE);
     ChatRoomMemberNicknameStruct* paramAndFunc = (ChatRoomMemberNicknameStruct*)::VirtualAllocEx(hProcess, 0, sizeof(ChatRoomMemberNicknameStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!chatroomidaddr || !wxidaddr || !nicknameaddr || !paramAndFunc) {
+        CloseHandle(hProcess);
         return L"";
     }
     DWORD dwTId = 0;
@@ -39,6 +45,7 @@ wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
         WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwTId);
     }
     else {
+        CloseHandle(hProcess);
         return L"";
     }
 
@@ -50,6 +57,7 @@ wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
         CloseHandle(hThread);
     }
     else {
+        CloseHandle(hProcess);
         return L"";
     }
     wchar_t* buffer = new wchar_t[33];
@@ -60,5 +68,6 @@ wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
     VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, nicknameaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return nickname;
 }

@@ -5,10 +5,15 @@ struct ChatRoomInfoStruct {
 	DWORD length;
 };
 
-SAFEARRAY* GetChatRoomMembers(wchar_t* chatroomid) {
+SAFEARRAY* GetChatRoomMembers(DWORD pid,wchar_t* chatroomid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return NULL;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return NULL;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwHandle = 0;
@@ -16,6 +21,7 @@ SAFEARRAY* GetChatRoomMembers(wchar_t* chatroomid) {
     ChatRoomInfoStruct chatroominfo = { 0 };
     LPVOID chatroomidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     if (!chatroomidaddr || !WeChatRobotBase) {
+        CloseHandle(hProcess);
         return NULL;
     }
     else {
@@ -29,10 +35,13 @@ SAFEARRAY* GetChatRoomMembers(wchar_t* chatroomid) {
         GetExitCodeThread(hThread, &dwHandle);
     }
     else {
+        CloseHandle(hProcess);
         return NULL;
     }
-    if (!dwHandle)
+    if (!dwHandle) {
+        CloseHandle(hProcess);
         return NULL;
+    }
     ReadProcessMemory(hProcess,(LPCVOID)dwHandle,&chatroominfo,sizeof(ChatRoomInfoStruct),0);
     wchar_t* members = new wchar_t[chatroominfo.length + 1];
     ZeroMemory(members, (chatroominfo.length + 1) * 2);
@@ -51,5 +60,6 @@ SAFEARRAY* GetChatRoomMembers(wchar_t* chatroomid) {
     hr = SafeArrayPutElement(psaValue, keyIndex, &(_variant_t)members);
     delete[] members;
     members = NULL;
+    CloseHandle(hProcess);
     return psaValue;
 }

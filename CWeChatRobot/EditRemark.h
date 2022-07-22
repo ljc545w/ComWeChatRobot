@@ -1,4 +1,4 @@
 #pragma once
 #include<windows.h>
 
-BOOL EditRemark(wchar_t* wxid, wchar_t* remark);
+BOOL EditRemark(DWORD pid,wchar_t* wxid, wchar_t* remark);

@@ -56,6 +56,7 @@ struct WxString
 * filepath：图片、文件及其他资源的保存路径；l_filepath：`filepath`字符数
 */
 struct ReceiveMsgStruct {
+    DWORD pid;
     DWORD messagetype;
     BOOL isSendMessage;
     wchar_t* sender;

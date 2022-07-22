@@ -6,10 +6,15 @@ struct AddFriendByV3Struct {
     DWORD AddType;
 };
 
-BOOL AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
+BOOL AddFriendByV3(DWORD pid,wchar_t* v3, wchar_t* message,int AddType) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwRet = 1;
@@ -17,8 +22,10 @@ BOOL AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
     LPVOID v3addr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     LPVOID messageaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     AddFriendByV3Struct* paramAndFunc = (AddFriendByV3Struct*)VirtualAllocEx(hProcess, 0, sizeof(AddFriendByV3Struct), MEM_COMMIT, PAGE_READWRITE);
-    if (!v3addr || !messageaddr || !paramAndFunc)
+    if (!v3addr || !messageaddr || !paramAndFunc) {
+        CloseHandle(hProcess);
         return 1;
+    }
     WriteProcessMemory(hProcess, v3addr, v3, wcslen(v3) * 2 + 2, &dwWriteSize);
     if(message)
         WriteProcessMemory(hProcess, messageaddr, message, wcslen(message) * 2 + 2, &dwWriteSize);
@@ -39,5 +46,6 @@ BOOL AddFriendByV3(wchar_t* v3, wchar_t* message,int AddType) {
     VirtualFreeEx(hProcess, v3addr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, messageaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwRet == 0;
 }
