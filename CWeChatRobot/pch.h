@@ -37,14 +37,17 @@ using namespace std;
 #endif
 
 BOOL isFileExists_stat(string& name);
-DWORD GetWeChatRobotBase();
+DWORD GetWeChatRobotBase(DWORD pid);
+DWORD GetWeChatWinBase(DWORD pid);
 DWORD GetWeChatPid();
-DWORD StartRobotService();
-DWORD StopRobotService();
+DWORD StartRobotService(DWORD pid);
+DWORD StopRobotService(DWORD pid);
+
 BOOL CreateConsole();
 wstring GetComWorkPath();
 
 tstring GetWeChatInstallDir();
 DWORD GetWeChatVerInt();
 tstring GetWeChatVerStr();
-VOID StartWeChat();
+DWORD StartWeChat();
+BOOL CloseProcessHandle(DWORD pid, wchar_t* handlename);

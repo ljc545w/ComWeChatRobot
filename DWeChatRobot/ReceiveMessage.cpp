@@ -22,6 +22,7 @@ using namespace std;
 static int SRVPORT = 0;
 
 struct ScoketMsgStruct {
+	DWORD pid;
 	int messagetype;
 	BOOL isSendMessage;
 	wchar_t sender[80];
@@ -36,18 +37,19 @@ BOOL ReceiveMessageHooked = false;
 // 保存HOOK前的字节码，用于恢复
 char OldReceiveMessageAsmCode[5] = { 0 };
 char OldSendMessageAsmCode[5] = { 0 };
+static DWORD WeChatWinBase = GetWeChatWinBase();
 // 接收消息HOOK地址
-DWORD ReceiveMessageHookAddress = GetWeChatWinBase() + ReceiveMessageHookOffset;
+static DWORD ReceiveMessageHookAddress = WeChatWinBase + ReceiveMessageHookOffset;
 // 接收消息HOOK的CALL地址
-DWORD ReceiveMessageNextCall = GetWeChatWinBase() + ReceiveMessageNextCallOffset;
+static DWORD ReceiveMessageNextCall = WeChatWinBase + ReceiveMessageNextCallOffset;
 // 接收HOOK的跳转地址
-DWORD ReceiveMessageJmpBackAddress = ReceiveMessageHookAddress + 0x5;
+static DWORD ReceiveMessageJmpBackAddress = ReceiveMessageHookAddress + 0x5;
 // 发送消息HOOK地址
-DWORD SendMessageHookAddress = GetWeChatWinBase() + SendMessageHookOffset;
+static DWORD SendMessageHookAddress = WeChatWinBase + SendMessageHookOffset;
 // 发送消息HOOK的CALL地址
-DWORD SendMessageNextCall = GetWeChatWinBase() + SendMessageNextCallOffset;
+static DWORD SendMessageNextCall = WeChatWinBase + SendMessageNextCallOffset;
 // 发送HOOK的跳转地址
-DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
+static DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
 // 通过socket将消息发送给服务端
 BOOL SendSocketMessage(ReceiveMsgStruct* ms)
@@ -82,6 +84,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct* ms)
 	char recvbuf[1024] = { 0 };
 	ScoketMsgStruct* sms = new ScoketMsgStruct;
 	ZeroMemory(sms, sizeof(ScoketMsgStruct));
+	sms->pid = ms->pid;
 	sms->messagetype = ms->messagetype;
 	sms->isSendMessage = ms->isSendMessage;
 	memcpy(sms->wxid, ms->wxid, ms->l_wxid * 2);
@@ -122,6 +125,7 @@ static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
 	HRESULT hr = S_OK;
 	SAFEARRAY* psaValue;
 	vector<wstring> MessageInfoKey = {
+		L"pid",
 		L"type",
 		L"isSendMessage",
 		ms->isSendMessage ? L"sendto" : L"from",
@@ -139,12 +143,12 @@ static SAFEARRAY* CreateMessageArray(ReceiveMsgStruct* ms) {
 		_variant_t key = MessageInfoKey[i].c_str();
 		hr = SafeArrayPutElement(psaValue, keyIndex, &key);
 		keyIndex[0] = i; keyIndex[1] = 1;
-		if (i < 2) {
+		if (i < 3) {
 			_variant_t value = ((DWORD*)ms)[i];
 			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
 		}
 		else {
-			_variant_t value = ((wchar_t**)ms)[i * 2 - 2];
+			_variant_t value = ((wchar_t**)ms)[i * 2 - 3];
 			hr = SafeArrayPutElement(psaValue, keyIndex, &value);
 		}
 	}
@@ -156,6 +160,7 @@ static void dealMessage(DWORD messageAddr) {
 	BOOL isSendMessage = *(BOOL*)(messageAddr + 0x3C);
 	ReceiveMsgStruct* message = new ReceiveMsgStruct;
 	ZeroMemory(message, sizeof(ReceiveMsgStruct));
+	message->pid = GetCurrentProcessId();
 	message->isSendMessage = isSendMessage;
 	message->time = GetTimeW(*(DWORD*)(messageAddr + 0x44));
 	message->l_time = wcslen(message->time);
@@ -198,7 +203,7 @@ static void dealMessage(DWORD messageAddr) {
 	VARIANT vsaValue;
 	vsaValue.vt = VT_ARRAY | VT_VARIANT;
 	V_ARRAY(&vsaValue) = psaValue;
-	PostComMessage(&vsaValue);
+	PostComMessage(WX_MESSAGE,&vsaValue);
 #endif
 	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
 	if (hThread) {
@@ -218,7 +223,6 @@ VOID ReceiveMessage(DWORD messagesAddr) {
 		dealMessage(messageAddr);
 	}
 }
-
 
 /*
 * HOOK的具体实现，接收到消息后调用处理函数
@@ -261,8 +265,15 @@ _declspec(naked) void dealSendMessage() {
 */
 VOID HookReceiveMessage(int port) {
 	SRVPORT = port;
-	if (ReceiveMessageHooked)
+	WeChatWinBase = GetWeChatWinBase();
+	if (ReceiveMessageHooked || !WeChatWinBase)
 		return;
+	ReceiveMessageHookAddress = WeChatWinBase + ReceiveMessageHookOffset;
+	ReceiveMessageNextCall = WeChatWinBase + ReceiveMessageNextCallOffset;
+	ReceiveMessageJmpBackAddress = ReceiveMessageHookAddress + 0x5;
+	SendMessageHookAddress = WeChatWinBase + SendMessageHookOffset;
+	SendMessageNextCall = WeChatWinBase + SendMessageNextCallOffset;
+	SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 	HookAnyAddress(ReceiveMessageHookAddress,(LPVOID)dealReceiveMessage,OldReceiveMessageAsmCode);
 	HookAnyAddress(SendMessageHookAddress, (LPVOID)dealSendMessage, OldSendMessageAsmCode);
 	ReceiveMessageHooked = TRUE;

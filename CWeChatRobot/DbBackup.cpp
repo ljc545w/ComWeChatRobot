@@ -6,16 +6,24 @@ struct BackupParams {
 	DWORD savepath;
 };
 
-BOOL BackupSQLiteDB(DWORD DbHandle, BSTR savepath) {
+BOOL BackupSQLiteDB(DWORD pid,DWORD DbHandle, BSTR savepath) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return 1;
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return 1;
+	}
 	DWORD dwHandle = 0x0;
 	DWORD dwId = 0x0;
 	DWORD dwWriteSize = 0x0;
 	LPVOID savepathAddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
 	BackupParams* paramAndFunc = (BackupParams*)::VirtualAllocEx(hProcess, 0, sizeof(BackupParams), MEM_COMMIT, PAGE_READWRITE);
-	if (!savepathAddr || !paramAndFunc)
+	if (!savepathAddr || !paramAndFunc) {
+		CloseHandle(hProcess);
 		return 1;
+	}
 	char* a_savepath = _com_util::ConvertBSTRToString(savepath);
 	if (savepathAddr) 
 		WriteProcessMemory(hProcess, savepathAddr, a_savepath, strlen(a_savepath) + 1, &dwWriteSize);
@@ -26,7 +34,7 @@ BOOL BackupSQLiteDB(DWORD DbHandle, BSTR savepath) {
 	if (paramAndFunc)
 		WriteProcessMemory(hProcess, paramAndFunc, &param, sizeof(BackupParams), &dwWriteSize);
 
-	DWORD BackupSQLiteDBRemoteAddr = GetWeChatRobotBase() + BackupSQLiteDBRemoteOffset;
+	DWORD BackupSQLiteDBRemoteAddr = WeChatRobotBase + BackupSQLiteDBRemoteOffset;
 	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)BackupSQLiteDBRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
 	if (hThread) {
 		WaitForSingleObject(hThread, INFINITE);
@@ -34,9 +42,11 @@ BOOL BackupSQLiteDB(DWORD DbHandle, BSTR savepath) {
 		CloseHandle(hThread);
 	}
 	else {
+		CloseHandle(hProcess);
 		return 1;
 	}
 	VirtualFreeEx(hProcess, savepathAddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+	CloseHandle(hProcess);
 	return dwHandle;
 }

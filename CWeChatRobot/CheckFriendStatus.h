@@ -1,3 +1,3 @@
 #pragma once
 #include<windows.h>
-DWORD CheckFriendStatus(wchar_t* wxid);
+DWORD CheckFriendStatus(DWORD pid,wchar_t* wxid);

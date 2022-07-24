@@ -85,12 +85,18 @@ SAFEARRAY* CreateDbInfoSafeArray() {
     return psaValue;
 }
 
-SAFEARRAY* GetDbHandles() {
+SAFEARRAY* GetDbHandles(DWORD pid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return NULL;
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return NULL;
+    }
     DWORD dwHandle = 0x0;
     DWORD dwId = 0x0;
-    DWORD GetDbHandlesRemoteAddr = GetWeChatRobotBase() + GetDbHandlesRemoteOffset;
+    DWORD GetDbHandlesRemoteAddr = WeChatRobotBase + GetDbHandlesRemoteOffset;
     HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetDbHandlesRemoteAddr, NULL, 0, &dwId);
     if (hThread) {
         WaitForSingleObject(hThread, INFINITE);
@@ -98,10 +104,13 @@ SAFEARRAY* GetDbHandles() {
         CloseHandle(hThread);
     }
     else {
+        CloseHandle(hProcess);
         return NULL;
     }
-    if (!dwHandle)
+    if (!dwHandle) {
+        CloseHandle(hProcess);
         return NULL;
+    }
     while (1) {
         DbInfoAddrStruct dbaddr = { 0 };
         ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &dbaddr, sizeof(DbInfoAddrStruct), 0);
@@ -132,5 +141,6 @@ SAFEARRAY* GetDbHandles() {
         dwHandle += sizeof(DbInfoAddrStruct);
     }
     SAFEARRAY* psaValue = CreateDbInfoSafeArray();
+    CloseHandle(hProcess);
     return psaValue;
 }

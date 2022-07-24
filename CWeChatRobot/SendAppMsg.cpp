@@ -6,10 +6,15 @@ struct SendAppMsgStruct
     DWORD appid;
 };
 
-BOOL SendAppMsg(wchar_t* wxid, wchar_t* appid) {
+BOOL SendAppMsg(DWORD pid,wchar_t* wxid, wchar_t* appid) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     if (!hProcess)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase();
+    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+    if (!WeChatRobotBase) {
+        CloseHandle(hProcess);
+        return 1;
+    }
     DWORD dwId = 0;
     DWORD dwWriteSize = 0;
     DWORD dwRet = 0x0;
@@ -19,6 +24,7 @@ BOOL SendAppMsg(wchar_t* wxid, wchar_t* appid) {
     LPVOID appidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
     SendAppMsgStruct* paramAndFunc = (SendAppMsgStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendAppMsgStruct), MEM_COMMIT, PAGE_READWRITE);
     if (!wxidaddr || !appidaddr || !paramAndFunc || !WeChatRobotBase) {
+        CloseHandle(hProcess);
         return 1;
     }
 
@@ -45,5 +51,6 @@ BOOL SendAppMsg(wchar_t* wxid, wchar_t* appid) {
     VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, appidaddr, 0, MEM_RELEASE);
     VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+    CloseHandle(hProcess);
     return dwRet == 0;
 }

@@ -9,6 +9,8 @@ using namespace std;
 #ifdef _WIN64
 	PVOID GetSystem32ProcAddr(PCWSTR ObjectName, PCSTR procName);
 #endif
+
+BOOL CloseProcessHandle(DWORD pid, wchar_t* handlename);
 BOOL InjectDll(DWORD dwId, const wchar_t* szPath);
 BOOL RemoveDll(DWORD dwId, PCWSTR dllname);
 

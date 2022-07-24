@@ -1,3 +1,3 @@
 #pragma once
 #include<windows.h>
-SAFEARRAY* GetChatRoomMembers(wchar_t* chatroomid);
+SAFEARRAY* GetChatRoomMembers(DWORD pid,wchar_t* chatroomid);

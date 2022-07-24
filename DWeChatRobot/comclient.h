@@ -3,4 +3,7 @@
 #define USE_COM
 #include<comutil.h>
 #pragma comment(lib, "comsuppw.lib")
-BOOL PostComMessage(VARIANT* msg);
+
+#define WX_MESSAGE 1
+#define WX_LOG_MESSAGE 2
+BOOL PostComMessage(int msgtype,VARIANT* msg);

@@ -16,6 +16,30 @@ import threading
 from comtypes.client import GetEvents
 from comtypes.client import PumpEvents
 
+class _WeChatRobotClient():
+    _instance = None
+    
+    @classmethod
+    def instance(cls):
+        if not cls._instance:
+            cls._instance = cls()
+        return cls._instance
+    
+    def __init__(self):
+        self.robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
+        self.event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
+        self.cpid = self.robot.CStopRobotService(0)
+    
+    @classmethod
+    def __del__(cls):
+        import psutil
+        if cls._instance is not None:
+            try:
+                cprocess = psutil.Process(cls._instance.cpid)
+                cprocess.kill()
+            except psutil.NoSuchProcess:
+                pass
+        cls._instance = None
 
 class WeChatEventSink():
     """
@@ -30,7 +54,8 @@ class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
         super().__init__(*args,**kwargs)
         
     class ReceiveMsgStruct(comtypes.Structure):
-            _fields_ = [("type", wintypes.DWORD),
+            _fields_ = [("pid",wintypes.DWORD),
+                        ("type", wintypes.DWORD),
                         ("isSendMsg", wintypes.DWORD),
                         ("sender",comtypes.c_wchar * 80),
                         ("wxid",comtypes.c_wchar * 80),
@@ -62,63 +87,73 @@ class ReceviveMsgBaseServer(socketserver.BaseRequestHandler):
                 conn.sendall(response.encode())
             except OSError:
                 break
-            except:
+            except Exception as e:
+                print(e)
                 conn.sendall("200 OK".encode())
         conn.close()
         comtypes.CoUninitialize()
         
     def msgcallback(self,data):
         # 主线程中已经注入，此处禁止调用StartService和StopService
-        robot = WeChatRobot()
-        msg = {'time':data.time,'type':data.type,'isSendMsg':data.isSendMsg,'wxid':data.wxid,
+        msg = {'pid':data.pid,'time':data.time,'type':data.type,'isSendMsg':data.isSendMsg,'wxid':data.wxid,
                'sendto' if data.isSendMsg else 'from':data.sender,'message':data.message}
-        if '@chatroom' in data.sender:
-            chatroominfo = robot.GetWxUserInfo(data.sender)
-            userinfo = robot.GetWxUserInfo(data.wxid)
-            msg['chatroomname'] = chatroominfo['wxNickName']
-        else:
-            userinfo = robot.GetWxUserInfo(data.sender)
-        msg['nickname'] = userinfo['wxNickName']
+        robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
+        event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
+        wx = WeChatRobot(data.pid,robot,event)
+        userinfo = wx.GetWxUserInfo(data.wxid)
         msg['alias'] = userinfo['wxNumber']
+        if data.isSendMsg == 0:
+            if '@chatroom' in data.sender:
+                chatroominfo = wx.GetWxUserInfo(data.sender)
+                msg['chatroomname'] = chatroominfo['wxNickName']
+                msg['nickname'] = wx.GetChatRoomMemberNickname(data.sender, data.wxid)
+            else:
+                msg['nickname'] = userinfo['wxNickName']
+        # TODO: 在这里写额外的消息处理逻辑
+        
         print(msg)
-        # TODO: ...
+        robot.Release()
+        event.Release()
+        
 
 class ChatSession():
-    def __init__(self,robot,wxid):
+    def __init__(self,pid,robot,wxid):
+        self.pid = pid
         self.robot = robot
         self.chatwith = wxid
         
     def SendText(self,msg):
-        return self.robot.CSendText(self.chatwith,msg)
+        return self.robot.CSendText(self.pid,self.chatwith,msg)
         
     def SendImage(self,imgpath):
-        return self.robot.CSendImage(self.chatwith,imgpath)
+        return self.robot.CSendImage(self.pid,self.chatwith,imgpath)
     
     def SendFile(self,filepath):
-        return self.robot.CSendFile(self.chatwith,filepath)
+        return self.robot.CSendFile(self.pid,self.chatwith,filepath)
     
     def SendMp4(self,mp4path):
-        return self.robot.CSendImage(self.chatwith,mp4path)
+        return self.robot.CSendImage(self.pid,self.chatwith,mp4path)
         
     def SendArticle(self,title,abstract,url,imgpath = None):
-        return self.robot.CSendArticle(self.chatwith,title,abstract,url,imgpath)
+        return self.robot.CSendArticle(self.pid,self.chatwith,title,abstract,url,imgpath)
     
     def SendCard(self,sharedwxid,nickname):
-        return self.robot.CSendCard(self.chatwith,sharedwxid,nickname)
+        return self.robot.CSendCard(self.pid,self.chatwith,sharedwxid,nickname)
     
     def SendAtText(self,wxid:list or str or tuple,msg,AutoNickName = True):
         if '@chatroom' not in self.chatwith:
             return 1
-        return self.robot.CSendAtText(self.chatwith,wxid,msg,AutoNickName)
+        return self.robot.CSendAtText(self.pid,self.chatwith,wxid,msg,AutoNickName)
 
     def SendAppMsg(self,appid):
-        return self.robot.CSendAppMsg(self.chatwith,appid)
+        return self.robot.CSendAppMsg(self.pid,self.chatwith,appid)
 
 class WeChatRobot():
     
-    def __init__(self):
-        self.robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
-        self.event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
+    def __init__(self,pid:int = 0,robot = None,event = None):
+        self.pid = pid
+        self.robot = robot or _WeChatRobotClient.instance().robot
+        self.event = event or _WeChatRobotClient.instance().event
         self.AddressBook = []
         self.myinfo = {}
         
@@ -132,7 +167,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        status = self.robot.CStartRobotService()
+        status = self.robot.CStartRobotService(self.pid)
         return status
     
     def IsWxLogin(self) -> int:
@@ -145,7 +180,7 @@ class WeChatRobot():
             微信登录状态.
 
         """
-        return self.robot.CIsWxLogin()
+        return self.robot.CIsWxLogin(self.pid)
 
     def SendText(self,receiver:str,msg:str) -> int:
         """
@@ -164,7 +199,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        return self.robot.CSendText(receiver,msg)
+        return self.robot.CSendText(self.pid,receiver,msg)
         
     def SendImage(self,receiver:str,imgpath:str) -> int:
         """
@@ -183,7 +218,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        return self.robot.CSendImage(receiver,imgpath)
+        return self.robot.CSendImage(self.pid,receiver,imgpath)
     
     def SendFile(self,receiver:str,filepath:str) -> int:
         """
@@ -202,7 +237,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        return self.robot.CSendFile(receiver,filepath)
+        return self.robot.CSendFile(self.pid,receiver,filepath)
         
     def SendArticle(self,receiver:str,title:str,abstract:str,url:str,imgpath:str or None = None) -> int:
         """
@@ -227,7 +262,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        return self.robot.CSendArticle(receiver,title,abstract,url,imgpath)
+        return self.robot.CSendArticle(self.pid,receiver,title,abstract,url,imgpath)
     
     def SendCard(self,receiver:str,sharedwxid:str,nickname:str) -> int:
         """
@@ -248,7 +283,7 @@ class WeChatRobot():
             0成功,非0失败.
 
         """
-        return self.robot.CSendCard(receiver,sharedwxid,nickname)
+        return self.robot.CSendCard(self.pid,receiver,sharedwxid,nickname)
     
     def SendAtText(self,chatroomid:str,AtUsers:list or str or tuple,msg:str,AutoNickName:bool = True) -> int:
         """
@@ -273,7 +308,7 @@ class WeChatRobot():
         """
         if '@chatroom' not in chatroomid:
             return 1
-        return self.robot.CSendAtText(chatroomid,AtUsers,msg,AutoNickName)
+        return self.robot.CSendAtText(self.pid,chatroomid,AtUsers,msg,AutoNickName)
 
     def GetSelfInfo(self) -> dict:
         """
@@ -285,7 +320,7 @@ class WeChatRobot():
             调用成功返回个人信息，否则返回空字典.
 
         """
-        myinfo = self.robot.CGetSelfInfo().replace('\n','\\n')
+        myinfo = self.robot.CGetSelfInfo(self.pid).replace('\n','\\n')
         try:
             myinfo = ast.literal_eval(myinfo)
         except SyntaxError:
@@ -295,7 +330,7 @@ class WeChatRobot():
     
     def StopService(self) -> int:
         """
-        停止服务，会将DLL从微信进程中卸载并杀死COM进程
+        停止服务，会将DLL从微信进程中卸载
 
         Returns
         -------
@@ -303,14 +338,7 @@ class WeChatRobot():
             COM进程pid.
 
         """
-        import psutil
-        self.StopReceiveMessage()
-        cpid = self.robot.CStopRobotService()
-        try:
-            cprocess = psutil.Process(cpid)
-            cprocess.kill()
-        except psutil.NoSuchProcess:
-            pass
+        cpid = self.robot.CStopRobotService(self.pid)
         return cpid
     
     def GetAddressBook(self) -> list:
@@ -324,7 +352,7 @@ class WeChatRobot():
 
         """
         try:
-            FriendTuple = self.robot.CGetFriendList()
+            FriendTuple = self.robot.CGetFriendList(self.pid)
             self.AddressBook = [dict(i) for i in list(FriendTuple)]
         except IndexError:
             self.AddressBook = []
@@ -465,7 +493,7 @@ class WeChatRobot():
             返回ChatSession类.
 
         """
-        return ChatSession(self.robot, wxid)
+        return ChatSession(self.pid,self.robot, wxid)
         
     def GetWxUserInfo(self,wxid:str) -> dict:
         """
@@ -482,7 +510,7 @@ class WeChatRobot():
             联系人信息.
 
         """
-        userinfo = self.robot.CGetWxUserInfo(wxid).replace('\n','\\n')
+        userinfo = self.robot.CGetWxUserInfo(self.pid,wxid).replace('\n','\\n')
         return ast.literal_eval(userinfo)
     
     def GetChatRoomMembers(self,chatroomid:str) -> list:
@@ -500,14 +528,14 @@ class WeChatRobot():
             群成员信息.
 
         """
-        info = dict(self.robot.CGetChatRoomMembers(chatroomid))
+        info = dict(self.robot.CGetChatRoomMembers(self.pid,chatroomid))
         if not info:
             return None
         members = info['members'].split('^G')
         data = self.GetWxUserInfo(chatroomid)
         data['members'] = []
         for member in members:
-            memberinfo = self.GetWxUserInfo(member)
+            memberinfo = self.GetWxUserInfo(self.pid,member)
             data['members'].append(memberinfo)
         return data
     
@@ -530,23 +558,17 @@ class WeChatRobot():
             0xB5:'被拉黑',
 
         """
-        return self.robot.CCheckFriendStatus(wxid)
+        return self.robot.CCheckFriendStatus(self.pid,wxid)
     
     # 接收消息的函数
-    def StartReceiveMessage(self,port:int = 10808,RequestHandler: 'ReceviveMsgBaseServer' = ReceviveMsgBaseServer,mainThread = True) -> int:
+    def StartReceiveMessage(self,port:int = 10808) -> int:
         """
-        启动接收消息Hook，并创建监听线程
+        启动接收消息Hook
 
         Parameters
         ----------
         port : int
-            socket的监听端口号.
-            
-        RequestHandler : ReceviveMsgBaseServer
-            用于处理消息的类，需要继承自socketserver.BaseRequestHandler或ReceviveMsgBaseServer
-            
-        mainThread : bool
-            是否在主线程中启动server
+            socket的监听端口号.如果要使用连接点回调，则将端口号设置为0.
 
         Returns
         -------
@@ -554,53 +576,21 @@ class WeChatRobot():
             启动成功返回0,失败返回非0值.
 
         """
-        ip_port=("127.0.0.1",port)
-        status = self.robot.CStartReceiveMessage(port)
-        if status != 0:
-            print('warning: Hook not success')
-            return status
-        if mainThread:
-            try:
-                s = socketserver.ThreadingTCPServer(ip_port,RequestHandler)
-                s.serve_forever()
-            except:
-                pass
-        else:
-            try:
-                s = socketserver.ThreadingTCPServer(ip_port,RequestHandler)
-                self.socket_server = threading.Thread(target = s.serve_forever)
-                self.socket_server.setDaemon(True)
-                self.socket_server.start()
-            except:
-                pass
+        status = self.robot.CStartReceiveMessage(self.pid,port)
         return status
-        
     
-    def StartReceiveMsgByEvent(self,EventSink:object or None = None) -> None:
+    def StopReceiveMessage(self) -> int:
         """
-        通过COM组件连接点接收消息，真正的回调
-
-        Parameters
-        ----------
-        EventSink : object, optional
-            回调的实现类，该类要继承`WeChatEventSink`类或实现其中的方法.
+        停止接收消息Hook
 
         Returns
         -------
-        None
-            .
+        int
+            成功返回0,失败返回非0值.
 
         """
-        if self.robot.CStartReceiveMessage(0) != 0:
-            return
-        if self.event is not None:
-            sink = EventSink or WeChatEventSink()
-            self.ConnectionPoint = GetEvents(self.event,sink)
-            while True:
-                try:
-                    PumpEvents(10)
-                except:
-                    break
+        status = self.robot.CStopReceiveMessage(self.pid)
+        return status
     
     def GetDbHandles(self) -> dict:
         """
@@ -612,7 +602,7 @@ class WeChatRobot():
             数据库句柄和表信息.
 
         """
-        tablesTuple = self.robot.CGetDbHandles()
+        tablesTuple = self.robot.CGetDbHandles(self.pid)
         tables = [dict(i) for i in tablesTuple]
         dbs = {}
         for table in tables:
@@ -642,7 +632,9 @@ class WeChatRobot():
             查询结果.
 
         """
-        result = self.robot.CExecuteSQL(handle,sql)
+        result = self.robot.CExecuteSQL(self.pid,handle,sql)
+        if len(result) == 0:
+            return []
         query_list = []
         keys = list(result[0])
         for item in result[1:]:
@@ -673,34 +665,7 @@ class WeChatRobot():
         savepath = BackupFile.replace(BackupFile.split('\\')[-1],'')
         if not os.path.exists(savepath):
             os.makedirs(savepath)
-        return self.robot.CBackupSQLiteDB(handle,BackupFile)
-
-    def StopReceiveMessage(self) -> int:
-        """
-        停止接收消息Hook
-
-        Returns
-        -------
-        int
-            成功返回0,失败返回非0值.
-
-        """
-        import inspect
-        try:
-            """raises the exception, performs cleanup if needed"""
-            tid = comtypes.c_long(self.socket_server.ident)
-            if not inspect.isclass(SystemExit):
-                exctype = type(SystemExit)
-            res = comtypes.pythonapi.PyThreadState_SetAsyncExc(tid, comtypes.py_object(exctype))
-            if res == 0:
-                raise ValueError("invalid thread id")
-            elif res != 1:
-                comtypes.ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
-                raise SystemError("PyThreadState_SetAsyncExc failed")
-        except:
-            pass
-        status = self.robot.CStopReceiveMessage()
-        return status
+        return self.robot.CBackupSQLiteDB(self.pid,handle,BackupFile)
         
     def VerifyFriendApply(self,v3:str,v4:str) -> int:
         """
@@ -719,7 +684,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值..
 
         """
-        return self.robot.CVerifyFriendApply(v3,v4)
+        return self.robot.CVerifyFriendApply(self.pid,v3,v4)
     
     def AddFriendByWxid(self,wxid:str,message:str or None) -> int:
         """
@@ -738,7 +703,7 @@ class WeChatRobot():
             请求发送成功返回0,失败返回非0值.
 
         """
-        return self.robot.CAddFriendByWxid(wxid,message)
+        return self.robot.CAddFriendByWxid(self.pid,wxid,message)
     
     def AddFriendByV3(self,v3:str,message:str or None,AddType:int) -> int:
         """
@@ -759,7 +724,7 @@ class WeChatRobot():
             请求发送成功返回0,失败返回非0值.
 
         """
-        return self.robot.CAddFriendByV3(v3,message,AddType)
+        return self.robot.CAddFriendByV3(self.pid,v3,message,AddType)
     
     def GetWeChatVer(self) -> str:
         """
@@ -772,18 +737,6 @@ class WeChatRobot():
 
         """
         return self.robot.CGetWeChatVer()
-    
-    def StartWeChat(self) -> int:
-        """
-        启动微信
-
-        Returns
-        -------
-        int
-            成功返回0,失败返回非0值.
-
-        """
-        return self.robot.CStartWeChat()
     
     def GetUserInfoByNet(self,keyword:str) -> dict or None:
         """
@@ -800,7 +753,7 @@ class WeChatRobot():
             查询成功返回用户信息,查询失败返回None.
 
         """
-        userinfo = self.robot.CSearchContactByNet(keyword)
+        userinfo = self.robot.CSearchContactByNet(self.pid,keyword)
         if userinfo:
             return dict(userinfo)
         return None
@@ -820,7 +773,7 @@ class WeChatRobot():
             请求成功返回0,失败返回非0值.
 
         """
-        return self.robot.CAddBrandContact(PublicId)
+        return self.robot.CAddBrandContact(self.pid,PublicId)
     
     def ChangeWeChatVer(self,version:str) -> int:
         """
@@ -837,7 +790,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CChangeWeChatVer(version)
+        return self.robot.CChangeWeChatVer(self.pid,version)
     
     def HookImageMsg(self,savepath:str) -> int:
         """
@@ -854,7 +807,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CHookImageMsg(savepath)
+        return self.robot.CHookImageMsg(self.pid,savepath)
     
     def UnHookImageMsg(self) -> int:
         """
@@ -866,7 +819,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CUnHookImageMsg()
+        return self.robot.CUnHookImageMsg(self.pid)
     
     def HookVoiceMsg(self,savepath:str) -> int:
         """
@@ -883,7 +836,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CHookVoiceMsg(savepath)
+        return self.robot.CHookVoiceMsg(self.pid,savepath)
     
     def UnHookVoiceMsg(self) -> int:
         """
@@ -895,7 +848,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CUnHookVoiceMsg()
+        return self.robot.CUnHookVoiceMsg(self.pid)
 
     def DeleteUser(self,wxid:str) -> int:
         """
@@ -912,7 +865,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CDeleteUser(wxid)
+        return self.robot.CDeleteUser(self.pid,wxid)
 
     def SendAppMsg(self,wxid:str,appid:str) -> int:
         """
@@ -931,7 +884,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CSendAppMsg(wxid,appid)
+        return self.robot.CSendAppMsg(self.pid,wxid,appid)
     
     def EditRemark(self,wxid:str,remark:str or None) -> int:
         """
@@ -950,7 +903,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CEditRemark(wxid,remark)
+        return self.robot.CEditRemark(self.pid,wxid,remark)
     
     def SetChatRoomName(self,chatroomid:str,name:str) -> int:
         """
@@ -969,7 +922,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CSetChatRoomName(chatroomid,name)
+        return self.robot.CSetChatRoomName(self.pid,chatroomid,name)
     
     def SetChatRoomAnnouncement(self,chatroomid:str,announcement:str or None) -> int:
         """
@@ -988,7 +941,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CSetChatRoomAnnouncement(chatroomid,announcement)
+        return self.robot.CSetChatRoomAnnouncement(self.pid,chatroomid,announcement)
     
     def SetChatRoomSelfNickname(self,chatroomid:str,nickname:str) -> int:
         """
@@ -1007,7 +960,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CSetChatRoomSelfNickname(chatroomid,nickname)
+        return self.robot.CSetChatRoomSelfNickname(self.pid,chatroomid,nickname)
     
     def GetChatRoomMemberNickname(self,chatroomid:str,wxid:str) -> str:
         """
@@ -1026,7 +979,7 @@ class WeChatRobot():
             成功返回群成员昵称,失败返回空字符串.
 
         """
-        return self.robot.CGetChatRoomMemberNickname(chatroomid,wxid)
+        return self.robot.CGetChatRoomMemberNickname(self.pid,chatroomid,wxid)
     
     def DelChatRoomMember(self,chatroomid:str,wxids:str or list or tuple) -> str:
         """
@@ -1045,7 +998,7 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CDelChatRoomMember(chatroomid,wxids)
+        return self.robot.CDelChatRoomMember(self.pid,chatroomid,wxids)
     
     def AddChatRoomMember(self,chatroomid:str,wxids:str or list or tuple) -> str:
         """
@@ -1064,4 +1017,134 @@ class WeChatRobot():
             成功返回0,失败返回非0值.
 
         """
-        return self.robot.CAddChatRoomMember(chatroomid,wxids)
+        return self.robot.CAddChatRoomMember(self.pid,chatroomid,wxids)
+    
+def GetWeChatPids() -> list:
+    """
+    获取所有微信pid
+
+    Returns
+    -------
+    list
+        微信pid列表.
+
+    """
+    import psutil
+    pids = []
+    process_list = psutil.pids()
+    for pid in process_list:
+        if psutil.Process(pid).name() == 'WeChat.exe':
+            pids.append(pid)
+    return pids
+    
+def StartWeChat() -> 'WeChatRobot':
+    """
+    启动微信
+
+    Returns
+    -------
+    WeChatRobot
+        成功返回WeChatRobot对象,失败返回False.
+
+    """
+    pid = _WeChatRobotClient.instance().robot.CStartWeChat()
+    if pid != 0:
+        return WeChatRobot(pid)
+    return False
+
+def RegisterMsgEvent(EventSink:'WeChatEventSink' or None = None) -> None:
+    """
+    通过COM组件连接点接收消息，真正的回调
+
+    Parameters
+    ----------
+    EventSink : object, optional
+        回调的实现类，该类要继承`WeChatEventSink`类或实现其中的方法.
+
+    Returns
+    -------
+    None
+        .
+
+    """
+    event = _WeChatRobotClient.instance().event
+    if event is not None:
+        sink = EventSink or WeChatEventSink()
+        ConnectionPoint = GetEvents(event,sink)
+        assert ConnectionPoint != None
+        while True:
+            try:
+                PumpEvents(2)
+            except:
+                break
+        del ConnectionPoint
+        
+def StartSocketServer(port:int = 10808,
+                      RequestHandler: 'ReceviveMsgBaseServer' = ReceviveMsgBaseServer,
+                      mainThread = True) -> int or None:
+    """
+    创建消息监听线程
+
+    Parameters
+    ----------
+    port : int
+        socket的监听端口号.
+        
+    RequestHandler : ReceviveMsgBaseServer
+        用于处理消息的类，需要继承自socketserver.BaseRequestHandler或ReceviveMsgBaseServer
+        
+    mainThread : bool
+        是否在主线程中启动server
+
+    Returns
+    -------
+    int or None
+        mainThread为False时返回线程id,否则返回None.
+
+    """
+    ip_port=("127.0.0.1",port)
+    try:
+        s = socketserver.ThreadingTCPServer(ip_port,RequestHandler)
+        if mainThread:
+            s.serve_forever()
+        else:
+            socket_server = threading.Thread(target = s.serve_forever)
+            socket_server.setDaemon(True)
+            socket_server.start()
+            return socket_server.ident
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        print(e)
+    return None
+        
+def StopSocketServer(threadid:int) -> None:
+    """
+    强制结束消息监听线程
+
+    Parameters
+    ----------
+    threadid : int
+        消息监听线程ID.
+
+    Returns
+    -------
+    None
+        .
+
+    """
+    if not threadid:
+        return
+    import inspect
+    try:
+        tid = comtypes.c_long(threadid)
+        if not inspect.isclass(SystemExit):
+            exctype = type(SystemExit)
+        res = comtypes.pythonapi.PyThreadState_SetAsyncExc(tid, comtypes.py_object(exctype))
+        if res == 0:
+            raise ValueError("invalid thread id")
+        elif res != 1:
+            comtypes.ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+            raise SystemError("PyThreadState_SetAsyncExc failed")
+    except:
+        pass

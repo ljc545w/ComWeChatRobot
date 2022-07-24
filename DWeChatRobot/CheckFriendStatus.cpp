@@ -80,6 +80,8 @@ VOID HookFriendStatusCode(){
 	if (CheckFriendStatusHooked)
 		return;
 	DWORD WeChatWinBase = GetWeChatWinBase();
+	CheckFriendStatusNextCallAddress = WeChatWinBase + CheckFriendStatusNextCallOffset;
+	CheckFriendStatusHookJmpBackAddress = WeChatWinBase + CheckFriendStatusHookJmpBackOffset;
 	DWORD dwHookAddress = WeChatWinBase + CheckFriendStatusHookOffset;
 	HookAnyAddress(dwHookAddress, doHookVerifyUserResult, OldAsmCode);
 	CheckFriendStatusHooked = true;

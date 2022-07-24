@@ -229,6 +229,9 @@
     <ClInclude Include="GetChatRoomMemberNickname.h">
       <Filter>群相关\获取群成员昵称</Filter>
     </ClInclude>
+    <ClInclude Include="ntapi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -347,6 +350,9 @@
     </ClCompile>
     <ClCompile Include="GetChatRoomMemberNickname.cpp">
       <Filter>群相关\获取群成员昵称</Filter>
+    </ClCompile>
+    <ClCompile Include="ntapi.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

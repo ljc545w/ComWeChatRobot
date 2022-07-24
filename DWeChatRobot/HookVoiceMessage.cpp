@@ -57,8 +57,12 @@ __declspec(naked) void dealVoiceMsg() {
 }
 
 void __stdcall HookVoiceMsg() {
-	if (VoiceMsgHooked)
+	WeChatWinBase = GetWeChatWinBase();
+	if (VoiceMsgHooked || !WeChatWinBase)
 		return;
+	HookVoiceMsgAddr = WeChatWinBase + HookVoiceMsgAddrOffset;
+	HookVoiceMsgNextCall = WeChatWinBase + HookVoiceMsgNextCallOffset;
+	HookVoiceMsgJmpBackAddr = HookVoiceMsgAddr + 0x5;
 	HookAnyAddress(HookVoiceMsgAddr, dealVoiceMsg, VoiceMsgOldAsm);
 	VoiceMsgHooked = true;
 }

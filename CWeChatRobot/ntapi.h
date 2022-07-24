@@ -178,110 +178,110 @@ typedef
 NTSYSCALLAPI
 PIMAGE_NT_HEADERS
 (NTAPI*
-pRtlImageNtHeader)(
-    _In_ PVOID BaseOfImage
-);
+    pRtlImageNtHeader)(
+        _In_ PVOID BaseOfImage
+        );
 
 typedef
 NTSYSCALLAPI
 PVOID
 (NTAPI*
-pRtlImageDirectoryEntryToData)(
-    _In_ PVOID BaseOfImage,
-    _In_ BOOLEAN MappedAsImage,
-    _In_ USHORT DirectoryEntry,
-    _Out_ PULONG Size
-);
+    pRtlImageDirectoryEntryToData)(
+        _In_ PVOID BaseOfImage,
+        _In_ BOOLEAN MappedAsImage,
+        _In_ USHORT DirectoryEntry,
+        _Out_ PULONG Size
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
 (NTAPI*
-pZwOpenSection)(
-    _Out_ PHANDLE SectionHandle,
-    _In_ ACCESS_MASK DesiredAccess,
-    _In_ POBJECT_ATTRIBUTES ObjectAttributes
-);
+    pZwOpenSection)(
+        _Out_ PHANDLE SectionHandle,
+        _In_ ACCESS_MASK DesiredAccess,
+        _In_ POBJECT_ATTRIBUTES ObjectAttributes
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
 (NTAPI*
-pZwQuerySection)(
-    _In_ HANDLE SectionHandle,
-    _In_ SECTION_INFORMATION_CLASS SectionInformationClass,
-    _Out_writes_bytes_(SectionInformationLength) PVOID SectionInformation,
-    _In_ SIZE_T SectionInformationLength,
-    _Out_opt_ PSIZE_T ReturnLength
-);
+    pZwQuerySection)(
+        _In_ HANDLE SectionHandle,
+        _In_ SECTION_INFORMATION_CLASS SectionInformationClass,
+        _Out_writes_bytes_(SectionInformationLength) PVOID SectionInformation,
+        _In_ SIZE_T SectionInformationLength,
+        _Out_opt_ PSIZE_T ReturnLength
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
 (NTAPI*
-pZwMapViewOfSection)(
-    _In_ HANDLE SectionHandle,
-    _In_ HANDLE ProcessHandle,
-    _Inout_ _At_(*BaseAddress, _Readable_bytes_(*ViewSize) _Writable_bytes_(*ViewSize) _Post_readable_byte_size_(*ViewSize)) PVOID* BaseAddress,
-    _In_ ULONG_PTR ZeroBits,
-    _In_ SIZE_T CommitSize,
-    _Inout_opt_ PLARGE_INTEGER SectionOffset,
-    _Inout_ PSIZE_T ViewSize,
-    _In_ SECTION_INHERIT InheritDisposition,
-    _In_ ULONG AllocationType,
-    _In_ ULONG Win32Protect
-);
+    pZwMapViewOfSection)(
+        _In_ HANDLE SectionHandle,
+        _In_ HANDLE ProcessHandle,
+        _Inout_ _At_(*BaseAddress, _Readable_bytes_(*ViewSize) _Writable_bytes_(*ViewSize) _Post_readable_byte_size_(*ViewSize)) PVOID* BaseAddress,
+        _In_ ULONG_PTR ZeroBits,
+        _In_ SIZE_T CommitSize,
+        _Inout_opt_ PLARGE_INTEGER SectionOffset,
+        _Inout_ PSIZE_T ViewSize,
+        _In_ SECTION_INHERIT InheritDisposition,
+        _In_ ULONG AllocationType,
+        _In_ ULONG Win32Protect
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
 (NTAPI*
-pZwUnmapViewOfSection)(
-    _In_ HANDLE ProcessHandle,
-    _In_opt_ PVOID BaseAddress
-);
+    pZwUnmapViewOfSection)(
+        _In_ HANDLE ProcessHandle,
+        _In_opt_ PVOID BaseAddress
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
 (NTAPI*
-pNtClose)(
-    _In_ _Post_ptr_invalid_ HANDLE Handle
-);
+    pNtClose)(
+        _In_ _Post_ptr_invalid_ HANDLE Handle
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
-(NTAPI* 
-pNtQuerySystemInformation)(
-    ULONG SystemInformationClass,
-    PVOID SystemInformation,
-    ULONG SystemInformationLength,
-    PULONG ReturnLength
-);
+(NTAPI*
+    pNtQuerySystemInformation)(
+        ULONG SystemInformationClass,
+        PVOID SystemInformation,
+        ULONG SystemInformationLength,
+        PULONG ReturnLength
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
-(NTAPI* 
-pNtDuplicateObject)(
-    HANDLE SourceProcessHandle,
-    HANDLE SourceHandle,
-    HANDLE TargetProcessHandle,
-    PHANDLE TargetHandle,
-    ACCESS_MASK DesiredAccess,
-    ULONG Attributes,
-    ULONG Options
-);
+(NTAPI*
+    pNtDuplicateObject)(
+        HANDLE SourceProcessHandle,
+        HANDLE SourceHandle,
+        HANDLE TargetProcessHandle,
+        PHANDLE TargetHandle,
+        ACCESS_MASK DesiredAccess,
+        ULONG Attributes,
+        ULONG Options
+        );
 
 typedef
 NTSYSCALLAPI
 NTSTATUS
-(NTAPI* 
-pNtQueryObject)(
-    HANDLE ObjectHandle,
-    ULONG ObjectInformationClass,
-    PVOID ObjectInformation,
-    ULONG ObjectInformationLength,
-    PULONG ReturnLength
-);
+(NTAPI*
+    pNtQueryObject)(
+        HANDLE ObjectHandle,
+        ULONG ObjectInformationClass,
+        PVOID ObjectInformation,
+        ULONG ObjectInformationLength,
+        PULONG ReturnLength
+        );

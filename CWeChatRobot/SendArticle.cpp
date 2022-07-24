@@ -8,11 +8,15 @@ struct SendArticleStruct {
 	DWORD imgpath;
 };
 
-BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url, wchar_t* imgpath) {
+BOOL SendArticle(DWORD pid,wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url, wchar_t* imgpath) {
+	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
 		return 1;
-	
-	DWORD WeChatRobotBase = GetWeChatRobotBase();
+	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
+	if (!WeChatRobotBase) {
+		CloseHandle(hProcess);
+		return 1;
+	}
 	DWORD dwId = 0;
 	DWORD dwWriteSize = 0;
 	SendArticleStruct params;
@@ -27,6 +31,7 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url,
 	if (!wxidaddr || !titleaddr || !abstractaddr || !urladdr || !imgaddr ||
 		!paramAndFunc || !WeChatRobotBase)
 	{
+		CloseHandle(hProcess);
 		return 1;
 	}
 
@@ -59,5 +64,6 @@ BOOL SendArticle(wchar_t* wxid, wchar_t* title, wchar_t* abstract, wchar_t* url,
 	VirtualFreeEx(hProcess, urladdr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, imgaddr, 0, MEM_RELEASE);
 	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
+	CloseHandle(hProcess);
 	return 0;
 }

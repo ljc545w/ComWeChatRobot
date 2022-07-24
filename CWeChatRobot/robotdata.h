@@ -28,7 +28,7 @@
 #include "DelChatRoomMember.h"
 #include "AddChatRoomMember.h"
 
-extern HANDLE hProcess;
+// extern HANDLE hProcess;
 extern DWORD SendImageOffset;
 extern DWORD SendTextOffset;
 extern DWORD SendFileOffset;

@@ -56,7 +56,7 @@ public:
 
 
 
-	STDMETHOD(CPostMessage)(VARIANT* msg, int* __result);
+	STDMETHOD(CPostMessage)(int msgtype,VARIANT* msg, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(RobotEvent), CRobotEvent)
