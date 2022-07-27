@@ -1,8 +1,8 @@
-ï»¿// pch.cpp: ä¸é¢„ç¼–è¯‘æ ‡å¤´å¯¹åº”çš„æºæ–‡ä»¶
+// pch.cpp: ÓëÔ¤±àÒë±êÍ·¶ÔÓ¦µÄÔ´ÎÄ¼ş
 
 #include "pch.h"
 
-// å½“ä½¿ç”¨é¢„ç¼–è¯‘çš„å¤´æ—¶ï¼Œéœ€è¦ä½¿ç”¨æ­¤æºæ–‡ä»¶ï¼Œç¼–è¯‘æ‰èƒ½æˆåŠŸã€‚
+// µ±Ê¹ÓÃÔ¤±àÒëµÄÍ·Ê±£¬ĞèÒªÊ¹ÓÃ´ËÔ´ÎÄ¼ş£¬±àÒë²ÅÄÜ³É¹¦¡£
 DWORD SendImageOffset = 0x0;
 DWORD SendTextOffset = 0x0;
 DWORD SendFileOffset = 0x0;
@@ -56,7 +56,7 @@ DWORD UnHookVoiceMsgRemoteOffset = 0x0;
 
 DWORD ChangeWeChatVerRemoteOffset = 0x0;
 
-wstring SelfInfoString = L"";
+map<DWORD, wstring> PidToSelfInfoString;
 
 BOOL isFileExists_stat(string& name) {
     struct stat buffer;
@@ -132,7 +132,7 @@ BOOL GetProcOffset(wchar_t* workPath) {
     swprintf_s(dllpath, MAX_PATH, L"%ws%ws%ws", workPath, L"\\", dllname);
     string name = _com_util::ConvertBSTRToString((BSTR)dllpath);
     if (!isFileExists_stat(name)) {
-        MessageBoxA(NULL, name.c_str(), "æ–‡ä»¶ä¸å­˜åœ¨", MB_ICONWARNING);
+        MessageBoxA(NULL, name.c_str(), "ÎÄ¼ş²»´æÔÚ", MB_ICONWARNING);
         return 0;
     }
     HMODULE hd = LoadLibrary(dllpath);
@@ -242,11 +242,11 @@ BOOL GetProcOffset(wchar_t* workPath) {
 }
 
 DWORD GetWeChatPid() {
-    HWND hCalc = FindWindow(NULL, L"å¾®ä¿¡");
+    HWND hCalc = FindWindow(NULL, L"Î¢ĞÅ");
     DWORD wxPid = 0;
     GetWindowThreadProcessId(hCalc, &wxPid);
     if (wxPid == 0) {
-        hCalc = FindWindow(NULL, L"å¾®ä¿¡æµ‹è¯•ç‰ˆ");
+        hCalc = FindWindow(NULL, L"Î¢ĞÅ²âÊÔ°æ");
         GetWindowThreadProcessId(hCalc, &wxPid);
     }
     return wxPid;
@@ -257,8 +257,8 @@ DWORD StartRobotService(DWORD pid) {
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
     if (!GetProcOffset(workPath)) {
         wchar_t info[200] = { 0 };
-        swprintf_s(info, 200, L"COMæ— æ³•åŠ è½½ä½äº%wsçš„%ws!", workPath, dllname);
-        MessageBox(NULL, info, L"è‡´å‘½é”™è¯¯!", MB_ICONWARNING);
+        swprintf_s(info, 200, L"COMÎŞ·¨¼ÓÔØÎ»ÓÚ%wsµÄ%ws!", workPath, dllname);
+        MessageBox(NULL, info, L"ÖÂÃü´íÎó!", MB_ICONWARNING);
         return 1;
     };
     bool status = Inject(pid, workPath);
@@ -270,7 +270,7 @@ DWORD StopRobotService(DWORD pid) {
     if (pid == 0)
         return cpid;
     RemoveDll(pid);
-    ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
+    PidToSelfInfoString.erase(pid);
     return 0;
 }
 
@@ -279,7 +279,7 @@ wstring GetComWorkPath() {
     GetModuleFileName(NULL, szFilePath, MAX_PATH);
     wstring wpath = szFilePath;
     int pos = wpath.find_last_of(L"\\");
-    wpath = wpath.substr(0,pos);
+    wpath = wpath.substr(0, pos);
     return wpath;
 }
 
@@ -324,7 +324,7 @@ tstring GetWeChatVerStr() {
     return verStr;
 }
 
-static bool CloseAllWxProcessMutexHandle() 
+static bool CloseAllWxProcessMutexHandle()
 {
     HANDLE  hsnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hsnapshot == INVALID_HANDLE_VALUE)

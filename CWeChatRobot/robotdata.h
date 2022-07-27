@@ -50,7 +50,7 @@ extern DWORD VerifyFriendApplyOffset;
 
 extern DWORD GetSelfInfoOffset;
 extern DWORD DeleteSelfInfoCacheOffset;
-extern wstring SelfInfoString;
+extern map<DWORD, wstring> PidToSelfInfoString;
 extern DWORD isWxLoginOffset;
 
 extern DWORD CheckFriendStatusRemoteOffset;
