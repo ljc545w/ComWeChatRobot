@@ -18,3 +18,8 @@
 packages
 mongoose.c
 mongoose.h
+
+# VSCode
+.vscode
+# JetBrians IDE
+.idea

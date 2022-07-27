@@ -20,8 +20,9 @@ VOID DeleteSelfInfoCache(DWORD pid,HANDLE hProcess) {
 }
 
 std::wstring GetSelfInfo(DWORD pid) {
-	if (SelfInfoString.compare(L"")) {
-		return SelfInfoString;
+	if (PidToSelfInfoString.count(pid)!=0)
+	{
+		return PidToSelfInfoString[pid];
 	}
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
 	if (!hProcess)
@@ -48,14 +49,14 @@ std::wstring GetSelfInfo(DWORD pid) {
 		wchar_t* wmessage = new wchar_t[selfinfo.length + 1];
 		ZeroMemory(wmessage, (selfinfo.length + 1) * 2);
 		ReadProcessMemory(hProcess, (LPCVOID)selfinfo.message, wmessage, selfinfo.length * 2, &dwWriteSize);
-		SelfInfoString += wmessage;
+		PidToSelfInfoString[pid] = wmessage;
 		delete[] wmessage;
 		wmessage = NULL;
 	}
 
 	DeleteSelfInfoCache(pid,hProcess);
 	CloseHandle(hProcess);
-	return SelfInfoString;
+	return PidToSelfInfoString[pid];
 }
 
 BOOL isWxLogin(DWORD pid) {
