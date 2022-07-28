@@ -7,50 +7,23 @@ struct SendCardStruct {
 };
 
 BOOL SendCard(DWORD pid,wchar_t* receiver, wchar_t* sharedwxid, wchar_t* nickname) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
-		return 1;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
-		return 1;
-	}
-	DWORD dwId = 0;
-	DWORD dwWriteSize = 0;
-	SendCardStruct params;
-	ZeroMemory(&params, sizeof(params));
-	DWORD SendCardProcAddr = WeChatRobotBase + SendCardOffset;
-	LPVOID receiveraddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-	LPVOID sharedwxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-	LPVOID nicknameaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-	SendCardStruct* paramAndFunc = (SendCardStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendCardStruct), MEM_COMMIT, PAGE_READWRITE);
-	if (!receiveraddr || !sharedwxidaddr || !nicknameaddr ||
-		!paramAndFunc || !WeChatRobotBase)
-	{
-		CloseHandle(hProcess);
-		return 1;
-	}
-	if (receiveraddr)
-		WriteProcessMemory(hProcess, receiveraddr, receiver, wcslen(receiver) * 2 + 2, &dwWriteSize);
-	if (sharedwxidaddr)
-		WriteProcessMemory(hProcess, sharedwxidaddr, sharedwxid, wcslen(sharedwxid) * 2 + 2, &dwWriteSize);
-	if (nicknameaddr)
-		WriteProcessMemory(hProcess, nicknameaddr, nickname, wcslen(nickname) * 2 + 2, &dwWriteSize);
-	params.receiver = (DWORD)receiveraddr;
-	params.sharedwxid = (DWORD)sharedwxidaddr;
-	params.nickname = (DWORD)nicknameaddr;
-
-	if (paramAndFunc)
-		WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwId);
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SendCardProcAddr, (LPVOID)paramAndFunc, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		CloseHandle(hThread);
-	}
-	VirtualFreeEx(hProcess, receiveraddr, 0, MEM_RELEASE);
-	VirtualFreeEx(hProcess, sharedwxidaddr, 0, MEM_RELEASE);
-	VirtualFreeEx(hProcess, nicknameaddr, 0, MEM_RELEASE);
-	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-	CloseHandle(hProcess);
-	return 0;
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 1;
+    DWORD SendCardRemoteAddr = hp.GetProcAddr(SendCardRemote);
+    if (SendCardRemoteAddr == 0) {
+        return 1;
+    }
+    SendCardStruct params = { 0 };
+    WeChatData<wchar_t*> r_receiver(hp.GetHandle(), receiver, TEXTLENGTH(receiver));
+    WeChatData<wchar_t*> r_sharedwxid(hp.GetHandle(), sharedwxid, TEXTLENGTH(sharedwxid));
+    WeChatData<wchar_t*> r_nickname(hp.GetHandle(), nickname, TEXTLENGTH(nickname));
+    params.receiver = (DWORD)r_receiver.GetAddr();
+    params.sharedwxid = (DWORD)r_sharedwxid.GetAddr();
+    params.nickname = (DWORD)r_nickname.GetAddr();
+    WeChatData<SendCardStruct*> r_params(hp.GetHandle(), &params, sizeof(params));
+    if (!params.receiver || !params.sharedwxid || !params.nickname || !r_params.GetAddr()) {
+        return 1;
+    }
+    DWORD dwRet = CallRemoteFunction(hp.GetHandle(), SendCardRemoteAddr, r_params.GetAddr());
+    return 0;
 }

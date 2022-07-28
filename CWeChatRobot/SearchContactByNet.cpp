@@ -134,41 +134,24 @@ static void ReadUserInfoFromMemory(HANDLE hProcess) {
 }
 
 SAFEARRAY* SearchContactByNet(DWORD pid,wchar_t* keyword) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
+	DWORD dwReadSize = 0;
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return NULL;
+	DWORD SearchContactByNetRemoteAddr = hp.GetProcAddr(SearchContactByNetRemote);
+	if (SearchContactByNetRemoteAddr == 0)
 		return NULL;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
+	WeChatData<wchar_t*> r_keyword(hp.GetHandle(), keyword, TEXTLENGTH(keyword));
+	if (r_keyword.GetAddr() == 0)
 		return NULL;
-	}
 	ClearUserInfoCache();
-	DWORD SearchContactByNetRemoteAddr = WeChatRobotBase + SearchContactByNetRemoteOffset;
-	LPVOID keywordaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-	DWORD dwWriteSize = 0;
-	DWORD dwId = 0;
-	DWORD dwHandle = 0;
-	if (!keywordaddr) {
-		CloseHandle(hProcess);
+	DWORD ret = CallRemoteFunction(hp.GetHandle(), SearchContactByNetRemoteAddr, r_keyword.GetAddr());
+	if (ret == 0)
 		return NULL;
-	}
-	WriteProcessMemory(hProcess, keywordaddr, keyword, wcslen(keyword) * 2 + 2, &dwWriteSize);
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SearchContactByNetRemoteAddr, keywordaddr, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwHandle);
-		CloseHandle(hThread);
-	}
-	VirtualFreeEx(hProcess, keywordaddr, 0, MEM_RELEASE);
-	if (!dwHandle)
-		return NULL;
-	ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &userinfoaddr, sizeof(UserInfoAddr), &dwWriteSize);
+	ReadProcessMemory(hp.GetHandle(), (LPCVOID)ret, &userinfoaddr, sizeof(UserInfoAddr), &dwReadSize);
 	if (userinfoaddr.errcode == 0) {
-		ReadUserInfoFromMemory(hProcess);
+		ReadUserInfoFromMemory(hp.GetHandle());
 		SAFEARRAY* psa = CreateUserInfoArray();
-		CloseHandle(hProcess);
 		return psa;
 	}
-	CloseHandle(hProcess);
 	return NULL;
 }

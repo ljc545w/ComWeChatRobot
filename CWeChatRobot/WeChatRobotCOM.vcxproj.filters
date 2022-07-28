@@ -113,6 +113,9 @@
     <Filter Include="群相关\获取群成员列表">
       <UniqueIdentifier>{dce4ab67-7d14-41b1-8e89-cbf9a8315a3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="template">
+      <UniqueIdentifier>{fdd967bf-e9c0-4793-80a1-dcb87b061fc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -231,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="ntapi.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="templatefunc.h">
+      <Filter>template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -353,6 +359,9 @@
     </ClCompile>
     <ClCompile Include="ntapi.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="templatefunc.cpp">
+      <Filter>template</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

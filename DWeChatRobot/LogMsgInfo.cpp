@@ -45,14 +45,8 @@ VOID PrintMsg(DWORD msg) {
 	char* message = new char[c_size + 1];
 	memset(message, 0, c_size + 1);
 	WideCharToMultiByte(CP_ACP, 0, wmessage, -1, message, c_size, 0, 0);
-#ifndef USE_SOCKET
-	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendLogToComServer, wmessage, NULL, &dwId);
-	if (hThread)
-		CloseHandle(hThread);
-#else
 	delete[] wmessage;
 	wmessage = NULL;
-#endif
 #ifdef _DEBUG
 	cout << message;
 #endif

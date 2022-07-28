@@ -147,54 +147,23 @@ VOID ReadSQLResultFromWeChatProcess(HANDLE hProcess,DWORD dwHandle) {
 }
 
 SAFEARRAY* ExecuteSQL(DWORD pid,DWORD DbHandle,BSTR sql) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
-		return NULL;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
-		return NULL;
-	}
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return NULL;
 	ClearResultArray();
-	DWORD dwHandle = 0x0;
-	DWORD dwId = 0x0;
-	DWORD dwWriteSize = 0x0;
-	LPVOID sqlAddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-	executeParams* paramAndFunc = (executeParams*)::VirtualAllocEx(hProcess, 0, sizeof(executeParams), MEM_COMMIT, PAGE_READWRITE);
-	if (!sqlAddr || !paramAndFunc) {
-		CloseHandle(hProcess);
+	// DWORD ExecuteSQLRemoteAddr = hp.GetProcAddr(ExecuteSQLRemote);
+	DWORD ExecuteSQLRemoteAddr = hp.GetProcAddr(SelectDataRemote);
+	if (ExecuteSQLRemoteAddr == 0)
 		return NULL;
-	}
 	char* a_sql = _com_util::ConvertBSTRToString(sql);
-	if(sqlAddr)
-		WriteProcessMemory(hProcess, sqlAddr, a_sql, strlen(a_sql) + 1, &dwWriteSize);
-	executeParams param = { 0 };
-	param.ptrDb = DbHandle;
-	param.ptrSql = (DWORD)sqlAddr;
-
-	if(paramAndFunc)
-		WriteProcessMemory(hProcess, paramAndFunc, &param, sizeof(executeParams), &dwWriteSize);
-
-	// DWORD ExecuteSQLRemoteAddr = WeChatRobotBase + ExecuteSQLRemoteOffset;
-	DWORD SelectDataRemoteAddr = WeChatRobotBase + SelectDataRemoteOffset;
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SelectDataRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwHandle);
-		CloseHandle(hThread);
-	}
-	else {
-		CloseHandle(hProcess);
+	WeChatData<char*> r_sql(hp.GetHandle(), a_sql, TEXTLENGTHA(a_sql));
+	executeParams params = { 0 };
+	params.ptrDb = DbHandle;
+	params.ptrSql = (DWORD)r_sql.GetAddr();
+	WeChatData<executeParams*> r_params(hp.GetHandle(), &params, sizeof(params));
+	if (r_sql.GetAddr() == 0 || r_params.GetAddr() == 0)
 		return NULL;
-	}
-	if (!dwHandle) {
-		CloseHandle(hProcess);
-		return NULL;
-	}
-	ReadSQLResultFromWeChatProcess(hProcess,dwHandle);
+	DWORD ret = CallRemoteFunction(hp.GetHandle(), ExecuteSQLRemoteAddr, r_params.GetAddr());
+	ReadSQLResultFromWeChatProcess(hp.GetHandle(),ret);
 	SAFEARRAY* psaValue = CreateSQLResultSafeArray();
-	VirtualFreeEx(hProcess, sqlAddr, 0, MEM_RELEASE);
-	VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-	CloseHandle(hProcess);
 	return psaValue;
 }

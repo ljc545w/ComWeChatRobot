@@ -244,6 +244,7 @@
     <ClInclude Include="SetChatRoomSelfNickname.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="SearchContact.h" />
+    <ClInclude Include="templatefunc.h" />
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="WeChatRobot.h" />
     <ClInclude Include="WeChatRobotCOM_i.h" />
@@ -291,6 +292,7 @@
     <ClCompile Include="SetChatRoomAnnouncement.cpp" />
     <ClCompile Include="SetChatRoomName.cpp" />
     <ClCompile Include="SetChatRoomSelfNickname.cpp" />
+    <ClCompile Include="templatefunc.cpp" />
     <ClCompile Include="VerifyFriendApply.cpp" />
     <ClCompile Include="WeChatRobot.cpp" />
     <ClCompile Include="WeChatRobotCOM.cpp" />
