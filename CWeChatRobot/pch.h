@@ -27,13 +27,19 @@
 #pragma comment(lib, "comsuppw.lib")
 
 #include "robotdata.h"
+#include "templatefunc.h"
 
 using namespace std;
 
+#define TEXTLENGTHW(buffer) buffer ? (wcslen(buffer) * 2 + 2) : 0
+#define TEXTLENGTHA(buffer) buffer ? (strlen(buffer) + 1) : 0
+
 #ifdef _UNICODE
 #define tstring std::wstring
+#define TEXTLENGTH TEXTLENGTHW
 #else
 #define tstring std::string
+#define TEXTLENGTH TEXTLENGTHW
 #endif
 
 BOOL isFileExists_stat(string& name);
@@ -51,3 +57,4 @@ DWORD GetWeChatVerInt();
 tstring GetWeChatVerStr();
 DWORD StartWeChat();
 BOOL CloseProcessHandle(DWORD pid, wchar_t* handlename);
+DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname);

@@ -5,76 +5,38 @@ struct GetSelfInfoStruct {
 	DWORD length;
 };
 
-VOID DeleteSelfInfoCache(DWORD pid,HANDLE hProcess) {
-	DWORD dwId = 0;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		return;
-	}
-	DWORD DeleteSelfInfoCacheProcAddr = WeChatRobotBase + DeleteSelfInfoCacheOffset;
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)DeleteSelfInfoCacheProcAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		CloseHandle(hThread);
-	}
-}
-
 std::wstring GetSelfInfo(DWORD pid) {
-	if (SelfInfoString.compare(L"")) {
-		return SelfInfoString;
-	}
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
+	wstring SelfInfoString = L"";
+	DWORD dwReadSize = 0;
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return L"{}";
+	DWORD GetSelfInfoRemoteAddr = hp.GetProcAddr(GetSelfInfoRemote);
+	DWORD DeleteSelfInfoCacheRemoteAddr = hp.GetProcAddr(DeleteSelfInfoCacheRemote);
+	if (GetSelfInfoRemoteAddr == 0)
 		return L"{}";
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
+	DWORD ret = CallRemoteFunction(hp.GetHandle(), GetSelfInfoRemoteAddr, NULL);
+	if (ret == 0)
 		return L"{}";
-	}
-	DWORD GetSelfInfoProcAddr = WeChatRobotBase + GetSelfInfoOffset;
-	DWORD dwWriteSize = 0;
-	DWORD dwId = 0;
-	DWORD dwHandle = 0;
 	GetSelfInfoStruct selfinfo = { 0 };
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetSelfInfoProcAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwHandle);
-		CloseHandle(hThread);
-	}
-	if (dwHandle)
-		ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &selfinfo, sizeof(GetSelfInfoStruct), &dwWriteSize);
+	ReadProcessMemory(hp.GetHandle(), (LPCVOID)ret, &selfinfo, sizeof(GetSelfInfoStruct), &dwReadSize);
 	if (selfinfo.length) {
 		wchar_t* wmessage = new wchar_t[selfinfo.length + 1];
 		ZeroMemory(wmessage, (selfinfo.length + 1) * 2);
-		ReadProcessMemory(hProcess, (LPCVOID)selfinfo.message, wmessage, selfinfo.length * 2, &dwWriteSize);
-		SelfInfoString += wmessage;
+		ReadProcessMemory(hp.GetHandle(), (LPCVOID)selfinfo.message, wmessage, selfinfo.length * 2, &dwReadSize);
+		SelfInfoString = (wstring)wmessage;
 		delete[] wmessage;
 		wmessage = NULL;
 	}
-
-	DeleteSelfInfoCache(pid,hProcess);
-	CloseHandle(hProcess);
+	CallRemoteFunction(hp.GetHandle(), DeleteSelfInfoCacheRemoteAddr, NULL);
 	return SelfInfoString;
 }
 
 BOOL isWxLogin(DWORD pid) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
-		return false;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
-		return false;
-	}
-	DWORD isWxLoginAddr = WeChatRobotBase + isWxLoginOffset;
-	DWORD dwId, dwRet = 0;
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)isWxLoginAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwRet);
-		CloseHandle(hThread);
-	}
-	CloseHandle(hProcess);
-	return dwRet == 1;
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return 1;
+	DWORD isWxLoginRemoteAddr = hp.GetProcAddr(isWxLoginRemote);
+	if (isWxLoginRemoteAddr == 0)
+		return 1;
+	DWORD ret = CallRemoteFunction(hp.GetHandle(), isWxLoginRemoteAddr, NULL);
+	return ret == 1;
 }

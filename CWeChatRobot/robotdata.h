@@ -28,62 +28,6 @@
 #include "DelChatRoomMember.h"
 #include "AddChatRoomMember.h"
 
-// extern HANDLE hProcess;
-extern DWORD SendImageOffset;
-extern DWORD SendTextOffset;
-extern DWORD SendFileOffset;
-extern DWORD SendArticleOffset;
-extern DWORD SendCardOffset;
-extern DWORD SendAtTextOffset;
-extern DWORD SendAppMsgRemoteOffset;
-
-extern DWORD GetFriendListInitOffset;
-extern DWORD GetFriendListRemoteOffset;
-extern DWORD GetFriendListFinishOffset;
-
-extern DWORD EditRemarkRemoteOffset;
-extern DWORD GetWxUserInfoOffset;
-extern DWORD DeleteUserInfoCacheOffset;
-extern DWORD SearchContactByNetRemoteOffset;
-
-extern DWORD VerifyFriendApplyOffset;
-
-extern DWORD GetSelfInfoOffset;
-extern DWORD DeleteSelfInfoCacheOffset;
-extern wstring SelfInfoString;
-extern DWORD isWxLoginOffset;
-
-extern DWORD CheckFriendStatusRemoteOffset;
-
-extern DWORD HookReceiveMessageRemoteOffset;
-extern DWORD UnHookReceiveMessageRemoteOffset;
-
-extern DWORD GetChatRoomMemberNicknameRemoteOffset;
-extern DWORD GetChatRoomMembersRemoteOffset;
-extern DWORD DelChatRoomMemberRemoteOffset;
-extern DWORD AddChatRoomMemberRemoteOffset;
-extern DWORD SetChatRoomAnnouncementRemoteOffset;
-extern DWORD SetChatRoomNameRemoteOffset;
-extern DWORD SetChatRoomSelfNicknameRemoteOffset;
-
-extern DWORD GetDbHandlesRemoteOffset;
-extern DWORD ExecuteSQLRemoteOffset;
-extern DWORD SelectDataRemoteOffset;
-extern DWORD BackupSQLiteDBRemoteOffset;
-
-extern DWORD AddFriendByWxidRemoteOffset;
-extern DWORD AddFriendByV3RemoteOffset;
-extern DWORD DeleteUserRemoteOffset;
-extern DWORD AddBrandContactRemoteOffset;
-
-extern DWORD HookImageMsgRemoteOffset;
-extern DWORD UnHookImageMsgRemoteOffset;
-extern DWORD HookVoiceMsgRemoteOffset;
-extern DWORD UnHookVoiceMsgRemoteOffset;
-
-extern DWORD ChangeWeChatVerRemoteOffset;
-
-
 #define dllname							L"DWeChatRobot.dll"
 
 #define SendTextRemote					"SendTextRemote"

@@ -6,44 +6,19 @@ struct EditRemarkStruct {
 };
 
 BOOL EditRemark(DWORD pid,wchar_t* wxid, wchar_t* remark) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 1;
+    DWORD EditRemarkRemoteAddr = hp.GetProcAddr(EditRemarkRemote);
+    if (EditRemarkRemoteAddr == 0)
         return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-    if (!WeChatRobotBase) {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    DWORD dwId = 0;
-    DWORD dwWriteSize = 0;
-    DWORD dwRet = 1;
-
-    LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    LPVOID remarkaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    EditRemarkStruct* paramAndFunc = (EditRemarkStruct*)VirtualAllocEx(hProcess, 0, sizeof(EditRemarkStruct), MEM_COMMIT, PAGE_READWRITE);
-    if (!wxidaddr || !remarkaddr || !paramAndFunc) {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    WriteProcessMemory(hProcess, wxidaddr, wxid, wcslen(wxid) * 2 + 2, &dwWriteSize);
-    if (remark)
-        WriteProcessMemory(hProcess, remarkaddr, remark, wcslen(remark) * 2 + 2, &dwWriteSize);
-
+    WeChatData<wchar_t*> r_wxid(hp.GetHandle(), wxid, TEXTLENGTH(wxid));
+    WeChatData<wchar_t*> r_remark(hp.GetHandle(), remark, TEXTLENGTH(remark));
     EditRemarkStruct params = { 0 };
-    params.wxid = (DWORD)wxidaddr;
-    params.remark = remark ? (DWORD)remarkaddr : 0;
-    WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(params), &dwWriteSize);
-    DWORD EditRemarkAddr = WeChatRobotBase + EditRemarkRemoteOffset;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)EditRemarkAddr, (LPVOID)paramAndFunc, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        GetExitCodeThread(hThread, &dwRet);
-        CloseHandle(hThread);
-    }
-
-    VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, remarkaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
-    return dwRet == 0;
+    params.wxid = (DWORD)r_wxid.GetAddr();
+    params.remark = (DWORD)r_remark.GetAddr();
+    WeChatData<EditRemarkStruct*> r_params(hp.GetHandle(), &params, sizeof(params));
+    if (r_wxid.GetAddr() == 0 || r_params.GetAddr() == 0)
+        return 1;
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), EditRemarkRemoteAddr, r_params.GetAddr());
+    return ret == 0;
 }

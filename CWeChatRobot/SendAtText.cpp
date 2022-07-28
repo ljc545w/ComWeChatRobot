@@ -10,66 +10,26 @@ struct SendAtTextStruct
 };
 
 int SendAtText(DWORD pid,wchar_t* chatroomid, wchar_t* wxid, wchar_t* wxmsg,BOOL AutoNickName) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
-        return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-    if (!WeChatRobotBase) {
-        CloseHandle(hProcess);
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 1;
+    DWORD SendAtTextRemoteAddr = hp.GetProcAddr(SendAtTextRemote);
+    if (SendAtTextRemoteAddr == 0) {
         return 1;
     }
-    DWORD dwId = 0;
-    DWORD dwWriteSize = 0;
-    SendAtTextStruct params;
-    ZeroMemory(&params, sizeof(params));
-    LPVOID chatroomidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    LPVOID wxmsgaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    SendAtTextStruct* paramAndFunc = (SendAtTextStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendAtTextStruct), MEM_COMMIT, PAGE_READWRITE);
-    if (!chatroomidaddr || !wxidaddr || !wxmsgaddr || !paramAndFunc || !WeChatRobotBase) {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    DWORD dwTId = 0;
-
-    if (chatroomidaddr)
-        WriteProcessMemory(hProcess, chatroomidaddr, chatroomid, wcslen(chatroomid) * 2 + 2, &dwWriteSize);
-
-    if (wxidaddr)
-        WriteProcessMemory(hProcess, wxidaddr, wxid, wcslen(wxid) * 2 + 2, &dwWriteSize);
-
-    if (wxmsgaddr)
-        WriteProcessMemory(hProcess, wxmsgaddr, wxmsg, wcslen(wxmsg) * 2 + 2, &dwWriteSize);
-
-    params.chatroomid = (DWORD)chatroomidaddr;
-    params.wxid = (DWORD)wxidaddr;
-    params.wxmsg = (DWORD)wxmsgaddr;
-    params.length = 1;
+    SendAtTextStruct params = { 0 };
+    WeChatData<wchar_t*> r_wxid(hp.GetHandle(), wxid, TEXTLENGTH(wxid));
+    WeChatData<wchar_t*> r_chatroomid(hp.GetHandle(), chatroomid, TEXTLENGTH(chatroomid));
+    WeChatData<wchar_t*> r_wxmsg(hp.GetHandle(), wxmsg, TEXTLENGTH(wxmsg));
+    params.wxid = (DWORD)r_wxid.GetAddr();
+    params.wxmsg = (DWORD)r_wxmsg.GetAddr();
+    params.chatroomid = (DWORD)r_chatroomid.GetAddr();
     params.AutoNickName = AutoNickName;
-
-    if (paramAndFunc) {
-        WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(SendAtTextStruct), &dwTId);
-    }
-    else {
-        CloseHandle(hProcess);
+    params.length = 1;
+    WeChatData<SendAtTextStruct*> r_params(hp.GetHandle(), &params, sizeof(params));
+    if (!params.wxid || !params.wxmsg || !r_params.GetAddr()) {
         return 1;
     }
-
-    DWORD SendAtTextRemoteAddr = WeChatRobotBase + SendAtTextOffset;
-    HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SendAtTextRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    CloseHandle(hThread);
-    VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, wxidaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, wxmsgaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
+    DWORD dwRet = CallRemoteFunction(hp.GetHandle(), SendAtTextRemoteAddr, r_params.GetAddr());
     return 0;
 }
 
@@ -85,73 +45,37 @@ BOOL SendAtText(DWORD pid,wchar_t* chatroomid, SAFEARRAY* psaValue, wchar_t* wxm
         hr = SafeArrayGetElement(psaValue, &pIndex, &rgvar);
         return SendAtText(pid,chatroomid, rgvar.bstrVal, wxmsg,AutoNickName);
     }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
-        return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-    if (!WeChatRobotBase) {
-        CloseHandle(hProcess);
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 1;
+    DWORD SendAtTextRemoteAddr = hp.GetProcAddr(SendAtTextRemote);
+    if (SendAtTextRemoteAddr == 0) {
         return 1;
     }
     vector<void*> wxidptrs;
-    DWORD dwWriteSize = 0;
-    DWORD dwTId = 0; DWORD dwId = 0;
     SendAtTextStruct params = { 0 };
-    LPVOID chatroomidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    LPVOID wxidptrsaddr = VirtualAllocEx(hProcess, NULL, sizeof(void*) * cElements, MEM_COMMIT, PAGE_READWRITE);
-    LPVOID wxmsgaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE); 
-    SendAtTextStruct* paramAndFunc = (SendAtTextStruct*)::VirtualAllocEx(hProcess, 0, sizeof(SendAtTextStruct), MEM_COMMIT, PAGE_READWRITE);
-    if (!chatroomidaddr || !wxidptrsaddr || !wxmsgaddr || !paramAndFunc || !WeChatRobotBase) {
-        CloseHandle(hProcess);
-        return 1;
-    }
+    WeChatData<wchar_t*> r_chatroomid(hp.GetHandle(), chatroomid, TEXTLENGTH(chatroomid));
+    WeChatData<wchar_t*> r_wxmsg(hp.GetHandle(), wxmsg, TEXTLENGTH(wxmsg));
+    params.wxmsg = (DWORD)r_wxmsg.GetAddr();
+    params.chatroomid = (DWORD)r_chatroomid.GetAddr();
+    params.AutoNickName = AutoNickName;
     for (long i = lLbound; i < lLbound + cElements; i++) {
         VariantInit(&rgvar);
         hr = SafeArrayGetElement(psaValue, &i, &rgvar);
-        LPVOID wxidaddr = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
+        LPVOID wxidaddr = WriteWeChatMemory(hp.GetHandle(), rgvar.bstrVal, TEXTLENGTH(rgvar.bstrVal));
         if (wxidaddr) {
-            WriteProcessMemory(hProcess, wxidaddr, rgvar.bstrVal, wcslen(rgvar.bstrVal) * 2 + 2, &dwWriteSize);
             wxidptrs.push_back(wxidaddr);
         }
     }
-    if (chatroomidaddr)
-        WriteProcessMemory(hProcess, chatroomidaddr, chatroomid, wcslen(chatroomid) * 2 + 2, &dwWriteSize);
-
-    if (wxidptrsaddr)
-        WriteProcessMemory(hProcess, wxidptrsaddr, &wxidptrs[0], wxidptrs.size() * sizeof(void*), &dwWriteSize);
-
-    if (wxmsgaddr)
-        WriteProcessMemory(hProcess, wxmsgaddr, wxmsg, wcslen(wxmsg) * 2 + 2, &dwWriteSize);
-    
-    params.chatroomid = (DWORD)chatroomidaddr;
-    params.wxid = (DWORD)wxidptrsaddr;
-    params.wxmsg = (DWORD)wxmsgaddr;
+    WeChatData<void**> r_wxids(hp.GetHandle(), &wxidptrs[0], wxidptrs.size() * sizeof(void*));
+    params.wxid = (DWORD)r_wxids.GetAddr();
     params.length = wxidptrs.size();
-    params.AutoNickName = AutoNickName;
-    if (paramAndFunc) {
-        WriteProcessMemory(hProcess, paramAndFunc, &params, sizeof(SendAtTextStruct), &dwTId);
-    }
-    else {
-        CloseHandle(hProcess);
+    WeChatData<SendAtTextStruct*> r_params(hp.GetHandle(), &params, sizeof(params));
+    if (!params.chatroomid || !params.wxid || !params.wxmsg || !r_params.GetAddr()) {
         return 1;
     }
-    DWORD SendAtTextRemoteAddr = WeChatRobotBase + SendAtTextOffset;
-    HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)SendAtTextRemoteAddr, (LPVOID)paramAndFunc, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    CloseHandle(hThread);
+    DWORD dwRet = CallRemoteFunction(hp.GetHandle(), SendAtTextRemoteAddr, r_params.GetAddr());
     for (unsigned int i = 0; i < wxidptrs.size(); i++) {
-        VirtualFreeEx(hProcess, wxidptrs[i], 0, MEM_RELEASE);
+        VirtualFreeEx(hp.GetHandle(), wxidptrs[i], 0, MEM_RELEASE);
     }
-    VirtualFreeEx(hProcess, chatroomidaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, wxmsgaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, wxidptrsaddr, 0, MEM_RELEASE);
-    VirtualFreeEx(hProcess, paramAndFunc, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
     return 0;
 }

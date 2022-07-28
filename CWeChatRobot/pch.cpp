@@ -3,60 +3,6 @@
 #include "pch.h"
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
-DWORD SendImageOffset = 0x0;
-DWORD SendTextOffset = 0x0;
-DWORD SendFileOffset = 0x0;
-DWORD SendArticleOffset = 0x0;
-DWORD SendCardOffset = 0x0;
-DWORD SendAtTextOffset = 0x0;
-DWORD SendAppMsgRemoteOffset = 0x0;
-
-DWORD GetFriendListInitOffset = 0x0;
-DWORD GetFriendListRemoteOffset = 0x0;
-DWORD GetFriendListFinishOffset = 0x0;
-
-DWORD EditRemarkRemoteOffset = 0x0;
-DWORD GetWxUserInfoOffset = 0x0;
-DWORD DeleteUserInfoCacheOffset = 0x0;
-
-DWORD GetSelfInfoOffset = 0x0;
-DWORD DeleteSelfInfoCacheOffset = 0x0;
-DWORD SearchContactByNetRemoteOffset = 0x0;
-DWORD isWxLoginOffset = 0;
-
-DWORD VerifyFriendApplyOffset = 0x0;
-
-DWORD CheckFriendStatusRemoteOffset = 0x0;
-
-DWORD HookReceiveMessageRemoteOffset = 0x0;
-DWORD UnHookReceiveMessageRemoteOffset = 0x0;
-
-DWORD GetChatRoomMemberNicknameRemoteOffset = 0x0;
-DWORD GetChatRoomMembersRemoteOffset = 0x0;
-DWORD DelChatRoomMemberRemoteOffset = 0x0;
-DWORD AddChatRoomMemberRemoteOffset = 0x0;
-DWORD SetChatRoomAnnouncementRemoteOffset = 0x0;
-DWORD SetChatRoomNameRemoteOffset = 0x0;
-DWORD SetChatRoomSelfNicknameRemoteOffset = 0x0;
-
-DWORD GetDbHandlesRemoteOffset = 0x0;
-DWORD ExecuteSQLRemoteOffset = 0x0;
-DWORD SelectDataRemoteOffset = 0x0;
-DWORD BackupSQLiteDBRemoteOffset = 0x0;
-
-DWORD AddFriendByWxidRemoteOffset = 0x0;
-DWORD AddFriendByV3RemoteOffset = 0x0;
-DWORD DeleteUserRemoteOffset = 0x0;
-DWORD AddBrandContactRemoteOffset = 0x0;
-
-DWORD HookImageMsgRemoteOffset = 0x0;
-DWORD UnHookImageMsgRemoteOffset = 0x0;
-DWORD HookVoiceMsgRemoteOffset = 0x0;
-DWORD UnHookVoiceMsgRemoteOffset = 0x0;
-
-DWORD ChangeWeChatVerRemoteOffset = 0x0;
-
-wstring SelfInfoString = L"";
 
 BOOL isFileExists_stat(string& name) {
     struct stat buffer;
@@ -77,168 +23,24 @@ BOOL CreateConsole() {
 }
 
 DWORD GetWeChatRobotBase(DWORD pid) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 0;
+    WeChatData<wchar_t*> r_dllname(hp.GetHandle(), dllname, TEXTLENGTH(dllname));
+    if (r_dllname.GetAddr() == 0)
         return 0;
-    DWORD dwWriteSize = 0;
-    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    if (pRemoteAddress)
-        WriteProcessMemory(hProcess, pRemoteAddress, dllname, wcslen(dllname) * 2 + 2, &dwWriteSize);
-    else
-        return 0;
-    DWORD dwHandle, dwID;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetModuleHandleW, pRemoteAddress, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        GetExitCodeThread(hThread, &dwHandle);
-    }
-    else {
-        return 0;
-    }
-    CloseHandle(hThread);
-    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
-    return dwHandle;
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), GetModuleHandleW, r_dllname.GetAddr());
+    return ret;
 }
 
 DWORD GetWeChatWinBase(DWORD pid) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
+    wchar_t* WeChatWin = L"WeChatWin.dll";
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return 0;
+    WeChatData<wchar_t*> r_dllname(hp.GetHandle(), WeChatWin, TEXTLENGTH(WeChatWin));
+    if (r_dllname.GetAddr() == 0)
         return 0;
-    DWORD dwWriteSize = 0;
-    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    if (pRemoteAddress)
-        WriteProcessMemory(hProcess, pRemoteAddress, L"WeChatWin.dll", wcslen(L"WeChatWin.dll") * 2 + 2, &dwWriteSize);
-    else
-        return 0;
-    DWORD dwHandle, dwID;
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetModuleHandleW, pRemoteAddress, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        GetExitCodeThread(hThread, &dwHandle);
-    }
-    else {
-        return 0;
-    }
-    CloseHandle(hThread);
-    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
-    return dwHandle;
-}
-
-BOOL GetProcOffset(wchar_t* workPath) {
-    wchar_t* dllpath = new wchar_t[MAX_PATH];
-    memset(dllpath, 0, MAX_PATH * 2);
-    swprintf_s(dllpath, MAX_PATH, L"%ws%ws%ws", workPath, L"\\", dllname);
-    string name = _com_util::ConvertBSTRToString((BSTR)dllpath);
-    if (!isFileExists_stat(name)) {
-        MessageBoxA(NULL, name.c_str(), "文件不存在", MB_ICONWARNING);
-        return 0;
-    }
-    HMODULE hd = LoadLibrary(dllpath);
-    if (!hd) {
-        return 0;
-    }
-    DWORD WeChatBase = (DWORD)GetModuleHandleW(dllname);
-    DWORD SendImageProcAddr = (DWORD)GetProcAddress(hd, SendImageRemote);
-    SendImageOffset = SendImageProcAddr - WeChatBase;
-    DWORD SendTextProcAddr = (DWORD)GetProcAddress(hd, SendTextRemote);
-    SendTextOffset = SendTextProcAddr - WeChatBase;
-    DWORD SendFileProcAddr = (DWORD)GetProcAddress(hd, SendFileRemote);
-    SendFileOffset = SendFileProcAddr - WeChatBase;
-    DWORD SendArticleProcAddr = (DWORD)GetProcAddress(hd, SendArticleRemote);
-    SendArticleOffset = SendArticleProcAddr - WeChatBase;
-    DWORD SendCardProcAddr = (DWORD)GetProcAddress(hd, SendCardRemote);
-    SendCardOffset = SendCardProcAddr - WeChatBase;
-    DWORD SendAtTextProcAddr = (DWORD)GetProcAddress(hd, SendAtTextRemote);
-    SendAtTextOffset = SendAtTextProcAddr - WeChatBase;
-    DWORD SendAppMsgProcAddr = (DWORD)GetProcAddress(hd, SendAppMsgRemote);
-    SendAppMsgRemoteOffset = SendAppMsgProcAddr - WeChatBase;
-
-    DWORD GetFriendListInitProcAddr = (DWORD)GetProcAddress(hd, GetFriendListInit);
-    GetFriendListInitOffset = GetFriendListInitProcAddr - WeChatBase;
-    DWORD GetFriendListRemoteProcAddr = (DWORD)GetProcAddress(hd, GetFriendListRemote);
-    GetFriendListRemoteOffset = GetFriendListRemoteProcAddr - WeChatBase;
-    DWORD GetFriendListFinishProcAddr = (DWORD)GetProcAddress(hd, GetFriendListFinish);
-    GetFriendListFinishOffset = GetFriendListFinishProcAddr - WeChatBase;
-
-    DWORD EditRemarkRemoteAddr = (DWORD)GetProcAddress(hd, EditRemarkRemote);
-    EditRemarkRemoteOffset = EditRemarkRemoteAddr - WeChatBase;
-    DWORD GetWxUserInfoProcAddr = (DWORD)GetProcAddress(hd, GetWxUserInfoRemote);
-    GetWxUserInfoOffset = GetWxUserInfoProcAddr - WeChatBase;
-    DWORD DeleteUserInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteUserInfoCacheRemote);
-    DeleteUserInfoCacheOffset = DeleteUserInfoCacheProcAddr - WeChatBase;
-
-    DWORD VerifyFriendApplyProcAddr = (DWORD)GetProcAddress(hd, VerifyFriendApplyRemote);
-    VerifyFriendApplyOffset = VerifyFriendApplyProcAddr - WeChatBase;
-
-    DWORD GetSelfInfoProcAddr = (DWORD)GetProcAddress(hd, GetSelfInfoRemote);
-    GetSelfInfoOffset = GetSelfInfoProcAddr - WeChatBase;
-    DWORD DeleteSelfInfoCacheProcAddr = (DWORD)GetProcAddress(hd, DeleteSelfInfoCacheRemote);
-    DeleteSelfInfoCacheOffset = DeleteSelfInfoCacheProcAddr - WeChatBase;
-    DWORD SearchContactByNetRemoteAddr = (DWORD)GetProcAddress(hd, SearchContactByNetRemote);
-    SearchContactByNetRemoteOffset = SearchContactByNetRemoteAddr - WeChatBase;
-    DWORD isWxLoginAddr = (DWORD)GetProcAddress(hd, isWxLoginRemote);
-    isWxLoginOffset = isWxLoginAddr - WeChatBase;
-
-    DWORD CheckFriendStatusRemoteAddr = (DWORD)GetProcAddress(hd, CheckFriendStatusRemote);
-    CheckFriendStatusRemoteOffset = CheckFriendStatusRemoteAddr - WeChatBase;
-
-    DWORD HookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, HookReceiveMessageRemote);
-    HookReceiveMessageRemoteOffset = HookReceiveMessageRemoteAddr - WeChatBase;
-    DWORD UnHookReceiveMessageRemoteAddr = (DWORD)GetProcAddress(hd, UnHookReceiveMessageRemote);
-    UnHookReceiveMessageRemoteOffset = UnHookReceiveMessageRemoteAddr - WeChatBase;
-
-    DWORD GetChatRoomMemberNicknameRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMemberNicknameRemote);
-    GetChatRoomMemberNicknameRemoteOffset = GetChatRoomMemberNicknameRemoteAddr - WeChatBase;
-    DWORD GetChatRoomMembersRemoteAddr = (DWORD)GetProcAddress(hd, GetChatRoomMembersRemote);
-    GetChatRoomMembersRemoteOffset = GetChatRoomMembersRemoteAddr - WeChatBase;
-
-    DWORD DelChatRoomMemberRemoteAddr = (DWORD)GetProcAddress(hd, DelChatRoomMemberRemote);
-    DelChatRoomMemberRemoteOffset = DelChatRoomMemberRemoteAddr - WeChatBase;
-    DWORD AddChatRoomMemberRemoteAddr = (DWORD)GetProcAddress(hd, AddChatRoomMemberRemote);
-    AddChatRoomMemberRemoteOffset = AddChatRoomMemberRemoteAddr - WeChatBase;
-    DWORD SetChatRoomAnnouncementRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomAnnouncementRemote);
-    SetChatRoomAnnouncementRemoteOffset = SetChatRoomAnnouncementRemoteAddr - WeChatBase;
-    DWORD SetChatRoomNameRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomNameRemote);
-    SetChatRoomNameRemoteOffset = SetChatRoomNameRemoteAddr - WeChatBase;
-    DWORD SetChatRoomSelfNicknameRemoteAddr = (DWORD)GetProcAddress(hd, SetChatRoomSelfNicknameRemote);
-    SetChatRoomSelfNicknameRemoteOffset = SetChatRoomSelfNicknameRemoteAddr - WeChatBase;
-
-    DWORD GetDbHandlesRemoteAddr = (DWORD)GetProcAddress(hd, GetDbHandlesRemote);
-    GetDbHandlesRemoteOffset = GetDbHandlesRemoteAddr - WeChatBase;
-    DWORD ExecuteSQLRemoteAddr = (DWORD)GetProcAddress(hd, ExecuteSQLRemote);
-    ExecuteSQLRemoteOffset = ExecuteSQLRemoteAddr - WeChatBase;
-    DWORD SelectDataRemoteAddr = (DWORD)GetProcAddress(hd, SelectDataRemote);
-    SelectDataRemoteOffset = SelectDataRemoteAddr - WeChatBase;
-    DWORD BackupSQLiteDBRemoteAddr = (DWORD)GetProcAddress(hd, BackupSQLiteDBRemote);
-    BackupSQLiteDBRemoteOffset = BackupSQLiteDBRemoteAddr - WeChatBase;
-
-    DWORD AddFriendByWxidRemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByWxidRemote);
-    AddFriendByWxidRemoteOffset = AddFriendByWxidRemoteAddr - WeChatBase;
-    DWORD AddFriendByV3RemoteAddr = (DWORD)GetProcAddress(hd, AddFriendByV3Remote);
-    AddFriendByV3RemoteOffset = AddFriendByV3RemoteAddr - WeChatBase;
-    DWORD DeleteUserRemoteAddr = (DWORD)GetProcAddress(hd, DeleteUserRemote);
-    DeleteUserRemoteOffset = DeleteUserRemoteAddr - WeChatBase;
-    DWORD AddBrandContactRemoteAddr = (DWORD)GetProcAddress(hd, AddBrandContactRemote);
-    AddBrandContactRemoteOffset = AddBrandContactRemoteAddr - WeChatBase;
-
-    DWORD HookImageMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookImageMsgRemote);
-    HookImageMsgRemoteOffset = HookImageMsgRemoteAddr - WeChatBase;
-    DWORD UnHookImageMsgAddr = (DWORD)GetProcAddress(hd, UnHookImageMsgRemote);
-    UnHookImageMsgRemoteOffset = UnHookImageMsgAddr - WeChatBase;
-    DWORD HookVoiceMsgRemoteAddr = (DWORD)GetProcAddress(hd, HookVoiceMsgRemote);
-    HookVoiceMsgRemoteOffset = HookVoiceMsgRemoteAddr - WeChatBase;
-    DWORD UnHookVoiceMsgAddr = (DWORD)GetProcAddress(hd, UnHookVoiceMsgRemote);
-    UnHookVoiceMsgRemoteOffset = UnHookVoiceMsgAddr - WeChatBase;
-
-    DWORD ChangeWeChatVerRemoteAddr = (DWORD)GetProcAddress(hd, ChangeWeChatVerRemote);
-    ChangeWeChatVerRemoteOffset = ChangeWeChatVerRemoteAddr - WeChatBase;
-
-    FreeLibrary(hd);
-    delete[] dllpath;
-    dllpath = NULL;
-    return 1;
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), GetModuleHandleW, r_dllname.GetAddr());
+    return ret;
 }
 
 DWORD GetWeChatPid() {
@@ -255,12 +57,6 @@ DWORD GetWeChatPid() {
 DWORD StartRobotService(DWORD pid) {
     wstring wworkPath = GetComWorkPath();
     wchar_t* workPath = (wchar_t*)wworkPath.c_str();
-    if (!GetProcOffset(workPath)) {
-        wchar_t info[200] = { 0 };
-        swprintf_s(info, 200, L"COM无法加载位于%ws的%ws!", workPath, dllname);
-        MessageBox(NULL, info, L"致命错误!", MB_ICONWARNING);
-        return 1;
-    };
     bool status = Inject(pid, workPath);
     return status;
 }
@@ -270,7 +66,6 @@ DWORD StopRobotService(DWORD pid) {
     if (pid == 0)
         return cpid;
     RemoveDll(pid);
-    ZeroMemory((wchar_t*)SelfInfoString.c_str(), SelfInfoString.length() * 2 + 2);
     return 0;
 }
 
@@ -370,4 +165,57 @@ DWORD StartWeChat()
         Sleep(500);
     }
     return procStruct.dwProcessId;
+}
+
+DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname) {
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+    DWORD dwId = 0, dwProcAddr = 0;
+    unsigned char getremoteprocasmcode[] = {
+        0x55,                                   // push ebp;
+        0x8B,0xEC,                              // mov ebp, esp;
+        0x83,0xEC,0x40,                         // sub esp, 0x40;
+        0x57,                                   // push edi;
+        0x51,                                   // push ecx;
+        0x8B,0x7D,0x08,                         // mov edi, dword ptr[ebp + 0x8];
+        0x8B,0x07,                              // mov eax,dword ptr[edi];
+        0x50,                                   // push eax;
+        0xE8,0x00,0x00,0x00,0x00,               // call GetModuleHandleW;
+        0x83,0xC4,0x04,                         // add esp,0x4;
+        0x83,0xC7,0x04,                         // add edi,0x4;
+        0x8B,0x0F,                              // mov ecx, dword ptr[edi];
+        0x51,                                   // push ecx;
+        0x50,                                   // push eax;
+        0xE8,0x00,0x00,0x00,0x00,               // call GetProcAddress;
+        0x83,0xC4,0x08,                         // add esp, 0x8;
+        0x59,                                   // pop ecx;
+        0x5F,                                   // pop edi;
+        0x8B,0xE5,                              // mov esp, ebp;
+        0x5D,                                   // pop ebp;
+        0xC3                                    // retn;
+    };
+    DWORD pGetModuleHandleW = (DWORD)GetModuleHandleW;
+    DWORD pGetProcAddress = (DWORD)GetProcAddress;
+    PVOID call1 = (PVOID)&getremoteprocasmcode[15];
+    PVOID call2 = (PVOID)&getremoteprocasmcode[30];
+    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_EXECUTE);
+    if (!pRemoteAddress)
+        return 0;
+    *(DWORD*)call1 = pGetModuleHandleW - (DWORD)pRemoteAddress - 14 - 5;
+    *(DWORD*)call2 = pGetProcAddress - (DWORD)pRemoteAddress - 29 - 5;
+    SIZE_T dwWriteSize;
+    WriteProcessMemory(hProcess, pRemoteAddress, getremoteprocasmcode, sizeof(getremoteprocasmcode), &dwWriteSize);
+    struct GetProcAddrStruct {
+        DWORD hModuleNameAddr;
+        DWORD funcnameAddr;
+    } params;
+    WeChatData<wchar_t*> r_modulename(hProcess, modulename, TEXTLENGTH(modulename));
+    WeChatData<char*> r_procname(hProcess, procname, TEXTLENGTHA(procname));
+    params.funcnameAddr = (DWORD)r_procname.GetAddr();
+    params.hModuleNameAddr = (DWORD)r_modulename.GetAddr();
+    WeChatData<GetProcAddrStruct*> r_params(hProcess, &params, sizeof(params));
+    if (r_modulename.GetAddr() == 0 || r_procname.GetAddr() == 0 || r_params.GetAddr() == 0)
+        return 0;
+    DWORD ret = CallRemoteFunction(hProcess, pRemoteAddress, r_params.GetAddr());
+    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
+    return ret;
 }

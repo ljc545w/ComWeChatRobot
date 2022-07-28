@@ -120,120 +120,72 @@ SAFEARRAY* CreateFriendArray(int FriendCount) {
 }
 
 SAFEARRAY* GetFriendList(DWORD pid) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return NULL;
+	DWORD GetFriendListInitAddr = hp.GetProcAddr(GetFriendListInit);
+	DWORD GetFriendListRemoteAddr = hp.GetProcAddr(GetFriendListRemote);
+	DWORD GetFriendListFinishAddr = hp.GetProcAddr(GetFriendListFinish);
+	if (GetFriendListInitAddr == 0 || GetFriendListRemoteAddr == 0 || GetFriendListFinishAddr == 0)
 		return NULL;
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
-		return NULL;
-	}
-	DWORD GetFriendListInitAddr = WeChatRobotBase + GetFriendListInitOffset;
-	DWORD GetFriendListRemoteAddr = WeChatRobotBase + GetFriendListRemoteOffset;
-	DWORD GetFriendListFinishAddr = WeChatRobotBase + GetFriendListFinishOffset;
 	DWORD FriendCount = 0;
-	DWORD dwId, dwHandle = 0;
+	DWORD dwHandle = 0;
 	// 获取好友列表的长度
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListInitAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &FriendCount);
-		CloseHandle(hThread);
-	}
+	FriendCount = CallRemoteFunction(hp.GetHandle(), GetFriendListInitAddr, NULL);
 	// 获取保存第一个好友的数据指针的结构体首地址
-	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListRemoteAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwHandle);
-		CloseHandle(hThread);
-	}
+	dwHandle = CallRemoteFunction(hp.GetHandle(), GetFriendListRemoteAddr, NULL);
 
 	WxFriendAddrStruct WxFriendAddr = { 0 };
 	// 根据好友数量初始化全局变量
 	WxFriendList = new WxFriendStruct[FriendCount];
-	if (dwHandle) {
-		for (unsigned int i = 0; i < FriendCount; i++) {
-			WxFriendList[i] = { 0 };
-			ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
-			ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
-			ReadFriendMessageByAddress(hProcess,&WxFriendAddr, &WxFriendList[i]);
-			// 保存下一个好友数据的结构体
-			dwHandle += sizeof(WxFriendAddrStruct);
-		}
-	}
-	else {
-		CloseHandle(hProcess);
+	if (dwHandle == 0)
 		return NULL;
+	for (unsigned int i = 0; i < FriendCount; i++) {
+		WxFriendList[i] = { 0 };
+		ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
+		ReadProcessMemory(hp.GetHandle(), (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
+		ReadFriendMessageByAddress(hp.GetHandle(),&WxFriendAddr, &WxFriendList[i]);
+		// 保存下一个好友数据的结构体
+		dwHandle += sizeof(WxFriendAddrStruct);
 	}
 	// 清除微信进程空间中的缓存
-	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListFinishAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		CloseHandle(hThread);
-	}
-
+	CallRemoteFunction(hp.GetHandle(), GetFriendListFinishAddr, NULL);
 	SAFEARRAY* psaValue = CreateFriendArray(FriendCount);
 	for (unsigned int i = 0; i < FriendCount; i++) {
 		FreeWxFriend(i);
 	}
 	delete[] WxFriendList;
 	WxFriendList = NULL;
-	CloseHandle(hProcess);
 	return psaValue;
 }
 
 std::wstring GetFriendListString(DWORD pid) {
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-	if (!hProcess)
-		return L"[]";
-	DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-	if (!WeChatRobotBase) {
-		CloseHandle(hProcess);
-		return L"[]";
-	}
-	DWORD GetFriendListInitAddr = WeChatRobotBase + GetFriendListInitOffset;
-	DWORD GetFriendListRemoteAddr = WeChatRobotBase + GetFriendListRemoteOffset;
-	DWORD GetFriendListFinishAddr = WeChatRobotBase + GetFriendListFinishOffset;
+	WeChatProcess hp(pid);
+	if (!hp.m_init) return L"[]";
+	DWORD GetFriendListInitAddr = hp.GetProcAddr(GetFriendListInit);
+	DWORD GetFriendListRemoteAddr = hp.GetProcAddr(GetFriendListRemote);
+	DWORD GetFriendListFinishAddr = hp.GetProcAddr(GetFriendListFinish);
 	DWORD FriendCount = 0;
-	DWORD dwId, dwHandle = 0;
+	DWORD dwHandle = 0;
 	// 获取好友列表的长度
-	HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListInitAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &FriendCount);
-		CloseHandle(hThread);
-	}
+	FriendCount = CallRemoteFunction(hp.GetHandle(), GetFriendListInitAddr, NULL);
 	// 获取保存第一个好友的数据指针的结构体首地址
-	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListRemoteAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		GetExitCodeThread(hThread, &dwHandle);
-		CloseHandle(hThread);
-	}
+	dwHandle = CallRemoteFunction(hp.GetHandle(), GetFriendListRemoteAddr, NULL);
 	
 	WxFriendAddrStruct WxFriendAddr = { 0 };
 	// 根据好友数量初始化全局变量
 	WxFriendList = new WxFriendStruct[FriendCount];
-	if (dwHandle) {
-		for (unsigned int i = 0; i < FriendCount; i++) {
-			WxFriendList[i] = { 0 };
-			ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
-			ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
-			ReadFriendMessageByAddress(hProcess,&WxFriendAddr, &WxFriendList[i]);
-			// 保存下一个好友数据的结构体
-			dwHandle += sizeof(WxFriendAddrStruct);
-		}
-	}
-	else {
-		CloseHandle(hProcess);
+	if (dwHandle == 0)
 		return L"[]";
+	for (unsigned int i = 0; i < FriendCount; i++) {
+		WxFriendList[i] = { 0 };
+		ZeroMemory(&WxFriendAddr, sizeof(WxFriendAddrStruct));
+		ReadProcessMemory(hp.GetHandle(), (LPCVOID)dwHandle, &WxFriendAddr, sizeof(WxFriendAddrStruct), 0);
+		ReadFriendMessageByAddress(hp.GetHandle(),&WxFriendAddr, &WxFriendList[i]);
+		// 保存下一个好友数据的结构体
+		dwHandle += sizeof(WxFriendAddrStruct);
 	}
 	// 清除微信进程空间中的缓存
-	hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetFriendListFinishAddr, NULL, 0, &dwId);
-	if (hThread) {
-		WaitForSingleObject(hThread, INFINITE);
-		CloseHandle(hThread);
-	}
+	CallRemoteFunction(hp.GetHandle(), GetFriendListFinishAddr, NULL);
 	
 	wstring message = L"[";
 	// 构造结构化的数据
@@ -250,6 +202,5 @@ std::wstring GetFriendListString(DWORD pid) {
 	// 释放全局变量
 	delete[] WxFriendList;
 	WxFriendList = NULL;
-	CloseHandle(hProcess);
 	return message;
 }

@@ -1,37 +1,14 @@
 #include "pch.h"
 
-bool InjectDll(DWORD dwId, WCHAR* szPath)//参数1：目标进程PID  参数2：DLL路径
+bool InjectDll(DWORD dwId, WCHAR* szPath)
 {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwId);
-    if (!hProcess)
+    WeChatProcess hp(dwId);
+    if (!hp.m_init) return 1;
+    if (hp.WeChatRobotBase() != 0) return 0;
+    WeChatData<wchar_t*> r_dllpath(hp.GetHandle(), szPath, TEXTLENGTH(szPath));
+    if (r_dllpath.GetAddr() == 0)
         return 1;
-    if (GetWeChatRobotBase(dwId) != 0) {
-        CloseHandle(hProcess);
-        return 0;
-    }
-
-    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    DWORD dwWriteSize = 0;
-    if (pRemoteAddress)
-    {
-        WriteProcessMemory(hProcess, pRemoteAddress, szPath, wcslen(szPath) * 2 + 2, &dwWriteSize);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
-
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)LoadLibrary, pRemoteAddress, NULL, NULL);
-    if (hThread) {
-        WaitForSingleObject(hThread, -1);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    CloseHandle(hThread);
-    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
+    CallRemoteFunction(hp.GetHandle(), LoadLibraryW, r_dllpath.GetAddr());
     return 0;
 }
 
@@ -52,36 +29,12 @@ bool Inject(DWORD dwPid,wchar_t* workPath) {
 }
 
 BOOL RemoveDll(DWORD dwId) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwId);
-    if (!hProcess)
-        return 1;
-    DWORD WeChatRobotBase = GetWeChatRobotBase(dwId);
-    if (!WeChatRobotBase) {
-        CloseHandle(hProcess);
-        return 0;
-    }
-    DWORD dwWriteSize = 0;
-    HANDLE hThread = NULL;
-    DWORD dwID = 0;
-    hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)FreeConsole, NULL, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
     
-    hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, (LPVOID)WeChatRobotBase, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    else {
-        CloseHandle(hProcess);
-        return 1;
-    }
-    CloseHandle(hProcess);
+    WeChatProcess hp(dwId);
+    if (!hp.m_init) return 1;
+    DWORD WeChatRobotBase = hp.WeChatRobotBase();
+    if (WeChatRobotBase == 0) return 0;
+    CallRemoteFunction(hp.GetHandle(), FreeConsole, NULL);
+    CallRemoteFunction(hp.GetHandle(), FreeLibrary, WeChatRobotBase);
     return 0;
 }
