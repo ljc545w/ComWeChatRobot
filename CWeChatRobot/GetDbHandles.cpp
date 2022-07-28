@@ -86,61 +86,42 @@ SAFEARRAY* CreateDbInfoSafeArray() {
 }
 
 SAFEARRAY* GetDbHandles(DWORD pid) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
-    if (!hProcess)
+    dbs.clear();
+    WeChatProcess hp(pid);
+    if (!hp.m_init) return NULL;
+    DWORD GetDbHandlesRemoteAddr = hp.GetProcAddr(GetDbHandlesRemote);
+    if (GetDbHandlesRemoteAddr == 0)
         return NULL;
-    DWORD WeChatRobotBase = GetWeChatRobotBase(pid);
-    if (!WeChatRobotBase) {
-        CloseHandle(hProcess);
-        return NULL;
-    }
-    DWORD dwHandle = 0x0;
-    DWORD dwId = 0x0;
-    DWORD GetDbHandlesRemoteAddr = WeChatRobotBase + GetDbHandlesRemoteOffset;
-    HANDLE hThread = ::CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)GetDbHandlesRemoteAddr, NULL, 0, &dwId);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        GetExitCodeThread(hThread, &dwHandle);
-        CloseHandle(hThread);
-    }
-    else {
-        CloseHandle(hProcess);
-        return NULL;
-    }
-    if (!dwHandle) {
-        CloseHandle(hProcess);
-        return NULL;
-    }
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), GetDbHandlesRemoteAddr, NULL);
     while (1) {
         DbInfoAddrStruct dbaddr = { 0 };
-        ReadProcessMemory(hProcess, (LPCVOID)dwHandle, &dbaddr, sizeof(DbInfoAddrStruct), 0);
+        ReadProcessMemory(hp.GetHandle(), (LPCVOID)ret, &dbaddr, sizeof(DbInfoAddrStruct), 0);
         if (dbaddr.handle == 0)
             break;
         DbInfoStruct db = { 0 };
         db.handle = dbaddr.handle;
         db.count = dbaddr.count;
         db.dbname = new wchar_t[dbaddr.l_dbname + 1];
-        ReadProcessMemory(hProcess, (LPCVOID)dbaddr.dbname, db.dbname, sizeof(wchar_t) * (dbaddr.l_dbname + 1), 0);
+        ReadProcessMemory(hp.GetHandle(), (LPCVOID)dbaddr.dbname, db.dbname, sizeof(wchar_t) * (dbaddr.l_dbname + 1), 0);
         DWORD db_table_start_addr = dbaddr.v_data;
         while (db_table_start_addr < dbaddr.v_end1) {
             TableInfoAddrStruct tbaddr = { 0 };
             TableInfoStruct tb = { 0 };
-            ReadProcessMemory(hProcess, (LPCVOID)db_table_start_addr, &tbaddr, sizeof(TableInfoAddrStruct), 0);
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)db_table_start_addr, &tbaddr, sizeof(TableInfoAddrStruct), 0);
             tb.name = new char[tbaddr.l_name + 1];
-            ReadProcessMemory(hProcess, (LPCVOID)tbaddr.name, tb.name, tbaddr.l_name + 1, 0);
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.name, tb.name, tbaddr.l_name + 1, 0);
             tb.tbl_name = new char[tbaddr.l_tbl_name + 1];
-            ReadProcessMemory(hProcess, (LPCVOID)tbaddr.tbl_name, tb.tbl_name, tbaddr.l_tbl_name + 1, 0);
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.tbl_name, tb.tbl_name, tbaddr.l_tbl_name + 1, 0);
             tb.rootpage = new char[tbaddr.l_rootpage + 1];
-            ReadProcessMemory(hProcess, (LPCVOID)tbaddr.rootpage, tb.rootpage, tbaddr.l_rootpage + 1, 0);
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.rootpage, tb.rootpage, tbaddr.l_rootpage + 1, 0);
             tb.sql = new char[tbaddr.l_sql + 1];
-            ReadProcessMemory(hProcess, (LPCVOID)tbaddr.sql, tb.sql, tbaddr.l_sql + 1, 0);
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.sql, tb.sql, tbaddr.l_sql + 1, 0);
             db.tables.push_back(tb);
             db_table_start_addr += sizeof(TableInfoAddrStruct);
         }
         dbs.push_back(db);
-        dwHandle += sizeof(DbInfoAddrStruct);
+        ret += sizeof(DbInfoAddrStruct);
     }
     SAFEARRAY* psaValue = CreateDbInfoSafeArray();
-    CloseHandle(hProcess);
     return psaValue;
 }

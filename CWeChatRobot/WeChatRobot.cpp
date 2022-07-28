@@ -120,8 +120,8 @@ STDMETHODIMP CWeChatRobot::CGetFriendList(DWORD pid, VARIANT* __result) {
   （考虑到从SAFEARRAY转换到适当变量可能较为繁琐，故保留此接口）
 */
 STDMETHODIMP CWeChatRobot::CGetFriendListString(DWORD pid, BSTR* __result) {
-    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetFriendListString(pid).c_str()));
-    *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
+    wstring info = GetFriendListString(pid);
+    *__result = (_bstr_t)info.c_str();
     return S_OK;
 }
 
@@ -131,8 +131,8 @@ STDMETHODIMP CWeChatRobot::CGetFriendListString(DWORD pid, BSTR* __result) {
 * 参数2：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetWxUserInfo(DWORD pid, BSTR wxid,BSTR* __result) {
-    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetWxUserInfo(pid, wxid).c_str()));
-    *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
+    wstring info = GetWxUserInfo(pid, wxid);
+    *__result = (_bstr_t)info.c_str();
     return S_OK;
 }
 
@@ -141,8 +141,8 @@ STDMETHODIMP CWeChatRobot::CGetWxUserInfo(DWORD pid, BSTR wxid,BSTR* __result) {
 * 参数1：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetSelfInfo(DWORD pid, BSTR* __result) {
-    string smessage = _com_util::ConvertBSTRToString((BSTR)(GetSelfInfo(pid).c_str()));
-    *__result = _com_util::ConvertStringToBSTR(smessage.c_str());
+    wstring info = GetSelfInfo(pid);
+    *__result = (_bstr_t)info.c_str();
     return S_OK;
 }
 
@@ -160,8 +160,8 @@ STDMETHODIMP CWeChatRobot::CCheckFriendStatus(DWORD pid, BSTR wxid,int* __result
 * 参数1：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR* __result) {
-    string path = _com_util::ConvertBSTRToString((BSTR)(GetComWorkPath().c_str()));
-    *__result = _com_util::ConvertStringToBSTR(path.c_str());
+    wstring path = GetComWorkPath();
+    *__result = (_bstr_t)path.c_str();
     return S_OK;
 }
 
@@ -272,8 +272,8 @@ STDMETHODIMP CWeChatRobot::CAddFriendByV3(DWORD pid, BSTR v3, BSTR message,int A
 * 参数1：预返回的值，调用时无需提供
 */
 STDMETHODIMP CWeChatRobot::CGetWeChatVer(BSTR* __result) {
-    string path = _com_util::ConvertBSTRToString((BSTR)(GetWeChatVerStr().c_str()));
-    *__result = _com_util::ConvertStringToBSTR(path.c_str());
+    wstring path = GetWeChatVerStr();
+    *__result = (_bstr_t)path.c_str();
     return S_OK;
 }
 
