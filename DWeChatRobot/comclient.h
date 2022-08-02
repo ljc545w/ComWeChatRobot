@@ -6,4 +6,4 @@
 
 #define WX_MESSAGE 1
 #define WX_LOG_MESSAGE 2
-BOOL PostComMessage(int msgtype,VARIANT* msg);
+BOOL PostComMessage(DWORD pid, int msgtype,VARIANT* msg);

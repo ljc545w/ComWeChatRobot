@@ -88,5 +88,5 @@ if __name__ == '__main__':
     wx = WeChatRobot(pid_list[0])
     wx.StartService()
     wx.StartReceiveMessage()
-    wxRobot.register_msg_event()
+    wxRobot.register_msg_event(wx.pid)
     wx.StopService()
