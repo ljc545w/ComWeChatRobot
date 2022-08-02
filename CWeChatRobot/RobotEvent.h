@@ -9,9 +9,7 @@
 #include "_IRobotEventEvents_CP.h"
 
 
-
 using namespace ATL;
-
 
 // CRobotEvent
 
@@ -56,7 +54,8 @@ public:
 
 
 
-	STDMETHOD(CPostMessage)(int msgtype,VARIANT* msg, int* __result);
+	STDMETHOD(CPostMessage)(DWORD pid, int msgtype, VARIANT* msg, int* __result);
+	STDMETHOD(CRegisterWxPidWithCookie)(DWORD pid, DWORD cookie, int* __result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(RobotEvent), CRobotEvent)

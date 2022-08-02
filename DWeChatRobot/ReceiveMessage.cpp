@@ -203,7 +203,7 @@ static void dealMessage(DWORD messageAddr) {
 	VARIANT vsaValue;
 	vsaValue.vt = VT_ARRAY | VT_VARIANT;
 	V_ARRAY(&vsaValue) = psaValue;
-	PostComMessage(WX_MESSAGE,&vsaValue);
+	PostComMessage(message->pid, WX_MESSAGE, &vsaValue);
 #endif
 	HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
 	if (hThread) {

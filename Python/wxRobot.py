@@ -1060,12 +1060,14 @@ def start_wechat() -> 'WeChatRobot' or None:
     return None
 
 
-def register_msg_event(event_sink: 'WeChatEventSink' or None = None) -> None:
+def register_msg_event(wx_pid: int, event_sink: 'WeChatEventSink' or None = None) -> None:
     """
     通过COM组件连接点接收消息，真正的回调
+    只会收到wx_pid对应的微信消息
 
     Parameters
     ----------
+    wx_pid: 微信PID
     event_sink : object, optional
         回调的实现类，该类要继承`WeChatEventSink`类或实现其中的方法.
 
@@ -1080,6 +1082,7 @@ def register_msg_event(event_sink: 'WeChatEventSink' or None = None) -> None:
         sink = event_sink or WeChatEventSink()
         connection_point = GetEvents(event, sink)
         assert connection_point is not None
+        event.CRegisterWxPidWithCookie(wx_pid, connection_point.cookie)
         while True:
             try:
                 PumpEvents(2)

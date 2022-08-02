@@ -33,8 +33,9 @@ public:
     }
 };
 
-BOOL PostComMessage(int msgtype,VARIANT* msg) {
+BOOL PostComMessage(DWORD pid, int msgtype, VARIANT* msg) {
     HRESULT hr = S_OK;
+    
     hr = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
     if (FAILED(hr))
         return false;
@@ -50,7 +51,7 @@ BOOL PostComMessage(int msgtype,VARIANT* msg) {
         AtlAdvise(spRobotEvent, sinkptr, __uuidof(_IRobotEventEvents), &cookies);
         */
         int __result = 0;
-        spRobotEvent->CPostMessage(msgtype,msg, &__result);
+        spRobotEvent->CPostMessage(pid, msgtype, msg, &__result);
     }
     else {
         return false;
