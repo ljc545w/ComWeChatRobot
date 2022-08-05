@@ -2,6 +2,14 @@
 
 #include "pch.h"
 
+/*
+ * 保证RobotService可以重复调用及停止，类似于可重入锁，用于支持多个客户端同时调用
+ * StopRobotService的次数必须不小于StartRobotService才可以停止服务，当服务已经停止后
+ * 可以重复调用StopRobotService，但只需一次StartRobotService即可将计数置0并开启服务
+ */
+map<DWORD, short> ServiceCount;
+
+
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
 
 BOOL isFileExists_stat(string& name) {
@@ -54,18 +62,37 @@ DWORD GetWeChatPid() {
     return wxPid;
 }
 
-DWORD StartRobotService(DWORD pid) {
-    wstring wworkPath = GetComWorkPath();
-    wchar_t* workPath = (wchar_t*)wworkPath.c_str();
-    bool status = Inject(pid, workPath);
-    return status;
+DWORD StartRobotService(DWORD pid)
+{
+    if (ServiceCount[pid] < 0)
+    {
+        ServiceCount[pid] = 0;
+    }
+    if (ServiceCount[pid] == 0)
+    {
+        wstring wworkPath = GetComWorkPath();
+        wchar_t* workPath = (wchar_t*)wworkPath.c_str();
+        bool status = Inject(pid, workPath);
+        if (!status)
+        {
+            ++ServiceCount[pid];
+        }
+        return status;
+    }
+    ++ServiceCount[pid];
+    return 0;
 }
 
-DWORD StopRobotService(DWORD pid) {
+DWORD StopRobotService(DWORD pid)
+{
     DWORD cpid = GetCurrentProcessId();
     if (pid == 0)
         return cpid;
-    RemoveDll(pid);
+    --ServiceCount[pid];
+    if (ServiceCount[pid] == 0)
+    {
+        RemoveDll(pid);
+    }
     return 0;
 }
 

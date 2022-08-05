@@ -15,13 +15,14 @@
 #include "stdlib.h"
 #include <tchar.h>
 #include <stdio.h>
-#include <windows.h>
+#include <Windows.h>
 #include <TlHelp32.h>
 #include <atlconv.h>
 #include <tchar.h>
 #include <sys/stat.h>
 #include <direct.h>
 #include <vector>
+#include <map>
 
 #include <comutil.h>
 #pragma comment(lib, "comsuppw.lib")
