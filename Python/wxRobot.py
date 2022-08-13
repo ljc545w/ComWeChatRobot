@@ -62,6 +62,7 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
         _fields_ = [("pid", ctypes.wintypes.DWORD),
                     ("type", ctypes.wintypes.DWORD),
                     ("isSendMsg", ctypes.wintypes.DWORD),
+                    ("msgid",ctypes.c_ulonglong),
                     ("sender", ctypes.c_wchar * 80),
                     ("wxid", ctypes.c_wchar * 80),
                     ("message", ctypes.c_wchar * 0x1000B),
@@ -101,8 +102,11 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
     @staticmethod
     def msg_callback(data):
         # 主线程中已经注入，此处禁止调用StartService和StopService
-        msg = {'pid': data.pid, 'time': data.time, 'type': data.type, 'isSendMsg': data.isSendMsg, 'wxid': data.wxid,
-               'sendto' if data.isSendMsg else 'from': data.sender, 'message': data.message}
+        msg = {'pid': data.pid, 'time': data.time, 'type': data.type, 
+               'isSendMsg': data.isSendMsg, 'msgid': data.msgid,
+               'wxid': data.wxid,
+               'sendto' if data.isSendMsg else 'from': data.sender, 
+               'message': data.message}
         robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
         event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
         wx = WeChatRobot(data.pid, robot, event)
@@ -616,7 +620,7 @@ class WeChatRobot:
                 dbs[dbname] = {'Handle': table['Handle'], 'tables': []}
             dbs[dbname]['tables'].append(
                 {'name': table['name'], 'tbl_name': table['tbl_name'],
-                 'root_page': table['root_page'], 'sql': table['sql']}
+                 'root_page': table['rootpage'], 'sql': table['sql']}
             )
         return dbs
 
@@ -1039,8 +1043,11 @@ def get_wechat_pid_list() -> list:
     pid_list = []
     process_list = psutil.pids()
     for pid in process_list:
-        if psutil.Process(pid).name() == 'WeChat.exe':
-            pid_list.append(pid)
+        try:
+            if psutil.Process(pid).name() == 'WeChat.exe':
+                pid_list.append(pid)
+        except psutil.NoSuchProcess:
+            pass    
     return pid_list
 
 

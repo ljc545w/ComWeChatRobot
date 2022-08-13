@@ -7,39 +7,42 @@
 #ifndef USE_SOCKET
 struct DelChatRoomMemberStruct
 {
-	DWORD chatroomid;
-	DWORD wxidlist;
-	DWORD length;
+    DWORD chatroomid;
+    DWORD wxidlist;
+    DWORD length;
 };
 
-BOOL DelChatRoomMemberRemote(LPVOID lpParameter) {
-	DelChatRoomMemberStruct* rp = (DelChatRoomMemberStruct*)lpParameter;
-	wchar_t* wsChatRoomId = (WCHAR*)rp->chatroomid;
-	if (rp->length == 0)
-		return false;
-	else if(rp->length == 1)
-		return DelChatRoomMember(wsChatRoomId, (wchar_t**)&rp->wxidlist,rp->length);
-	else
-		return DelChatRoomMember(wsChatRoomId, (wchar_t**)rp->wxidlist, rp->length);
+BOOL DelChatRoomMemberRemote(LPVOID lpParameter)
+{
+    DelChatRoomMemberStruct *rp = (DelChatRoomMemberStruct *)lpParameter;
+    wchar_t *wsChatRoomId = (WCHAR *)rp->chatroomid;
+    if (rp->length == 0)
+        return false;
+    else if (rp->length == 1)
+        return DelChatRoomMember(wsChatRoomId, (wchar_t **)&rp->wxidlist, rp->length);
+    else
+        return DelChatRoomMember(wsChatRoomId, (wchar_t **)rp->wxidlist, rp->length);
 }
 #endif // !USE_SOCKET
 
-BOOL DelChatRoomMember(wchar_t* chatroomid,wchar_t** wxids,int length) {
-	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD DelChatRoomMemeberCall1 = WeChatWinBase + DelChatRoomMemeberCall1Offset;
-	DWORD DelChatRoomMemeberCall2 = WeChatWinBase + DelChatRoomMemeberCall2Offset;
-	DWORD DelChatRoomMemeberCall3 = WeChatWinBase + DelChatRoomMemeberCall3Offset;
+BOOL DelChatRoomMember(wchar_t *chatroomid, wchar_t **wxids, int length)
+{
+    DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD DelChatRoomMemeberCall1 = WeChatWinBase + DelChatRoomMemeberCall1Offset;
+    DWORD DelChatRoomMemeberCall2 = WeChatWinBase + DelChatRoomMemeberCall2Offset;
+    DWORD DelChatRoomMemeberCall3 = WeChatWinBase + DelChatRoomMemeberCall3Offset;
 
-	WxBaseStruct pchatroomid(chatroomid);
-	vector<WxBaseStruct> members;
-	VectorStruct* vs = (VectorStruct*)&members;
-	DWORD pmembers = (DWORD)&vs->v_data;
-	for (int i = 0; i < length; i++) {
-		WxBaseStruct pwxid(wxids[i]);
-		members.push_back(pwxid);
-	}
-	int isSuccess = 0;
-	__asm {
+    WxString pchatroomid(chatroomid);
+    vector<WxString> members;
+    VectorStruct *vs = (VectorStruct *)&members;
+    DWORD pmembers = (DWORD)&vs->v_data;
+    for (int i = 0; i < length; i++)
+    {
+        WxString pwxid(wxids[i]);
+        members.push_back(pwxid);
+    }
+    int isSuccess = 0;
+    __asm {
 		pushad;
 		pushfd;
 		call DelChatRoomMemeberCall1;
@@ -56,6 +59,6 @@ BOOL DelChatRoomMember(wchar_t* chatroomid,wchar_t** wxids,int length) {
 		mov isSuccess, eax;
 		popfd;
 		popad;
-	}
-	return isSuccess == 1;
+    }
+    return isSuccess == 1;
 }

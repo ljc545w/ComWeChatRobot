@@ -11,51 +11,55 @@
 // 添加好友参数偏移
 #define AddFriendByWxidParamOffset 0x7AA068F4 - 0x786A0000
 
-struct AddFriendByWxidParamStruct {
-	DWORD fill0 = 0x0;
-	DWORD fill1 = 0x0;
-	DWORD fill2 = -0x1;
-	DWORD fill3 = 0x0;
-	DWORD fill4 = 0x0;
-	DWORD fill5 = 0xF;
-	char nullbuffer[0xC] = { 0 };
+struct AddFriendByWxidParamStruct
+{
+    DWORD fill0 = 0x0;
+    DWORD fill1 = 0x0;
+    DWORD fill2 = -0x1;
+    DWORD fill3 = 0x0;
+    DWORD fill4 = 0x0;
+    DWORD fill5 = 0xF;
+    char nullbuffer[0xC] = {0};
 };
 
 #ifndef USE_SOCKET
-struct AddFriendByWxidStruct {
-	wchar_t* wxid;
-	wchar_t* message;
+struct AddFriendByWxidStruct
+{
+    wchar_t *wxid;
+    wchar_t *message;
 };
 #endif
 
 #ifndef USE_SOCKET
-BOOL AddFriendByWxidRemote(LPVOID lpParameter) {
-	AddFriendByWxidStruct* afbws = (AddFriendByWxidStruct*)lpParameter;
-	BOOL isSuccess = AddFriendByWxid(afbws->wxid, afbws->message);
-	return isSuccess;
+BOOL AddFriendByWxidRemote(LPVOID lpParameter)
+{
+    AddFriendByWxidStruct *afbws = (AddFriendByWxidStruct *)lpParameter;
+    BOOL isSuccess = AddFriendByWxid(afbws->wxid, afbws->message);
+    return isSuccess;
 }
 #endif
 
-BOOL __stdcall AddFriendByWxid(wchar_t* wxid,wchar_t* message) {
-	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD AddFriendByWxidCall1 = WeChatWinBase + AddFriendByWxidCall1Offset;
-	DWORD AddFriendByWxidCall2 = WeChatWinBase + AddFriendByWxidCall2Offset;
-	DWORD AddFriendByWxidCall3 = WeChatWinBase + AddFriendByWxidCall3Offset;
-	DWORD AddFriendByWxidCall4 = WeChatWinBase + AddFriendByWxidCall4Offset;
-	DWORD AddFriendByWxidParamAddr = WeChatWinBase + AddFriendByWxidParamOffset;
+BOOL __stdcall AddFriendByWxid(wchar_t *wxid, wchar_t *message)
+{
+    DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD AddFriendByWxidCall1 = WeChatWinBase + AddFriendByWxidCall1Offset;
+    DWORD AddFriendByWxidCall2 = WeChatWinBase + AddFriendByWxidCall2Offset;
+    DWORD AddFriendByWxidCall3 = WeChatWinBase + AddFriendByWxidCall3Offset;
+    DWORD AddFriendByWxidCall4 = WeChatWinBase + AddFriendByWxidCall4Offset;
+    DWORD AddFriendByWxidParamAddr = WeChatWinBase + AddFriendByWxidParamOffset;
 
-	WxBaseStruct pwxid(wxid);
-	AddFriendByWxidParamStruct AddFriendParam;
+    WxString pwxid(wxid);
+    AddFriendByWxidParamStruct AddFriendParam;
 
-	char* swxid = new char[wcslen(wxid) + 1];
-	ZeroMemory(swxid, wcslen(wxid) + 1);
-	WideCharToMultiByte(CP_ACP, 0, wxid, -1, swxid, wcslen(wxid), NULL, NULL);
-	pwxid.fill1 = (DWORD)swxid;
-	pwxid.fill2 = wcslen(wxid);
-	wchar_t* pmessage = message ? message : (wchar_t*)L"";
-	BOOL isSuccess = 0x0;
+    char *swxid = new char[wcslen(wxid) + 1];
+    ZeroMemory(swxid, wcslen(wxid) + 1);
+    WideCharToMultiByte(CP_ACP, 0, wxid, -1, swxid, wcslen(wxid), NULL, NULL);
+    pwxid.fill1 = (DWORD)swxid;
+    pwxid.fill2 = wcslen(wxid);
+    wchar_t *pmessage = message ? message : (wchar_t *)L"";
+    BOOL isSuccess = 0x0;
 
-	__asm {
+    __asm {
 		pushad;
 		pushfd;
 		mov edi, 0x6;
@@ -92,6 +96,6 @@ BOOL __stdcall AddFriendByWxid(wchar_t* wxid,wchar_t* message) {
 		mov isSuccess, eax;
 		popfd;
 		popad;
-	}
-	return isSuccess;
+    }
+    return isSuccess;
 }

@@ -15,9 +15,10 @@
 * imagepath：保存图片绝对路径的地址
 */
 #ifndef USE_SOCKET
-struct ImageParamStruct {
-	DWORD wxid;
-	DWORD imagepath;
+struct ImageParamStruct
+{
+    DWORD wxid;
+    DWORD imagepath;
 };
 #endif
 
@@ -27,9 +28,10 @@ struct ImageParamStruct {
 * return：void
 */
 #ifndef USE_SOCKET
-void SendImageRemote(LPVOID lpParamStruct) {
-	ImageParamStruct* params = (ImageParamStruct*)lpParamStruct;
-	SendImage((WCHAR*)params->wxid, (WCHAR*)params->imagepath);
+void SendImageRemote(LPVOID lpParamStruct)
+{
+    ImageParamStruct *params = (ImageParamStruct *)lpParamStruct;
+    SendImage((WCHAR *)params->wxid, (WCHAR *)params->imagepath);
 }
 #endif
 
@@ -39,20 +41,21 @@ void SendImageRemote(LPVOID lpParamStruct) {
 * ImagePath：图片绝对路径
 * return：void
 */
-void __stdcall SendImage(wchar_t* receiver, wchar_t* ImagePath) {
-	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD SendImageCall1 = WeChatWinBase + SendImageCall1Offset;
-	DWORD SendImageCall2 = WeChatWinBase + SendImageCall2Offset;
-	DWORD SendImageCall3 = WeChatWinBase + SendImageCall3Offset;
-	DWORD DeleteSendImageCacheCall = WeChatWinBase + DeleteSendImageCacheCallOffset;
-	char nullbuffer[0x50] = { 0 };
-	char buffer[0x3B0] = { 0 };
-	WxBaseStruct pReceiver(receiver);
-	WxBaseStruct pImagePath(ImagePath);
-	WxString nullStruct = { 0 };
-	DWORD tempeax = 0;
-	
-	__asm {
+void __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
+{
+    DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD SendImageCall1 = WeChatWinBase + SendImageCall1Offset;
+    DWORD SendImageCall2 = WeChatWinBase + SendImageCall2Offset;
+    DWORD SendImageCall3 = WeChatWinBase + SendImageCall3Offset;
+    DWORD DeleteSendImageCacheCall = WeChatWinBase + DeleteSendImageCacheCallOffset;
+    char nullbuffer[0x50] = {0};
+    char buffer[0x3B0] = {0};
+    WxString pReceiver(receiver);
+    WxString pImagePath(ImagePath);
+    WxString nullStruct = {0};
+    DWORD tempeax = 0;
+
+    __asm {
 		pushad;
 		call SendImageCall1;
 		sub esp, 0x14;
@@ -72,5 +75,5 @@ void __stdcall SendImage(wchar_t* receiver, wchar_t* ImagePath) {
 		lea ecx, buffer;
 		call DeleteSendImageCacheCall;
 		popad;
-	}
+    }
 }

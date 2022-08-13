@@ -9,6 +9,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SOCKET_Debug|Win32'">
     <LocalDebuggerCommandArguments />
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>D:\Tencent\WeChat\WeChat.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>D:\C++\ComWeChatRobot\Debug\socket\server.exe</LocalDebuggerCommand>
   </PropertyGroup>
 </Project>

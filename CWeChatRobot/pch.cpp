@@ -9,53 +9,63 @@
  */
 map<DWORD, short> ServiceCount;
 
-
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
 
-BOOL isFileExists_stat(string& name) {
+BOOL isFileExists_stat(string &name)
+{
     struct stat buffer;
     return (stat(name.c_str(), &buffer) == 0);
 }
 
-BOOL CreateConsole() {
-    if (AllocConsole()) {
+BOOL CreateConsole()
+{
+    if (AllocConsole())
+    {
         AttachConsole(GetCurrentProcessId());
-        FILE* retStream;
+        FILE *retStream;
         freopen_s(&retStream, "CONOUT$", "w", stdout);
-        if (!retStream) throw std::runtime_error("Stdout redirection failed.");
+        if (!retStream)
+            throw std::runtime_error("Stdout redirection failed.");
         freopen_s(&retStream, "CONOUT$", "w", stderr);
-        if (!retStream) throw std::runtime_error("Stderr redirection failed.");
+        if (!retStream)
+            throw std::runtime_error("Stderr redirection failed.");
         return 0;
     }
     return 1;
 }
 
-DWORD GetWeChatRobotBase(DWORD pid) {
+DWORD GetWeChatRobotBase(DWORD pid)
+{
     WeChatProcess hp(pid);
-    if (!hp.m_init) return 0;
-    WeChatData<wchar_t*> r_dllname(hp.GetHandle(), dllname, TEXTLENGTH(dllname));
+    if (!hp.m_init)
+        return 0;
+    WeChatData<wchar_t *> r_dllname(hp.GetHandle(), DLLNAME, TEXTLENGTH(DLLNAME));
     if (r_dllname.GetAddr() == 0)
         return 0;
     DWORD ret = CallRemoteFunction(hp.GetHandle(), GetModuleHandleW, r_dllname.GetAddr());
     return ret;
 }
 
-DWORD GetWeChatWinBase(DWORD pid) {
-    wchar_t* WeChatWin = L"WeChatWin.dll";
+DWORD GetWeChatWinBase(DWORD pid)
+{
+    wchar_t *WeChatWin = L"WeChatWin.dll";
     WeChatProcess hp(pid);
-    if (!hp.m_init) return 0;
-    WeChatData<wchar_t*> r_dllname(hp.GetHandle(), WeChatWin, TEXTLENGTH(WeChatWin));
+    if (!hp.m_init)
+        return 0;
+    WeChatData<wchar_t *> r_dllname(hp.GetHandle(), WeChatWin, TEXTLENGTH(WeChatWin));
     if (r_dllname.GetAddr() == 0)
         return 0;
     DWORD ret = CallRemoteFunction(hp.GetHandle(), GetModuleHandleW, r_dllname.GetAddr());
     return ret;
 }
 
-DWORD GetWeChatPid() {
+DWORD GetWeChatPid()
+{
     HWND hCalc = FindWindow(NULL, L"微信");
     DWORD wxPid = 0;
     GetWindowThreadProcessId(hCalc, &wxPid);
-    if (wxPid == 0) {
+    if (wxPid == 0)
+    {
         hCalc = FindWindow(NULL, L"微信测试版");
         GetWindowThreadProcessId(hCalc, &wxPid);
     }
@@ -71,7 +81,7 @@ DWORD StartRobotService(DWORD pid)
     if (ServiceCount[pid] == 0)
     {
         wstring wworkPath = GetComWorkPath();
-        wchar_t* workPath = (wchar_t*)wworkPath.c_str();
+        wchar_t *workPath = (wchar_t *)wworkPath.c_str();
         bool status = Inject(pid, workPath);
         if (!status)
         {
@@ -96,49 +106,56 @@ DWORD StopRobotService(DWORD pid)
     return 0;
 }
 
-wstring GetComWorkPath() {
-    wchar_t szFilePath[MAX_PATH + 1] = { 0 };
+wstring GetComWorkPath()
+{
+    wchar_t szFilePath[MAX_PATH + 1] = {0};
     GetModuleFileName(NULL, szFilePath, MAX_PATH);
     wstring wpath = szFilePath;
     int pos = wpath.find_last_of(L"\\");
-    wpath = wpath.substr(0,pos);
+    wpath = wpath.substr(0, pos);
     return wpath;
 }
 
-static BOOL GetWeChatInstallInfo(TCHAR* lpValueName, VOID* Value, DWORD lpcbData) {
+static BOOL GetWeChatInstallInfo(TCHAR *lpValueName, VOID *Value, DWORD lpcbData)
+{
     HKEY hKey = NULL;
     ZeroMemory(Value, lpcbData);
     LSTATUS lRet = RegOpenKeyEx(HKEY_CURRENT_USER, _T("SOFTWARE\\Tencent\\WeChat"), 0, KEY_QUERY_VALUE, &hKey);
-    if (lRet != 0) {
+    if (lRet != 0)
+    {
         return false;
     }
     lRet = RegQueryValueEx(hKey, lpValueName, NULL, NULL, (LPBYTE)Value, &lpcbData);
     RegCloseKey(hKey);
-    if (lRet != 0) {
+    if (lRet != 0)
+    {
         return false;
     }
     return true;
 }
 
-tstring GetWeChatInstallDir() {
-    TCHAR* szProductType = new TCHAR[MAX_PATH];
-    GetWeChatInstallInfo((TCHAR*)TEXT("InstallPath"), (void*)szProductType, MAX_PATH);
+tstring GetWeChatInstallDir()
+{
+    TCHAR *szProductType = new TCHAR[MAX_PATH];
+    GetWeChatInstallInfo((TCHAR *)TEXT("InstallPath"), (void *)szProductType, MAX_PATH);
     tstring wxdir(szProductType);
     delete[] szProductType;
     szProductType = NULL;
     return wxdir.length() == 0 ? TEXT("") : wxdir;
 }
 
-DWORD GetWeChatVerInt() {
+DWORD GetWeChatVerInt()
+{
     DWORD version = 0x0;
-    GetWeChatInstallInfo((TCHAR*)TEXT("CrashVersion"), (void*)&version, sizeof(DWORD));
+    GetWeChatInstallInfo((TCHAR *)TEXT("CrashVersion"), (void *)&version, sizeof(DWORD));
     return version;
 }
 
-tstring GetWeChatVerStr() {
-    BYTE pversion[4] = { 0 };
-    GetWeChatInstallInfo((TCHAR*)TEXT("CrashVersion"), (void*)pversion, sizeof(DWORD));
-    TCHAR* temp = new TCHAR[20];
+tstring GetWeChatVerStr()
+{
+    BYTE pversion[4] = {0};
+    GetWeChatInstallInfo((TCHAR *)TEXT("CrashVersion"), (void *)pversion, sizeof(DWORD));
+    TCHAR *temp = new TCHAR[20];
     _stprintf_s(temp, 20, _T("%d.%d.%d.%d\0"), (int)(pversion[3] - 0x60), (int)pversion[2], (int)pversion[1], (int)pversion[0]);
     tstring verStr(temp);
     delete[] temp;
@@ -146,9 +163,9 @@ tstring GetWeChatVerStr() {
     return verStr;
 }
 
-static bool CloseAllWxProcessMutexHandle() 
+static bool CloseAllWxProcessMutexHandle()
 {
-    HANDLE  hsnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    HANDLE hsnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     if (hsnapshot == INVALID_HANDLE_VALUE)
     {
         return false;
@@ -188,37 +205,39 @@ DWORD StartWeChat()
     if (procStruct.dwProcessId == 0)
         return 0;
     DWORD WeChatWinBase = 0;
-    while ((WeChatWinBase = GetWeChatWinBase(procStruct.dwProcessId)) == 0) {
+    while ((WeChatWinBase = GetWeChatWinBase(procStruct.dwProcessId)) == 0)
+    {
         Sleep(500);
     }
     return procStruct.dwProcessId;
 }
 
-DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname) {
+DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname)
+{
     HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
     DWORD dwId = 0, dwProcAddr = 0;
     unsigned char getremoteprocasmcode[] = {
-        0x55,                                   // push ebp;
-        0x8B,0xEC,                              // mov ebp, esp;
-        0x83,0xEC,0x40,                         // sub esp, 0x40;
-        0x57,                                   // push edi;
-        0x51,                                   // push ecx;
-        0x8B,0x7D,0x08,                         // mov edi, dword ptr[ebp + 0x8];
-        0x8B,0x07,                              // mov eax,dword ptr[edi];
-        0x50,                                   // push eax;
-        0xE8,0x00,0x00,0x00,0x00,               // call GetModuleHandleW;
-        0x83,0xC4,0x04,                         // add esp,0x4;
-        0x83,0xC7,0x04,                         // add edi,0x4;
-        0x8B,0x0F,                              // mov ecx, dword ptr[edi];
-        0x51,                                   // push ecx;
-        0x50,                                   // push eax;
-        0xE8,0x00,0x00,0x00,0x00,               // call GetProcAddress;
-        0x83,0xC4,0x08,                         // add esp, 0x8;
-        0x59,                                   // pop ecx;
-        0x5F,                                   // pop edi;
-        0x8B,0xE5,                              // mov esp, ebp;
-        0x5D,                                   // pop ebp;
-        0xC3                                    // retn;
+        0x55,                         // push ebp;
+        0x8B, 0xEC,                   // mov ebp, esp;
+        0x83, 0xEC, 0x40,             // sub esp, 0x40;
+        0x57,                         // push edi;
+        0x51,                         // push ecx;
+        0x8B, 0x7D, 0x08,             // mov edi, dword ptr[ebp + 0x8];
+        0x8B, 0x07,                   // mov eax,dword ptr[edi];
+        0x50,                         // push eax;
+        0xE8, 0x00, 0x00, 0x00, 0x00, // call GetModuleHandleW;
+        0x83, 0xC4, 0x04,             // add esp,0x4;
+        0x83, 0xC7, 0x04,             // add edi,0x4;
+        0x8B, 0x0F,                   // mov ecx, dword ptr[edi];
+        0x51,                         // push ecx;
+        0x50,                         // push eax;
+        0xE8, 0x00, 0x00, 0x00, 0x00, // call GetProcAddress;
+        0x83, 0xC4, 0x08,             // add esp, 0x8;
+        0x59,                         // pop ecx;
+        0x5F,                         // pop edi;
+        0x8B, 0xE5,                   // mov esp, ebp;
+        0x5D,                         // pop ebp;
+        0xC3                          // retn;
     };
     DWORD pGetModuleHandleW = (DWORD)GetModuleHandleW;
     DWORD pGetProcAddress = (DWORD)GetProcAddress;
@@ -227,19 +246,20 @@ DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname) {
     LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_EXECUTE);
     if (!pRemoteAddress)
         return 0;
-    *(DWORD*)call1 = pGetModuleHandleW - (DWORD)pRemoteAddress - 14 - 5;
-    *(DWORD*)call2 = pGetProcAddress - (DWORD)pRemoteAddress - 29 - 5;
+    *(DWORD *)call1 = pGetModuleHandleW - (DWORD)pRemoteAddress - 14 - 5;
+    *(DWORD *)call2 = pGetProcAddress - (DWORD)pRemoteAddress - 29 - 5;
     SIZE_T dwWriteSize;
     WriteProcessMemory(hProcess, pRemoteAddress, getremoteprocasmcode, sizeof(getremoteprocasmcode), &dwWriteSize);
-    struct GetProcAddrStruct {
+    struct GetProcAddrStruct
+    {
         DWORD hModuleNameAddr;
         DWORD funcnameAddr;
     } params;
-    WeChatData<wchar_t*> r_modulename(hProcess, modulename, TEXTLENGTH(modulename));
-    WeChatData<char*> r_procname(hProcess, procname, TEXTLENGTHA(procname));
+    WeChatData<wchar_t *> r_modulename(hProcess, modulename, TEXTLENGTH(modulename));
+    WeChatData<char *> r_procname(hProcess, procname, TEXTLENGTHA(procname));
     params.funcnameAddr = (DWORD)r_procname.GetAddr();
     params.hModuleNameAddr = (DWORD)r_modulename.GetAddr();
-    WeChatData<GetProcAddrStruct*> r_params(hProcess, &params, sizeof(params));
+    WeChatData<GetProcAddrStruct *> r_params(hProcess, &params, sizeof(params));
     if (r_modulename.GetAddr() == 0 || r_procname.GetAddr() == 0 || r_params.GetAddr() == 0)
         return 0;
     DWORD ret = CallRemoteFunction(hProcess, pRemoteAddress, r_params.GetAddr());

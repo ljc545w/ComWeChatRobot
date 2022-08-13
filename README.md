@@ -117,6 +117,10 @@ CWeChatRobot.exe /unregserver
 ## 2022.07.28  
 1. 解决部分已知问题，优化多开管理  
 2. 重构COM中的部分实现  
+## 2022.08.13  
+1. 现在消息HOOK内容包含消息ID  
+2. 完成发送消息的http接口，可参考[wxDriverTest.py](/Release/socket/wxDriverTest.py)，其他接口还需要一点时间  
+3. 新增项目配置文件，感谢@amchii 提供的方法  
 
 # 打赏作者
 请给作者一个star，感谢感谢  

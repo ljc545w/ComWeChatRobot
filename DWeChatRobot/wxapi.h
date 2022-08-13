@@ -30,20 +30,36 @@
 #include "GetChatRoomMemberNickname.h"
 
 using namespace std;
-#pragma comment(lib,"version.lib")
-#pragma warning(disable:4731)
+#pragma comment(lib, "version.lib")
+#pragma warning(disable : 4731 26812)
 // 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
 BOOL CreateConsole(void);
 DWORD GetWeChatWinBase();
-void Wchar_tToString(std::string& szDst, wchar_t* wchar);
-string UTF8ToGBK(const std::string& strUTF8);
-void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char* originalRecieveCode);
-void UnHookAnyAddress(DWORD dwHookAddr, char* originalRecieveCode);
+void unicode_to_string(std::string &szDst, wchar_t *wchar);
+string utf8_to_gb2312(const char *strUTF8);
+wstring utf8_to_unicode(const char *buffer);
+void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char *originalRecieveCode);
+void UnHookAnyAddress(DWORD dwHookAddr, char *originalRecieveCode);
 DLLEXPORT void UnHookAll();
 wstring wreplace(wstring source, wchar_t replaced, wstring replaceto);
 void PrintProcAddr();
-wchar_t* GetTimeW(long long timestamp);
+wstring GetTimeW(long long timestamp);
 BOOL ProcessIsWeChat();
-BOOL FindOrCreateDirectory(const wchar_t* pszPath);
+BOOL FindOrCreateDirectory(const wchar_t *pszPath);
+
+template <typename T1, typename T2>
+vector<T1> split(T1 str, T2 letter)
+{
+    vector<T1> arr;
+    size_t pos;
+    while ((pos = str.find_first_of(letter)) != T1::npos)
+    {
+        T1 str1 = str.substr(0, pos);
+        arr.push_back(str1);
+        str = str.substr(pos + 1, str.length() - pos - 1);
+    }
+    arr.push_back(str);
+    return arr;
+}
