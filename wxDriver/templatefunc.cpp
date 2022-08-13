@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "driver.h"
 
 static unsigned char GetProcAsmCode[] = {
     0x55,                         // push ebp;
@@ -26,8 +27,13 @@ static unsigned char GetProcAsmCode[] = {
 
 LPVOID WeChatProcess::GetAsmFunAddr()
 {
+#ifdef _WIN64
+    DWORD pGetModuleHandleW = (DWORD)GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "GetModuleHandleW");
+    DWORD pGetProcAddress = (DWORD)GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "GetProcAddress");
+#else
     DWORD pGetModuleHandleW = (DWORD)GetModuleHandleW;
     DWORD pGetProcAddress = (DWORD)GetProcAddress;
+#endif
     PVOID call1 = (PVOID)&GetProcAsmCode[15];
     PVOID call2 = (PVOID)&GetProcAsmCode[30];
     LPVOID pAsmFuncAddr = VirtualAllocEx(handle, NULL, 1, MEM_COMMIT, PAGE_EXECUTE);
@@ -44,7 +50,7 @@ DWORD WeChatProcess::GetProcAddr(LPSTR functionname)
 {
     if (!AsmProcAddr || !handle)
         return 0;
-    WeChatData<wchar_t *> r_modulename(handle, DLLNAME, TEXTLENGTH(DLLNAME));
+    WeChatData<wchar_t *> r_modulename(handle, (wchar_t *)DLLNAME, TEXTLENGTH(DLLNAME));
     WeChatData<LPSTR> r_functionname(handle, functionname, TEXTLENGTHA(functionname));
     DWORD params[2] = {0};
     params[0] = (DWORD)r_modulename.GetAddr();
@@ -58,9 +64,14 @@ DWORD WeChatProcess::WeChatRobotBase()
 {
     if (!handle)
         return 0;
-    WeChatData<wchar_t *> r_dllname(handle, DLLNAME, TEXTLENGTH(DLLNAME));
+    WeChatData<wchar_t *> r_dllname(handle, (wchar_t *)DLLNAME, TEXTLENGTH(DLLNAME));
     if (r_dllname.GetAddr() == 0)
         return 0;
-    DWORD ret = CallRemoteFunction(handle, GetModuleHandleW, r_dllname.GetAddr());
+#ifdef _WIN64
+    DWORD pGetModuleHandleW = (DWORD)GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "GetModuleHandleW");
+#else
+    DWORD pGetModuleHandleW = (DWORD)GetModuleHandleW;
+#endif
+    DWORD ret = CallRemoteFunction(handle, pGetModuleHandleW, r_dllname.GetAddr());
     return ret;
 }

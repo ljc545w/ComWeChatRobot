@@ -24,10 +24,11 @@ struct SendTextStruct
 * return：void
 */
 #ifndef USE_SOCKET
-void SendTextRemote(LPVOID lpParameter) {
-    SendTextStruct* rp = (SendTextStruct*)lpParameter;
-    wchar_t* wsWxId = (WCHAR*)rp->wxid;
-    wchar_t* wsTextMsg = (WCHAR*)rp->wxmsg;
+void SendTextRemote(LPVOID lpParameter)
+{
+    SendTextStruct *rp = (SendTextStruct *)lpParameter;
+    wchar_t *wsWxId = (WCHAR *)rp->wxid;
+    wchar_t *wsTextMsg = (WCHAR *)rp->wxmsg;
     SendText(wsWxId, wsTextMsg);
 }
 #endif
@@ -38,13 +39,14 @@ void SendTextRemote(LPVOID lpParameter) {
 * wsTextMsg：发送的消息内容
 * return：void
 */
-void __stdcall SendText(wchar_t* wsWxId, wchar_t* wsTextMsg) {
-    WxBaseStruct wxWxid(wsWxId);
-    WxBaseStruct wxTextMsg(wsTextMsg);
-    wchar_t** pWxmsg = &wxTextMsg.buffer;
-    char buffer[0x3B0] = { 0 };
+void __stdcall SendText(wchar_t *wsWxId, wchar_t *wsTextMsg)
+{
+    WxString wxWxid(wsWxId);
+    WxString wxTextMsg(wsTextMsg);
+    wchar_t **pWxmsg = &wxTextMsg.buffer;
+    char buffer[0x3B0] = {0};
 
-    WxString wxNull = { 0 };
+    WxString wxNull = {0};
     DWORD dllBaseAddress = GetWeChatWinBase();
     DWORD callAddress = dllBaseAddress + SendTextCallOffset;
     DWORD DeleteTextCacheCall = dllBaseAddress + DeleteTextCacheCallOffset;

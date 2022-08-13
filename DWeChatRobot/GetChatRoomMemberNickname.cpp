@@ -4,28 +4,31 @@
 #define GetChatRoomMemberNicknameCall2Offset 0x792C89A0 - 0x78E80000
 
 #ifndef USE_SOCKET
-struct ChatRoomMemberNicknameStruct {
-	wchar_t* chatroomid;
-	wchar_t* wxid;
-	wchar_t* nickname;
+struct ChatRoomMemberNicknameStruct
+{
+    wchar_t *chatroomid;
+    wchar_t *wxid;
+    wchar_t *nickname;
 };
 
-BOOL GetChatRoomMemberNicknameRemote(LPVOID lpParameter) {
-	ChatRoomMemberNicknameStruct* crmns = (ChatRoomMemberNicknameStruct*)lpParameter;
-	wstring nickname = GetChatRoomMemberNickname(crmns->chatroomid, crmns->wxid);
-	memcpy(crmns->nickname,nickname.c_str(),nickname.length() * 2);
-	return nickname.length() != 0;
+BOOL GetChatRoomMemberNicknameRemote(LPVOID lpParameter)
+{
+    ChatRoomMemberNicknameStruct *crmns = (ChatRoomMemberNicknameStruct *)lpParameter;
+    wstring nickname = GetChatRoomMemberNickname(crmns->chatroomid, crmns->wxid);
+    memcpy(crmns->nickname, nickname.c_str(), nickname.length() * 2);
+    return nickname.length() != 0;
 }
 #endif // !USE_SOCKET
 
-wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
-	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD GetChatRoomMemberNicknameCall1 = WeChatWinBase + GetChatRoomMemberNicknameCall1Offset;
-	DWORD GetChatRoomMemberNicknameCall2 = WeChatWinBase + GetChatRoomMemberNicknameCall2Offset;
-	WxBaseStruct pchatroomid(chatroomid);
-	WxBaseStruct pwxid(wxid);
-	WxBaseStruct pnickname(NULL);
-	__asm {
+wstring GetChatRoomMemberNickname(wchar_t *chatroomid, wchar_t *wxid)
+{
+    DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD GetChatRoomMemberNicknameCall1 = WeChatWinBase + GetChatRoomMemberNicknameCall1Offset;
+    DWORD GetChatRoomMemberNicknameCall2 = WeChatWinBase + GetChatRoomMemberNicknameCall2Offset;
+    WxString pchatroomid(chatroomid);
+    WxString pwxid(wxid);
+    WxString pnickname(NULL);
+    __asm {
 		pushad;
 		pushfd;
 		call GetChatRoomMemberNicknameCall1;
@@ -39,15 +42,17 @@ wstring GetChatRoomMemberNickname(wchar_t* chatroomid, wchar_t* wxid) {
 		call GetChatRoomMemberNicknameCall2;
 		popfd;
 		popad;
-	}
-	wstring nickname = L"";
-	if (pnickname.buffer) {
-		nickname += wstring(pnickname.buffer);
-	}
-	else {
-		wchar_t* buffer = GetUserNickNameByWxId(wxid);
-		nickname += wstring(buffer);
-		delete[] buffer;
-	}
-	return nickname;
+    }
+    wstring nickname = L"";
+    if (pnickname.buffer)
+    {
+        nickname += wstring(pnickname.buffer);
+    }
+    else
+    {
+        wchar_t *buffer = GetUserNickNameByWxId(wxid);
+        nickname += wstring(buffer);
+        delete[] buffer;
+    }
+    return nickname;
 }

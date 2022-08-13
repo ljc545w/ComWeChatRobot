@@ -18,6 +18,7 @@
 packages
 mongoose.c
 mongoose.h
+json.hpp
 
 # VSCode
 .vscode

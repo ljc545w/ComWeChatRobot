@@ -15,9 +15,10 @@
 * filepath：文件绝对路径的保存地址
 */
 #ifndef USE_SOCKET
-struct FileParamStruct {
-	DWORD wxid;
-	DWORD filepath;
+struct FileParamStruct
+{
+    DWORD wxid;
+    DWORD filepath;
 };
 #endif
 
@@ -30,18 +31,20 @@ struct FileParamStruct {
 * fill：占位用空缓冲区
 * WxFileStruct：默认构造函数
 */
-struct WxFileStruct {
-	int type = 3;
-	wchar_t* buffer;
-	DWORD length;
-	DWORD maxLength;
-	char fill[0x34] = { 0 };
+struct WxFileStruct
+{
+    int type = 3;
+    wchar_t *buffer;
+    DWORD length;
+    DWORD maxLength;
+    char fill[0x34] = {0};
 
-	WxFileStruct(wchar_t* pStr) {
-		buffer = pStr;
-		length = wcslen(pStr);
-		maxLength = wcslen(pStr) * 2;
-	}
+    WxFileStruct(wchar_t *pStr)
+    {
+        buffer = pStr;
+        length = wcslen(pStr);
+        maxLength = wcslen(pStr) * 2;
+    }
 };
 
 /*
@@ -50,9 +53,10 @@ struct WxFileStruct {
 * return：void
 */
 #ifndef USE_SOCKET
-void SendFileRemote(LPVOID lpParamStruct) {
-	FileParamStruct* params = (FileParamStruct*)lpParamStruct;
-	SendFile((WCHAR*)params->wxid, (WCHAR*)params->filepath);
+void SendFileRemote(LPVOID lpParamStruct)
+{
+    FileParamStruct *params = (FileParamStruct *)lpParamStruct;
+    SendFile((WCHAR *)params->wxid, (WCHAR *)params->filepath);
 }
 #endif
 
@@ -62,26 +66,27 @@ void SendFileRemote(LPVOID lpParamStruct) {
 * FilePath：文件绝对路径
 * return：void
 */
-void __stdcall SendFile(wchar_t* receiver, wchar_t* FilePath) {
-	WxBaseStruct pReceiver(receiver);
-	WxBaseStruct pFilePath(FilePath);
-	WxFileStruct esi_(FilePath);
-	WxString nullbuffer = { 0 };
+void __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
+{
+    WxString pReceiver(receiver);
+    WxString pFilePath(FilePath);
+    WxFileStruct esi_(FilePath);
+    WxString nullbuffer = {0};
 
-	DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD WeChatWinBase = GetWeChatWinBase();
 
-	DWORD WxSendFileCall1 = WeChatWinBase + SendFileCall1Offset;
-	DWORD WxSendFileCall2 = WeChatWinBase + SendFileCall2Offset;
-	DWORD WxSendFileCall3 = WeChatWinBase + SendFileCall3Offset;
-	DWORD DeleteSendFileCacheCall = WeChatWinBase + DeleteSendFileCacheCallOffset;
-	DWORD WxSendFileParams = 0;
-	
-	char buffer[0x3B0] = { 0 };
+    DWORD WxSendFileCall1 = WeChatWinBase + SendFileCall1Offset;
+    DWORD WxSendFileCall2 = WeChatWinBase + SendFileCall2Offset;
+    DWORD WxSendFileCall3 = WeChatWinBase + SendFileCall3Offset;
+    DWORD DeleteSendFileCacheCall = WeChatWinBase + DeleteSendFileCacheCallOffset;
+    DWORD WxSendFileParams = 0;
 
-	DWORD edi_ = pReceiver.length;
-	DWORD ptrReceiver = (DWORD)pReceiver.buffer;
+    char buffer[0x3B0] = {0};
 
-	__asm {
+    DWORD edi_ = pReceiver.length;
+    DWORD ptrReceiver = (DWORD)pReceiver.buffer;
+
+    __asm {
 		pushad;
 		pushfd;
 		call WxSendFileCall1;
@@ -117,5 +122,5 @@ void __stdcall SendFile(wchar_t* receiver, wchar_t* FilePath) {
 		call DeleteSendFileCacheCall;
 		popfd;
 		popad;
-	}
+    }
 }

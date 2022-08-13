@@ -1,112 +1,47 @@
 #include "pch.h"
 #include "driver.h"
 
-BOOL InjectDll(DWORD dwId, const wchar_t* szPath)
+BOOL InjectDll(DWORD pid, const wchar_t *szPath)
 {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS,FALSE,dwId);
-    if (!hProcess)
-        return false;
-
-    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    SIZE_T dwWriteSize = 0;
-    if (pRemoteAddress)
-    {
-        WriteProcessMemory(hProcess, pRemoteAddress, szPath, wcslen(szPath) * 2 + 2, &dwWriteSize);
-    }
-    else {
-        CloseHandle(hProcess);
-        return false;
-    }
+    WeChatProcess hp(pid);
+    if (hp.m_init == false)
+        return FALSE;
+    WeChatData<wchar_t *> pRemoteAddress(hp.GetHandle(), (wchar_t *)szPath, TEXTLENGTH(szPath));
 #ifdef _WIN64
-    PVOID pFunc = GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll","LoadLibraryW");
-    if (pFunc == 0) {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
-        return false;
-    }
+    PVOID pFunc = GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "LoadLibraryW");
 #else
     PVOID pFunc = LoadLibraryW;
 #endif
-    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, pRemoteAddress, NULL, NULL);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    else {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
+    if (pFunc == NULL)
         return false;
-    }
-    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-    CloseHandle(hProcess);
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), pFunc, pRemoteAddress.GetAddr());
     return true;
 }
 
-BOOL RemoveDll(DWORD dwId,PCWSTR dllname) {
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwId);
-    if (!hProcess)
-        return false;
-    LPVOID pRemoteAddress = VirtualAllocEx(hProcess, NULL, 1, MEM_COMMIT, PAGE_READWRITE);
-    SIZE_T dwWriteSize = 0;
-    HANDLE hThread = NULL;
-    DWORD dwHandle, dwID;
-    PVOID pFunc = NULL;
-    if (pRemoteAddress)
-        WriteProcessMemory(hProcess, pRemoteAddress, dllname, wcslen(dllname) * 2 + 2, &dwWriteSize);
-    else {
-        return false;
-    }
-#ifdef _WIN64
-    pFunc = GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "GetModuleHandleW");
-#else
-    pFunc = GetModuleHandleW;
-#endif
-    hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, pRemoteAddress, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        GetExitCodeThread(hThread, &dwHandle);
-        CloseHandle(hThread);
-    }
-    else {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
-        return false;
-    }
-    if (!dwHandle) {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
+BOOL RemoveDll(DWORD pid)
+{
+    WeChatProcess hp(pid);
+    if (hp.m_init == false)
+        return FALSE;
+    DWORD dwHandle = hp.WeChatRobotBase();
+    if (dwHandle == 0)
         return true;
-    }
+    PVOID pFunc = NULL;
 #ifdef _WIN64
     pFunc = GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "FreeConsole");
 #else
     pFunc = FreeConsole;
 #endif
-    hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, NULL, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    else {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
+    if (pFunc == NULL)
         return false;
-    }
+    CallRemoteFunction(hp.GetHandle(), pFunc, NULL);
 #ifdef _WIN64
     pFunc = GetSystem32ProcAddr(L"\\KnownDlls32\\kernel32.dll", "FreeLibrary");
 #else
     pFunc = FreeLibrary;
 #endif
-    hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, (LPVOID)(unsigned long long)dwHandle, 0, &dwID);
-    if (hThread) {
-        WaitForSingleObject(hThread, INFINITE);
-        CloseHandle(hThread);
-    }
-    else {
-        VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
-        CloseHandle(hProcess);
+    if (pFunc == NULL)
         return false;
-    }
-    VirtualFreeEx(hProcess, pRemoteAddress, 0, MEM_RELEASE);
+    CallRemoteFunction(hp.GetHandle(), pFunc, dwHandle);
     return true;
 }

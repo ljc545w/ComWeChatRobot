@@ -4,16 +4,17 @@
 #define DeleteUserCall2Offset 0x100BD5C0 - 0x10000000
 #define DeleteUserCall3Offset 0x104685A0 - 0x10000000
 
-BOOL __stdcall DeleteUser(wchar_t* wxid) {
-	DWORD WeChatWinBase = GetWeChatWinBase();
-	DWORD DeleteUserCall1 = WeChatWinBase + DeleteUserCall1Offset;
-	DWORD DeleteUserCall2 = WeChatWinBase + DeleteUserCall2Offset;
-	DWORD DeleteUserCall3 = WeChatWinBase + DeleteUserCall3Offset;
+BOOL __stdcall DeleteUser(wchar_t *wxid)
+{
+    DWORD WeChatWinBase = GetWeChatWinBase();
+    DWORD DeleteUserCall1 = WeChatWinBase + DeleteUserCall1Offset;
+    DWORD DeleteUserCall2 = WeChatWinBase + DeleteUserCall2Offset;
+    DWORD DeleteUserCall3 = WeChatWinBase + DeleteUserCall3Offset;
 
-	WxBaseStruct pwxid(wxid);
-	char buffer[0x70] = { 0 };
-	BOOL isSuccess = 0x0;
-	__asm {
+    WxString pwxid(wxid);
+    char buffer[0x70] = {0};
+    BOOL isSuccess = 0x0;
+    __asm {
 		pushad;
 		pushfd;
 		lea ecx, buffer;
@@ -27,13 +28,14 @@ BOOL __stdcall DeleteUser(wchar_t* wxid) {
 		mov isSuccess, eax;
 		popfd;
 		popad;
-	}
-	return isSuccess;
+    }
+    return isSuccess;
 }
 
 #ifndef USE_SOCKET
-BOOL DeleteUserRemote(LPVOID lpParameter) {
-	BOOL isSuccess = DeleteUser((wchar_t*)lpParameter);
-	return isSuccess;
+BOOL DeleteUserRemote(LPVOID lpParameter)
+{
+    BOOL isSuccess = DeleteUser((wchar_t *)lpParameter);
+    return isSuccess;
 }
 #endif

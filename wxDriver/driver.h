@@ -1,25 +1,37 @@
 #pragma once
-#include<windows.h>
-#include<iostream>
+#include <windows.h>
+#include <iostream>
+#include <tchar.h>
+#include <TlHelp32.h>
 #include "driverdata.h"
+#include "templatefunc.h"
 using namespace std;
-#pragma warning(disable:4311;disable:4302;disable:4312)
+#pragma warning(disable : 4311; disable : 4302; disable : 4312)
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
-#ifdef _WIN64
-	PVOID GetSystem32ProcAddr(PCWSTR ObjectName, PCSTR procName);
+#define TEXTLENGTHW(buffer) buffer ? (wcslen(buffer) * 2 + 2) : 0
+#define TEXTLENGTHA(buffer) buffer ? (strlen(buffer) + 1) : 0
+
+#ifdef _UNICODE
+#define tstring std::wstring
+#define TEXTLENGTH TEXTLENGTHW
+#else
+#define tstring std::string
+#define TEXTLENGTH TEXTLENGTHW
 #endif
 
-BOOL CloseProcessHandle(DWORD pid, wchar_t* handlename);
-BOOL InjectDll(DWORD dwId, const wchar_t* szPath);
-BOOL RemoveDll(DWORD dwId, PCWSTR dllname);
+#ifdef _WIN64
+PVOID GetSystem32ProcAddr(PCWSTR ObjectName, PCSTR procName);
+#endif
 
+BOOL InjectDll(DWORD pid, const wchar_t *szPath);
+BOOL RemoveDll(DWORD pid);
 BOOL CreateConsole();
 BOOL isFileExists_stat(wstring name);
-DWORD GetWeChatPid();
+BOOL CloseProcessHandle(DWORD pid, wchar_t *handlename);
+tstring GetWeChatVersion();
+tstring GetWeChatInstallDir();
 
-extern HANDLE GlobalProcess;
-extern PVOID pRemoteGetProc;
-
-DLLEXPORT BOOL StartRobotService();
-DLLEXPORT BOOL StopRobotService();
+DLLEXPORT BOOL start_listen(DWORD pid, int port);
+DLLEXPORT BOOL stop_listen(DWORD pid);
+DLLEXPORT DWORD new_wechat();
