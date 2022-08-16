@@ -43,12 +43,13 @@ using namespace std;
 #define TEXTLENGTH TEXTLENGTHW
 #endif
 
-BOOL isFileExists_stat(string& name);
+BOOL isFileExists_stat(string &name);
 DWORD GetWeChatRobotBase(DWORD pid);
 DWORD GetWeChatWinBase(DWORD pid);
 DWORD GetWeChatPid();
 DWORD StartRobotService(DWORD pid);
 DWORD StopRobotService(DWORD pid);
+string unicode_to_utf8(wchar_t *wstr);
 
 BOOL CreateConsole();
 wstring GetComWorkPath();
@@ -57,5 +58,5 @@ tstring GetWeChatInstallDir();
 DWORD GetWeChatVerInt();
 tstring GetWeChatVerStr();
 DWORD StartWeChat();
-BOOL CloseProcessHandle(DWORD pid, wchar_t* handlename);
+BOOL CloseProcessHandle(DWORD pid, wchar_t *handlename);
 DWORD GetRemoteProcAddr(DWORD pid, LPWSTR modulename, LPSTR procname);
