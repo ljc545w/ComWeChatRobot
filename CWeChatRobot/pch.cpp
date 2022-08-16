@@ -11,6 +11,18 @@ map<DWORD, short> ServiceCount;
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
 
+string unicode_to_utf8(wchar_t *wstr)
+{
+    int c_size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, false);
+    char *buffer = new char[c_size + 1];
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buffer, c_size, NULL, false);
+    buffer[c_size] = '\0';
+    string str(buffer);
+    delete[] buffer;
+    buffer = NULL;
+    return str;
+}
+
 BOOL isFileExists_stat(string &name)
 {
     struct stat buffer;
