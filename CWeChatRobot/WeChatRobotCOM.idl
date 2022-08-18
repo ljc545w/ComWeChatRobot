@@ -68,7 +68,7 @@ interface IWeChatRobot : IDispatch
 ]
 interface IRobotEvent : IDispatch
 {
-	[id(1), helpstring("用于微信主动推送消息")] HRESULT CPostMessage([in] DWORD pid, [in] int msgtype, [in] VARIANT* msg, [out, retval] int* __result);
+	[id(1), helpstring("用于微信主动推送消息")] HRESULT CPostMessage([in] DWORD pid, [in] int msgtype,[in] unsigned long long msgid, [in] VARIANT* msg, [out, retval] int* __result);
 	[id(2), helpstring("用于客户端通过微信PID注册消息接收服务")] HRESULT CRegisterWxPidWithCookie([in] DWORD pid, [in] DWORD cookie, [out, retval] int* __result);
 };
 [

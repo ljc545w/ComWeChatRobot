@@ -238,6 +238,9 @@
     <ClInclude Include="templatefunc.h">
       <Filter>template</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">

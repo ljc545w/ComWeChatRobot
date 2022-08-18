@@ -245,6 +245,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="SearchContact.h" />
     <ClInclude Include="templatefunc.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="VerifyFriendApply.h" />
     <ClInclude Include="WeChatRobot.h" />
     <ClInclude Include="WeChatRobotCOM_i.h" />

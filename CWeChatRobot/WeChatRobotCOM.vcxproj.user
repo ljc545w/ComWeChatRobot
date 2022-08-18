@@ -5,4 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>D:\VS2019C++\MyWeChatRobot\Debug\</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup>
+    <ShowAllFiles>false</ShowAllFiles>
+  </PropertyGroup>
 </Project>
