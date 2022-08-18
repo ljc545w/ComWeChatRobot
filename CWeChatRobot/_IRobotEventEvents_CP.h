@@ -21,7 +21,7 @@ public:
         {
             return hr;
         }
-        T *pThis = static_cast<T *>(this);
+        T *pThis = dynamic_cast<T *>(this);
         if (WxPidToEventCookie.count(pid) == 0)
         {
             return hr;

@@ -14,11 +14,15 @@ repos:
           - -i
           - --style=file
           - --fallback-style=none
+        files: |
+          (?x)^(
+            .*?\.cpp|
+            .*?\.c|
+            .*?\.h
+          )
 
-
-files: |
+exclude: |
   (?x)^(
-    .*?\.cpp|
-    .*?\.c|
-    .*?\.h
+    .*?_i\.h|
+    .*?_p\.c
   )

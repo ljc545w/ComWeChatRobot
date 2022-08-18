@@ -1,6 +1,5 @@
 #pragma once
 #include <set>
-#include <utility>
 #include <chrono>
 
 #define CHRONO std::chrono
@@ -21,6 +20,7 @@ public:
     ExpireSet(ull interval)
     {
         this->interval = interval;
+        this->expires_at = 0;
     }
     bool CheckIfDuplicatedAndAdd(ull id)
     {
@@ -35,18 +35,19 @@ public:
 
 private:
     std::set<ull> ids;
-    std::pair<ull, ull> p;
+    ull expires_at;
 
     void Add(ull id)
     {
         // ∫¡√Î
-        auto now = CHRONO::time_point_cast<CHRONO::milliseconds>(CHRONO::system_clock::now());
-        if (p.second < now.time_since_epoch().count())
+        auto now_ts = CHRONO::time_point_cast<CHRONO::milliseconds>(CHRONO::system_clock::now()).time_since_epoch().count();
+#pragma warning(disable : 4018)
+        if (expires_at < now_ts)
         {
             ids.clear();
-            p.first = now.time_since_epoch().count();
-            p.second = p.first + interval;
+            expires_at = now_ts + interval;
         }
+#pragma warning(default : 4018)
         ids.insert(id);
     }
 };
