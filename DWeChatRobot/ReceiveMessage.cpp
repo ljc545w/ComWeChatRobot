@@ -200,7 +200,7 @@ static void dealMessage(DWORD messageAddr)
     VARIANT vsaValue;
     vsaValue.vt = VT_ARRAY | VT_VARIANT;
     V_ARRAY(&vsaValue) = psaValue;
-    PostComMessage(message->pid, WX_MESSAGE, &vsaValue);
+    PostComMessage(message->pid, WX_MESSAGE, message->msgid, &vsaValue);
 #endif
     HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
     if (hThread)
@@ -210,10 +210,10 @@ static void dealMessage(DWORD messageAddr)
 }
 
 /*
-* 消息处理函数，根据消息缓冲区组装结构并存入容器
-* messageAddr：保存消息的缓冲区地址
-* return：void
-*/
+ * 消息处理函数，根据消息缓冲区组装结构并存入容器
+ * messageAddr：保存消息的缓冲区地址
+ * return：void
+ */
 VOID ReceiveMessage(DWORD messagesAddr)
 {
     // 此处用于区别是发送的还是接收的消息
@@ -225,8 +225,8 @@ VOID ReceiveMessage(DWORD messagesAddr)
 }
 
 /*
-* HOOK的具体实现，接收到消息后调用处理函数
-*/
+ * HOOK的具体实现，接收到消息后调用处理函数
+ */
 _declspec(naked) void dealReceiveMessage()
 {
     __asm {
@@ -244,8 +244,8 @@ _declspec(naked) void dealReceiveMessage()
 }
 
 /*
-* HOOK的具体实现，发送消息后调用处理函数
-*/
+ * HOOK的具体实现，发送消息后调用处理函数
+ */
 _declspec(naked) void dealSendMessage()
 {
     __asm {
@@ -262,9 +262,9 @@ _declspec(naked) void dealSendMessage()
 }
 
 /*
-* 开始接收消息HOOK
-* return：void
-*/
+ * 开始接收消息HOOK
+ * return：void
+ */
 VOID HookReceiveMessage(int port)
 {
     SRVPORT = port;
@@ -283,9 +283,9 @@ VOID HookReceiveMessage(int port)
 }
 
 /*
-* 停止接收消息HOOK
-* return：void
-*/
+ * 停止接收消息HOOK
+ * return：void
+ */
 VOID UnHookReceiveMessage()
 {
     SRVPORT = 0;

@@ -845,6 +845,7 @@ EXTERN_C const IID IID_IRobotEvent;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CPostMessage( 
             /* [in] */ DWORD pid,
             /* [in] */ int msgtype,
+            /* [in] */ unsigned long long msgid,
             /* [in] */ VARIANT *msg,
             /* [retval][out] */ int *__result) = 0;
         
@@ -915,6 +916,7 @@ EXTERN_C const IID IID_IRobotEvent;
             IRobotEvent * This,
             /* [in] */ DWORD pid,
             /* [in] */ int msgtype,
+            /* [in] */ unsigned long long msgid,
             /* [in] */ VARIANT *msg,
             /* [retval][out] */ int *__result);
         
@@ -960,8 +962,8 @@ EXTERN_C const IID IID_IRobotEvent;
     ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
 
 
-#define IRobotEvent_CPostMessage(This,pid,msgtype,msg,__result)	\
-    ( (This)->lpVtbl -> CPostMessage(This,pid,msgtype,msg,__result) ) 
+#define IRobotEvent_CPostMessage(This,pid,msgtype,msgid,msg,__result)	\
+    ( (This)->lpVtbl -> CPostMessage(This,pid,msgtype,msgid,msg,__result) ) 
 
 #define IRobotEvent_CRegisterWxPidWithCookie(This,pid,cookie,__result)	\
     ( (This)->lpVtbl -> CRegisterWxPidWithCookie(This,pid,cookie,__result) ) 
