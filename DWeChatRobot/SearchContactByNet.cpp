@@ -260,4 +260,22 @@ DWORD SearchContactByNetRemote(LPVOID keyword)
     SearchContactByNet((wchar_t *)keyword);
     return (DWORD)&userinfo;
 }
+#else
+map<wstring, wstring> __stdcall SearchContactByNet(wstring keyword)
+{
+    SearchContactByNet((wchar_t *)keyword.c_str());
+    map<wstring, wstring> m_info;
+    m_info[L"keyword"] = userinfo.keyword;
+    m_info[L"v3"] = userinfo.v3;
+    m_info[L"NickName"] = userinfo.NickName;
+    m_info[L"Signature"] = userinfo.Signature;
+    m_info[L"Nation"] = userinfo.Nation;
+    m_info[L"Province"] = userinfo.Province;
+    m_info[L"City"] = userinfo.City;
+    m_info[L"BigAvatar"] = userinfo.BigAvatar;
+    m_info[L"SmallAvatar"] = userinfo.SmallAvatar;
+    m_info[L"Sex"] = userinfo.sex == 1 ? L"1" : L"2";
+    DeleteUserInfoCache();
+    return m_info;
+}
 #endif

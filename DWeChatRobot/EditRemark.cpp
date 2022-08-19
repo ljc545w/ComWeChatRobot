@@ -15,7 +15,7 @@ BOOL EditRemarkRemote(LPVOID lpParameter)
 }
 #endif // !USE_SOCKET
 
-BOOL EditRemark(wchar_t *wxid, wchar_t *remark)
+BOOL __stdcall EditRemark(wchar_t *wxid, wchar_t *remark)
 {
     DWORD EditRemarkCall = GetWeChatWinBase() + EditRemarkCallOffset;
     WxString pwxid(wxid);

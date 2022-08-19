@@ -1,8 +1,10 @@
 #pragma once
-#include<windows.h>
+#include <windows.h>
+#include <vector>
+using namespace std;
 
-void* GetDbHandles();
+vector<void *> GetDbHandles();
 #ifndef USE_SOCKET
 extern "C" __declspec(dllexport) DWORD GetDbHandlesRemote();
 #endif
-DWORD GetDbHandleByDbName(wchar_t* dbname);
+DWORD GetDbHandleByDbName(wchar_t *dbname);

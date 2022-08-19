@@ -5,6 +5,7 @@
 #include "mongoose/mongoose.c"
 // json:        https://github.com/nlohmann/json
 #include "json/json.hpp"
+#include "http_overload.hpp"
 using namespace nlohmann;
 
 static struct mg_mgr mgr;
@@ -29,7 +30,6 @@ json methods = {{"GET", HTTP_METHOD_GET}, {"POST", HTTP_METHOD_POST}};
 #define STOI_S(str) (is_digit_number(str) ? stoi(str) : 0)
 #define POST_PARAM(jData, key) utf8_to_unicode(string(jData[key]).c_str())
 #define GET_PARAM(hm, name) getMgVarW(hm, name)
-#define W2LPW(wstr) (LPWSTR) wstr.c_str()
 
 bool is_digit_number(string str)
 {
@@ -136,19 +136,16 @@ void request_event(mg_http_message *hm)
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
         wstring msg = get_http_param_str(hm, jData, "msg", method);
-        SendText(W2LPW(wxid), W2LPW(msg));
+        SendText(wxid, msg);
         break;
     }
     case WECHAT_MSG_SEND_AT:
     {
         wstring chatroom = get_http_param_str(hm, jData, "chatroom_id", method);
         vector<wstring> wxids = get_http_param_array(hm, jData, "wxids", method);
-        vector<DWORD> wxidptrs;
-        for (auto wxid : wxids)
-            wxidptrs.push_back((DWORD)wxid.c_str());
         wstring msg = get_http_param_str(hm, jData, "msg", method);
         int auto_nickname = get_http_param_int(hm, jData, "auto_nickname", method);
-        SendAtText(W2LPW(chatroom), wxidptrs.data(), W2LPW(msg), wxids.size(), auto_nickname);
+        SendAtText(chatroom, wxids, msg, auto_nickname);
         break;
     }
     case WECHAT_MSG_SEND_CARD:
@@ -156,21 +153,21 @@ void request_event(mg_http_message *hm)
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring shared_wxid = get_http_param_str(hm, jData, "shared_wxid", method);
         wstring nickname = get_http_param_str(hm, jData, "nickname", method);
-        SendCard(W2LPW(receiver), W2LPW(shared_wxid), W2LPW(nickname));
+        SendCard(receiver, shared_wxid, nickname);
         break;
     }
     case WECHAT_MSG_SEND_IMAGE:
     {
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring img_path = get_http_param_str(hm, jData, "img_path", method);
-        SendImage(W2LPW(receiver), W2LPW(img_path));
+        SendImage(receiver, img_path);
         break;
     }
     case WECHAT_MSG_SEND_FILE:
     {
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring file_path = get_http_param_str(hm, jData, "file_path", method);
-        SendFile(W2LPW(receiver), W2LPW(file_path));
+        SendFile(receiver, file_path);
         break;
     }
     case WECHAT_MSG_SEND_ARTICLE:
@@ -180,14 +177,14 @@ void request_event(mg_http_message *hm)
         wstring abstract = get_http_param_str(hm, jData, "abstract", method);
         wstring url = get_http_param_str(hm, jData, "url", method);
         wstring img_path = get_http_param_str(hm, jData, "img_path", method);
-        SendArticle(W2LPW(wxid), W2LPW(title), W2LPW(abstract), W2LPW(url), W2LPW(img_path));
+        SendArticle(wxid, title, abstract, url, img_path);
         break;
     }
     case WECHAT_MSG_SEND_APP:
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
         wstring appid = get_http_param_str(hm, jData, "appid", method);
-        SendAppMsg(W2LPW(wxid), W2LPW(appid));
+        SendAppMsg(wxid, appid);
         break;
     }
     default:

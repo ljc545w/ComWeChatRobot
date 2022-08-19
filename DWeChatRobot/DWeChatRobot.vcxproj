@@ -313,6 +313,7 @@
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
     <ClInclude Include="LogMsgInfo.h" />
+    <ClInclude Include="http_overload.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="SelfInfo.h" />

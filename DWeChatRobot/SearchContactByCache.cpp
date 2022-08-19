@@ -174,8 +174,9 @@ wstring __stdcall GetUserInfoByWxId(wchar_t *wxid)
 * wxid：联系人wxid
 * return：wchar_t*，获取到的wxid
 */
-wchar_t *__stdcall GetUserNickNameByWxId(wchar_t *wxid)
+wstring __stdcall GetUserNickNameByWxId(wchar_t *wxid)
 {
+    wstring wstr;
     DWORD WeChatWinBase = GetWeChatWinBase();
     DWORD WxGetUserInfoCall1 = WeChatWinBase + GetUserInfoCall1Offset;
     DWORD WxGetUserInfoCall2 = WeChatWinBase + GetUserInfoCall2Offset;
@@ -204,13 +205,15 @@ wchar_t *__stdcall GetUserNickNameByWxId(wchar_t *wxid)
 		mov address, ebx;
 		popad;
     }
-    wchar_t *NickName = NULL;
     if (isSuccess)
     {
         DWORD length = *(DWORD *)(address + 0x6C + 0x4);
-        NickName = new wchar_t[length + 1];
-        ZeroMemory(NickName, (length + 1) * 2);
-        memcpy(NickName, (wchar_t *)(*(DWORD *)(address + 0x6C)), length * 2);
+        wchar_t *buffer = new wchar_t[length + 1];
+        ZeroMemory(buffer, (length + 1) * 2);
+        memcpy(buffer, (wchar_t *)(*(DWORD *)(address + 0x6C)), length * 2);
+        wstr = wstring(buffer);
+        delete[] buffer;
+        buffer = NULL;
     }
     char deletebuffer[0x410] = {0};
     __asm {
@@ -223,5 +226,5 @@ wchar_t *__stdcall GetUserNickNameByWxId(wchar_t *wxid)
 		call DeleteUserInfoCacheCall2;
 		popad;
     }
-    return NickName;
+    return wstr;
 }

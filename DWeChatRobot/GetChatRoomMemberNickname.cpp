@@ -50,9 +50,7 @@ wstring GetChatRoomMemberNickname(wchar_t *chatroomid, wchar_t *wxid)
     }
     else
     {
-        wchar_t *buffer = GetUserNickNameByWxId(wxid);
-        nickname += wstring(buffer);
-        delete[] buffer;
+        nickname += GetUserNickNameByWxId(wxid);
     }
     return nickname;
 }
