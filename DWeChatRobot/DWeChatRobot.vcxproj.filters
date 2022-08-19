@@ -222,6 +222,9 @@
     <ClInclude Include="GetChatRoomMemberNickname.h">
       <Filter>群相关\获取群成员昵称</Filter>
     </ClInclude>
+    <ClInclude Include="http_overload.hpp">
+      <Filter>wxsocket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

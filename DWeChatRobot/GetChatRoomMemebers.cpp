@@ -53,6 +53,18 @@ DWORD GetChatRoomMembersRemote(LPVOID lparameter)
     }
     return 0;
 }
+#else
+wstring __stdcall GetChatRoomMembers(wstring chatroomid)
+{
+    GetChatRoomMembers((wchar_t *)chatroomid.c_str());
+    if (chatroominfo.length == 0)
+        return L"";
+    wstring members(chatroominfo.members);
+    delete[] chatroominfo.members;
+    chatroominfo.members = NULL;
+    chatroominfo.length = 0;
+    return members;
+}
 #endif
 
 /*

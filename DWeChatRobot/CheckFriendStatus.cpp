@@ -116,6 +116,12 @@ DWORD CheckFriendStatusRemote(LPVOID lparameter)
     CheckFriendStatus((wchar_t *)lparameter);
     return LocalFriendStatus;
 }
+#else
+DWORD __stdcall CheckFriendStatus(wstring wxid)
+{
+    CheckFriendStatus((LPWSTR)wxid.c_str());
+    return LocalFriendStatus;
+}
 #endif
 
 /*

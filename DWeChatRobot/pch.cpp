@@ -54,15 +54,16 @@ BOOL FindOrCreateDirectory(const wchar_t *pszPath)
 /*
 * 将宽字节字符串转换成`std::string`
 */
-void unicode_to_string(std::string &szDst, wchar_t *wchar)
+string unicode_to_gb2312(wchar_t *wchar)
 {
     wchar_t *wText = wchar;
-    DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, NULL, 0, NULL, FALSE);
-    char *psText;
-    psText = new char[dwNum];
-    WideCharToMultiByte(CP_OEMCP, NULL, wText, -1, psText, dwNum, NULL, FALSE);
-    szDst = psText;
+    DWORD dwNum = WideCharToMultiByte(CP_ACP, NULL, wText, -1, NULL, 0, NULL, FALSE);
+    char *psText = new char[dwNum + 1];
+    WideCharToMultiByte(CP_ACP, NULL, wText, -1, psText, dwNum, NULL, FALSE);
+    psText[dwNum] = '\0';
+    string szDst(psText);
     delete[] psText;
+    return szDst;
 }
 
 /*
@@ -79,7 +80,6 @@ string utf8_to_gb2312(const char *strUTF8)
     char *szGBK = new char[len + 1];
     memset(szGBK, 0, len + 1);
     WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, szGBK, len, NULL, NULL);
-    //strUTF8 = szGBK;
     string strTemp(szGBK);
     delete[] szGBK;
     delete[] wszGBK;
@@ -99,6 +99,18 @@ wstring utf8_to_unicode(const char *buffer)
     delete[] temp;
     temp = NULL;
     return ret;
+}
+
+string unicode_to_utf8(wchar_t *wstr)
+{
+    int c_size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, FALSE);
+    char *buffer = new char[c_size + 1];
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buffer, c_size, NULL, FALSE);
+    buffer[c_size] = '\0';
+    string str(buffer);
+    delete[] buffer;
+    buffer = NULL;
+    return str;
 }
 
 /*
@@ -205,6 +217,7 @@ void PrintProcAddr()
 {
     CreateConsole();
     printf("WeChatVersion %s\n", GetWeChatVerStr().c_str());
+#ifndef USE_SOCKET
     printf("SendImage 0x%08X\n", (DWORD)SendImage);
     printf("SendText 0x%08X\n", (DWORD)SendText);
     printf("SendFile 0x%08X\n", (DWORD)SendFile);
@@ -228,6 +241,7 @@ void PrintProcAddr()
     printf("SetChatRoomAnnouncement 0x%08X\n", (DWORD)SetChatRoomAnnouncement);
     printf("SetChatRoomSelfNickname 0x%08X\n", (DWORD)SetChatRoomSelfNickname);
     printf("SetChatRoomName 0x%08X\n", (DWORD)SetChatRoomName);
+#endif
 }
 
 BOOL ProcessIsWeChat()

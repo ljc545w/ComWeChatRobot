@@ -37,8 +37,9 @@ using namespace std;
 
 BOOL CreateConsole(void);
 DWORD GetWeChatWinBase();
-void unicode_to_string(std::string &szDst, wchar_t *wchar);
+string unicode_to_gb2312(wchar_t *wchar);
 string utf8_to_gb2312(const char *strUTF8);
+string unicode_to_utf8(wchar_t *wstr);
 wstring utf8_to_unicode(const char *buffer);
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char *originalRecieveCode);
 void UnHookAnyAddress(DWORD dwHookAddr, char *originalRecieveCode);

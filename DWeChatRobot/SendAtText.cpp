@@ -75,14 +75,14 @@ void __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsText
     int querySuccess = 0;
     for (int i = 0; i < length; i++)
     {
-        wchar_t *nickname = NULL;
+        wstring nickname;
         if (!lstrcmpW((wchar_t *)wsWxId[i], (wchar_t *)L"notify@all"))
         {
-            nickname = (wchar_t *)L"所有人";
+            nickname = L"所有人";
         }
         else
             nickname = GetUserNickNameByWxId((wchar_t *)wsWxId[i]);
-        if (!nickname)
+        if (nickname.length() == 0)
             continue;
         WxString temp = {0};
         temp.buffer = (wchar_t *)wsWxId[i];
