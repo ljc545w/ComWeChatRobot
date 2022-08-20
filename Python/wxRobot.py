@@ -62,7 +62,7 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
         _fields_ = [("pid", ctypes.wintypes.DWORD),
                     ("type", ctypes.wintypes.DWORD),
                     ("isSendMsg", ctypes.wintypes.DWORD),
-                    ("msgid",ctypes.c_ulonglong),
+                    ("msgid", ctypes.c_ulonglong),
                     ("sender", ctypes.c_wchar * 80),
                     ("wxid", ctypes.c_wchar * 80),
                     ("message", ctypes.c_wchar * 0x1000B),
@@ -102,10 +102,10 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
     @staticmethod
     def msg_callback(data):
         # 主线程中已经注入，此处禁止调用StartService和StopService
-        msg = {'pid': data.pid, 'time': data.time, 'type': data.type, 
+        msg = {'pid': data.pid, 'time': data.time, 'type': data.type,
                'isSendMsg': data.isSendMsg, 'msgid': data.msgid,
                'wxid': data.wxid,
-               'sendto' if data.isSendMsg else 'from': data.sender, 
+               'sendto' if data.isSendMsg else 'from': data.sender,
                'message': data.message}
         robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
         event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
@@ -1047,7 +1047,7 @@ def get_wechat_pid_list() -> list:
             if psutil.Process(pid).name() == 'WeChat.exe':
                 pid_list.append(pid)
         except psutil.NoSuchProcess:
-            pass    
+            pass
     return pid_list
 
 
@@ -1108,10 +1108,10 @@ def start_socket_server(port: int = 10808,
     ----------
     port : int
         socket的监听端口号.
-        
+
     request_handler : ReceiveMsgBaseServer
         用于处理消息的类，需要继承自socketserver.BaseRequestHandler或ReceiveMsgBaseServer
-        
+
     main_thread : bool
         是否在主线程中启动server
 

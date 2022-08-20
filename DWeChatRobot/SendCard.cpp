@@ -6,11 +6,11 @@
 #define DeleteCardCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
-* 外部调用时提供的参数结构
-* receiver：名片消息接收人wxid保存地址
-* sharedwxid：被推荐人的wxid保存地址
-* nickname：名片显示的昵称保存地址
-*/
+ * 外部调用时提供的参数结构
+ * receiver：名片消息接收人wxid保存地址
+ * sharedwxid：被推荐人的wxid保存地址
+ * nickname：名片显示的昵称保存地址
+ */
 #ifndef USE_SOCKET
 struct SendCardStruct
 {
@@ -21,10 +21,10 @@ struct SendCardStruct
 #endif
 
 /*
-* 供外部调用的发送名片接口
-* lparameter：SendCardStruct类型结构体指针
-* return：void
-*/
+ * 供外部调用的发送名片接口
+ * lparameter：SendCardStruct类型结构体指针
+ * return：void
+ */
 #ifndef USE_SOCKET
 VOID SendCardRemote(LPVOID lparameter)
 {
@@ -37,12 +37,12 @@ VOID SendCardRemote(LPVOID lparameter)
 #endif
 
 /*
-* 发送名片消息的具体实现
-* receiver：消息接收人wxid
-* sharedwxid：被推荐人wxid
-* nickname：名片显示的昵称
-* return：BOOL，发送成功返回`0`，发送失败返回`1`
-*/
+ * 发送名片消息的具体实现
+ * receiver：消息接收人wxid
+ * sharedwxid：被推荐人wxid
+ * nickname：名片显示的昵称
+ * return：BOOL，发送成功返回`1`，发送失败返回`0`
+ */
 BOOL __stdcall SendCard(wchar_t *receiver, wchar_t *sharedwxid, wchar_t *nickname)
 {
     DWORD WeChatWinBase = GetWeChatWinBase();
@@ -69,10 +69,10 @@ BOOL __stdcall SendCard(wchar_t *receiver, wchar_t *sharedwxid, wchar_t *nicknam
 		add esp, 0xC;
 		lea ecx, buffer;
 		call DeleteCardCacheCall;
-		mov isSuccess, eax;
+        mov isSuccess, eax;
 		popad;
     }
     delete[] xml;
     xml = NULL;
-    return isSuccess;
+    return isSuccess == 0;
 }

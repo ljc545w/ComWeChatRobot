@@ -11,10 +11,10 @@
 vector<DbInfoStruct> dbs;
 
 /*
-* 根据数据库名从`dbs`中检索数据库句柄
-* dbname：数据库名
-* return：DWORD，如果检索成功，返回数据库句柄，否则返回`0`
-*/
+ * 根据数据库名从`dbs`中检索数据库句柄
+ * dbname：数据库名
+ * return：DWORD，如果检索成功，返回数据库句柄，否则返回`0`
+ */
 DWORD GetDbHandleByDbName(wchar_t *dbname)
 {
     if (dbs.size() == 0)
@@ -28,9 +28,9 @@ DWORD GetDbHandleByDbName(wchar_t *dbname)
 }
 
 /*
-* 供外部调用的获取数据库信息接口
-* return：DWORD，`dbs`首个成员地址
-*/
+ * 供外部调用的获取数据库信息接口
+ * return：DWORD，`dbs`首个成员地址
+ */
 #ifndef USE_SOCKET
 DWORD GetDbHandlesRemote()
 {
@@ -41,9 +41,9 @@ DWORD GetDbHandlesRemote()
 #endif
 
 /*
-* 获取数据库信息的具体实现
-* return：void
-*/
+ * 获取数据库信息的具体实现
+ * return：void
+ */
 vector<void *> GetDbHandles()
 {
     dbs.clear();
@@ -134,7 +134,7 @@ vector<void *> GetDbHandles()
     }
 #endif
     vector<void *> ret_array;
-    for (auto it : dbs)
-        ret_array.push_back(&it);
+    for (unsigned int i = 0; i < dbs.size() - 1; i++)
+        ret_array.push_back(&dbs[i]);
     return ret_array;
 }
