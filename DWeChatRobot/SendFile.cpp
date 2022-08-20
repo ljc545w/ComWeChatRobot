@@ -10,10 +10,10 @@
 #define DeleteSendFileCacheCallOffset (0x78757780 - 0x786A0000)
 
 /*
-* 外部调用时传递的参数结构
-* wxid：wxid的保存地址
-* filepath：文件绝对路径的保存地址
-*/
+ * 外部调用时传递的参数结构
+ * wxid：wxid的保存地址
+ * filepath：文件绝对路径的保存地址
+ */
 #ifndef USE_SOCKET
 struct FileParamStruct
 {
@@ -23,14 +23,14 @@ struct FileParamStruct
 #endif
 
 /*
-* 内存中使用的参数结构
-* type：消息类型，文件消息为3
-* buffer：文件绝对路径
-* length：绝对路径字符数
-* maxLength：绝对路径最大字节数
-* fill：占位用空缓冲区
-* WxFileStruct：默认构造函数
-*/
+ * 内存中使用的参数结构
+ * type：消息类型，文件消息为3
+ * buffer：文件绝对路径
+ * length：绝对路径字符数
+ * maxLength：绝对路径最大字节数
+ * fill：占位用空缓冲区
+ * WxFileStruct：默认构造函数
+ */
 struct WxFileStruct
 {
     int type = 3;
@@ -48,10 +48,10 @@ struct WxFileStruct
 };
 
 /*
-* 供外部调用的发送文件消息接口
-* lpParamStruct：FileParamStruct类型结构体指针
-* return：void
-*/
+ * 供外部调用的发送文件消息接口
+ * lpParamStruct：FileParamStruct类型结构体指针
+ * return：void
+ */
 #ifndef USE_SOCKET
 void SendFileRemote(LPVOID lpParamStruct)
 {
@@ -61,12 +61,12 @@ void SendFileRemote(LPVOID lpParamStruct)
 #endif
 
 /*
-* 发送文件消息的具体实现
-* receiver：接收人wxid
-* FilePath：文件绝对路径
-* return：void
-*/
-void __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
+ * 发送文件消息的具体实现
+ * receiver：接收人wxid
+ * FilePath：文件绝对路径
+ * return：BOOL，发送成功返回`1`，发送失败返回`0`
+ */
+BOOL __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 {
     WxString pReceiver(receiver);
     WxString pFilePath(FilePath);
@@ -85,7 +85,7 @@ void __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 
     DWORD edi_ = pReceiver.length;
     DWORD ptrReceiver = (DWORD)pReceiver.buffer;
-
+    int isSuccess = 0;
     __asm {
 		pushad;
 		pushfd;
@@ -118,9 +118,11 @@ void __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 		lea eax, buffer;
 		push eax;
 		call WxSendFileCall3;
+		mov isSuccess,eax;
 		lea ecx, buffer;
 		call DeleteSendFileCacheCall;
 		popfd;
 		popad;
     }
+    return isSuccess == 1;
 }

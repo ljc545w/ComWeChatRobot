@@ -20,7 +20,10 @@ typedef enum HTTP_METHODSTag
 
 typedef enum WECHAT_HTTP_APISTag
 {
-    WECHAT_GET_SELF_INFO = 1,
+    // login check
+    WECHAT_IS_LOGIN = 0,
+    // self info
+    WECHAT_GET_SELF_INFO,
     // send message
     WECHAT_MSG_SEND_TEXT,
     WECHAT_MSG_SEND_AT,

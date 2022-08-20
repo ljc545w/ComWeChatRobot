@@ -1,5 +1,5 @@
 #pragma once
-#include<windows.h>
+#include <windows.h>
 #ifndef USE_SOCKET
 extern "C" __declspec(dllexport) VOID HookReceiveMessage(int port);
 extern "C" __declspec(dllexport) VOID UnHookReceiveMessage();
@@ -12,6 +12,8 @@ VOID HookReceiveMessage(int port);
 VOID UnHookReceiveMessage();
 void UnHookImageMsg();
 void UnHookVoiceMsg();
+BOOL __stdcall HookVoiceMsg(wstring savepath);
+BOOL __stdcall HookImageMsg(wstring savepath);
 #endif
 
 void __stdcall HookVoiceMsg();

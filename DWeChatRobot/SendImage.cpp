@@ -10,10 +10,10 @@
 #define DeleteSendImageCacheCallOffset (0x78757780 - 0x786A0000)
 
 /*
-* 外部调用时传递的参数结构
-* wxid：保存wxid的地址
-* imagepath：保存图片绝对路径的地址
-*/
+ * 外部调用时传递的参数结构
+ * wxid：保存wxid的地址
+ * imagepath：保存图片绝对路径的地址
+ */
 #ifndef USE_SOCKET
 struct ImageParamStruct
 {
@@ -23,10 +23,10 @@ struct ImageParamStruct
 #endif
 
 /*
-* 供外部调用的发送图片消息接口
-* lpParamStruct：ImageParamStruct类型结构体指针
-* return：void
-*/
+ * 供外部调用的发送图片消息接口
+ * lpParamStruct：ImageParamStruct类型结构体指针
+ * return：void
+ */
 #ifndef USE_SOCKET
 void SendImageRemote(LPVOID lpParamStruct)
 {
@@ -36,12 +36,12 @@ void SendImageRemote(LPVOID lpParamStruct)
 #endif
 
 /*
-* 发送图片消息的具体实现
-* receiver：接收人wxid
-* ImagePath：图片绝对路径
-* return：void
-*/
-void __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
+ * 发送图片消息的具体实现
+ * receiver：接收人wxid
+ * ImagePath：图片绝对路径
+ * return：BOOL，发送成功返回`1`，发送失败返回`0`
+ */
+BOOL __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
 {
     DWORD WeChatWinBase = GetWeChatWinBase();
     DWORD SendImageCall1 = WeChatWinBase + SendImageCall1Offset;
@@ -54,7 +54,7 @@ void __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
     WxString pImagePath(ImagePath);
     WxString nullStruct = {0};
     DWORD tempeax = 0;
-
+    int isSuccess = 0;
     __asm {
 		pushad;
 		call SendImageCall1;
@@ -72,8 +72,10 @@ void __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
 		lea eax, buffer;
 		push eax;
 		call SendImageCall3;
+		mov isSuccess,eax;
 		lea ecx, buffer;
 		call DeleteSendImageCacheCall;
 		popad;
     }
+    return isSuccess == 1;
 }

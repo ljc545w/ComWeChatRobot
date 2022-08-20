@@ -92,7 +92,14 @@ static int get_http_param_int(mg_http_message *hm, json jData, string key, int m
     }
     case HTTP_METHOD_POST:
     {
-        result = STOI_S((string)jData[key]);
+        try
+        {
+            result = jData[key];
+        }
+        catch (json::exception)
+        {
+            result = STOI_S((string)jData[key]);
+        }
         break;
     }
     default:
@@ -122,21 +129,42 @@ static vector<wstring> get_http_param_array(mg_http_message *hm, json jData, str
     return result;
 }
 
-void request_event(mg_http_message *hm)
+void request_event(mg_http_message *hm, string &ret)
 {
     int method = I_METHOD(getMgStrA(hm->method));
     // 第四个参数设置为false，不抛出异常
     json jData = json::parse(hm->body.ptr, hm->body.ptr + hm->body.len, nullptr, false);
     if (jData.is_discarded() == true && method == HTTP_METHOD_POST)
-        return;
-    int num = STOI_S(getMgVarA(hm, "type"));
-    switch (num)
     {
+        json ret_data = {{"result", "ERROR"},
+                         {"err_msg", "json string is invalid."}};
+        ret = ret_data.dump();
+        return;
+    }
+    int api_number = STOI_S(getMgVarA(hm, "type"));
+    switch (api_number)
+    {
+    case WECHAT_IS_LOGIN:
+    {
+        BOOL logined = isWxLogin();
+        json ret_data = {{"is_login", logined}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_GET_SELF_INFO:
+    {
+        wstring self_info = GetSelfInfo();
+        json ret_data = {{"self_info", unicode_to_utf8(WS2LW(self_info))}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
     case WECHAT_MSG_SEND_TEXT:
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
         wstring msg = get_http_param_str(hm, jData, "msg", method);
-        SendText(wxid, msg);
+        BOOL status = SendText(wxid, msg);
+        json ret_data = {{"msg", 1}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_AT:
@@ -145,7 +173,9 @@ void request_event(mg_http_message *hm)
         vector<wstring> wxids = get_http_param_array(hm, jData, "wxids", method);
         wstring msg = get_http_param_str(hm, jData, "msg", method);
         int auto_nickname = get_http_param_int(hm, jData, "auto_nickname", method);
-        SendAtText(chatroom, wxids, msg, auto_nickname);
+        BOOL status = SendAtText(chatroom, wxids, msg, auto_nickname);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_CARD:
@@ -153,21 +183,27 @@ void request_event(mg_http_message *hm)
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring shared_wxid = get_http_param_str(hm, jData, "shared_wxid", method);
         wstring nickname = get_http_param_str(hm, jData, "nickname", method);
-        SendCard(receiver, shared_wxid, nickname);
+        BOOL status = SendCard(receiver, shared_wxid, nickname);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_IMAGE:
     {
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring img_path = get_http_param_str(hm, jData, "img_path", method);
-        SendImage(receiver, img_path);
+        BOOL status = SendImage(receiver, img_path);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_FILE:
     {
         wstring receiver = get_http_param_str(hm, jData, "receiver", method);
         wstring file_path = get_http_param_str(hm, jData, "file_path", method);
-        SendFile(receiver, file_path);
+        BOOL status = SendFile(receiver, file_path);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_ARTICLE:
@@ -177,14 +213,287 @@ void request_event(mg_http_message *hm)
         wstring abstract = get_http_param_str(hm, jData, "abstract", method);
         wstring url = get_http_param_str(hm, jData, "url", method);
         wstring img_path = get_http_param_str(hm, jData, "img_path", method);
-        SendArticle(wxid, title, abstract, url, img_path);
+        BOOL status = SendArticle(wxid, title, abstract, url, img_path);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_MSG_SEND_APP:
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
         wstring appid = get_http_param_str(hm, jData, "appid", method);
-        SendAppMsg(wxid, appid);
+        BOOL status = SendAppMsg(wxid, appid);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_MSG_START_HOOK:
+    {
+        int port = get_http_param_int(hm, jData, "port", method);
+        HookReceiveMessage(port);
+        break;
+    }
+    case WECHAT_MSG_STOP_HOOK:
+    {
+        UnHookReceiveMessage();
+        break;
+    }
+    case WECHAT_MSG_START_IMAGE_HOOK:
+    {
+        wstring savepath = get_http_param_str(hm, jData, "save_path", method);
+        BOOL status = HookImageMsg(savepath);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_MSG_STOP_IMAGE_HOOK:
+    {
+        UnHookImageMsg();
+        break;
+    }
+    case WECHAT_MSG_START_VOICE_HOOK:
+    {
+        wstring savepath = get_http_param_str(hm, jData, "save_path", method);
+        BOOL status = HookVoiceMsg(savepath);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_MSG_STOP_VOICE_HOOK:
+    {
+        UnHookVoiceMsg();
+        break;
+    }
+    case WECHAT_CONTACT_GET_LIST:
+    {
+        vector<WxFriendStruct> friend_list = GetWxContact();
+        json ret_data = {{"data", json::array()}, {"result", "OK"}};
+        for (unsigned int i = 0; i < friend_list.size() - 1; i++)
+        {
+            json f_j;
+            WxFriendStruct f = friend_list[i];
+            DWORD buffer_addr = *(DWORD *)f.wxIdAddr;
+            wstring wxid = buffer_addr != 0 ? wstring((wchar_t *)buffer_addr) : L"";
+            buffer_addr = *(DWORD *)f.wxNumberAddr;
+            wstring wxNumber = buffer_addr != 0 ? wstring((wchar_t *)buffer_addr) : L"";
+            buffer_addr = *(DWORD *)f.wxNickNameAddr;
+            wstring wxNickName = buffer_addr != 0 ? wstring((wchar_t *)buffer_addr) : L"";
+            buffer_addr = *(DWORD *)f.wxRemarkAddr;
+            wstring wxRemark = buffer_addr != 0 ? wstring((wchar_t *)buffer_addr) : L"";
+            f_j["wxid"] = unicode_to_utf8(WS2LW(wxid));
+            f_j["wxNumber"] = unicode_to_utf8(WS2LW(wxNumber));
+            f_j["wxNickName"] = unicode_to_utf8(WS2LW(wxNickName));
+            f_j["wxRemark"] = unicode_to_utf8(WS2LW(wxRemark));
+            ret_data["data"].push_back(f_j);
+        }
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_CHECK_STATUS:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        int status_code = CheckFriendStatus(wxid);
+        json ret_data = {{"status", status_code}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_DEL:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        BOOL status = DeleteUser(wxid);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_SEARCH_BY_CACHE:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring userinfo = GetUserInfoByWxId(wxid);
+        json ret_data = {{"userinfo", unicode_to_utf8(WS2LW(userinfo))}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_SEARCH_BY_NET:
+    {
+        wstring keyword = get_http_param_str(hm, jData, "keyword", method);
+        map<wstring, wstring> userinfo = SearchContactByNet(keyword);
+        json ret_data;
+        for (auto it : userinfo)
+        {
+            string key = unicode_to_utf8(WS2LW(it.first));
+            ret_data[key] = unicode_to_utf8(WS2LW(it.second));
+        }
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_ADD_BY_WXID:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring msg = get_http_param_str(hm, jData, "msg", method);
+        BOOL status = AddFriendByWxid(wxid, msg);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_ADD_BY_V3:
+    {
+        wstring v3 = get_http_param_str(hm, jData, "v3", method);
+        wstring msg = get_http_param_str(hm, jData, "msg", method);
+        int add_type = get_http_param_int(hm, jData, "add_type", method);
+        BOOL status = AddFriendByV3(v3, msg, add_type);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_ADD_BY_PUBLIC_ID:
+    {
+        wstring public_id = get_http_param_str(hm, jData, "public_id", method);
+        BOOL status = AddBrandContact(public_id);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_VERIFY_APPLY:
+    {
+        wstring v3 = get_http_param_str(hm, jData, "v3", method);
+        wstring v4 = get_http_param_str(hm, jData, "v4", method);
+        BOOL status = VerifyFriendApply(v3, v4);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CONTACT_EDIT_REMARK:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring remark = get_http_param_str(hm, jData, "remark", method);
+        BOOL status = EditRemark(wxid, remark);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_GET_MEMBER_LIST:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        wstring members = GetChatRoomMembers(chatroom_id);
+        json ret_data = {{"members", unicode_to_utf8(WS2LW(members))}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_GET_MEMBER_NICKNAME:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring nickname = GetChatRoomMemberNickname(chatroom_id, wxid);
+        json ret_data = {{"nickname", unicode_to_utf8(WS2LW(nickname))}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_DEL_MEMBER:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        vector<wstring> wxids = get_http_param_array(hm, jData, "wxids", method);
+        BOOL status = DelChatRoomMember(chatroom_id, wxids);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_ADD_MEMBER:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        vector<wstring> wxids = get_http_param_array(hm, jData, "wxids", method);
+        BOOL status = AddChatRoomMember(chatroom_id, wxids);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_SET_ANNOUNCEMENT:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        wstring announcement = get_http_param_str(hm, jData, "announcement", method);
+        BOOL status = SetChatRoomAnnouncement(chatroom_id, announcement);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_SET_CHATROOM_NAME:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        wstring new_name = get_http_param_str(hm, jData, "chatroom_name", method);
+        BOOL status = SetChatRoomName(chatroom_id, new_name);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_CHATROOM_SET_SELF_NICKNAME:
+    {
+        wstring chatroom_id = get_http_param_str(hm, jData, "chatroom_id", method);
+        wstring nickname = get_http_param_str(hm, jData, "nickname", method);
+        BOOL status = SetChatRoomSelfNickname(chatroom_id, nickname);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_DATABASE_GET_HANDLES:
+    {
+        vector<void *> v_ptr = GetDbHandles();
+        json ret_data = {{"data", json::array()}, {"result", "OK"}};
+        for (unsigned int i = 0; i < v_ptr.size(); i++)
+        {
+            json db_info;
+            db_info["tables"] = json::array();
+            DbInfoStruct *db = reinterpret_cast<DbInfoStruct *>(v_ptr[i]);
+            db_info["handle"] = db->handle;
+            db_info["db_name"] = unicode_to_utf8(db->dbname);
+            for (auto table : db->tables)
+            {
+                json table_info = {{"name", table.name}, {"tbl_name", table.tbl_name}, {"sql", table.sql}, {"rootpage", table.rootpage}};
+                db_info["tables"].push_back(table_info);
+            }
+            ret_data["data"].push_back(db_info);
+        }
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_DATABASE_BACKUP:
+    {
+        DWORD db_handle = get_http_param_int(hm, jData, "db_handle", method);
+        wstring savepath = get_http_param_str(hm, jData, "save_path", method);
+        BOOL status = BackupSQLiteDB(db_handle, savepath);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_DATABASE_QUERY:
+    {
+        DWORD db_handle = get_http_param_int(hm, jData, "db_handle", method);
+        wstring sql = get_http_param_str(hm, jData, "sql", method);
+        string a_sql = unicode_to_utf8(WS2LW(sql));
+        // TODO: 数据库查询目前不可用
+        // SelectData(db_handle, a_sql.c_str(), NULL);
+        break;
+    }
+    case WECHAT_SET_VERSION:
+    {
+        wstring versionStr = get_http_param_str(hm, jData, "version", method);
+        BOOL status = ChangeWeChatVersion(versionStr);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_LOG_START_HOOK:
+    {
+#ifndef _DEBUG
+        CreateConsole();
+#endif
+        HookLogMsgInfo();
+        break;
+    }
+    case WECHAT_LOG_STOP_HOOK:
+    {
+#ifndef _DEBUG
+        FreeConsole();
+#endif
+        UnHookLogMsgInfo();
         break;
     }
     default:
@@ -197,7 +506,9 @@ void request_event(mg_http_message *hm)
 // Simply serve static files from `s_root_dir`
 static void fn(struct mg_connection *c, int ev, void *ev_data, void *fn_data)
 {
+#ifdef _DEBUG
     wcout.imbue(locale("chs"));
+#endif
     switch (ev)
     {
     case MG_EV_HTTP_MSG:
@@ -213,17 +524,19 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, void *fn_data)
                  (int)hm->uri.len, hm->uri.ptr, (int)tmp.uri.len, tmp.uri.ptr,
                  (int)cl->len, cl->ptr));
 #endif
+        string ret = R"({"result":"OK"})";
         if (mg_http_match_uri(hm, "/api/"))
         {
             try
             {
-                request_event(hm);
-                mg_http_reply(c, 200, "", "{\"result\": \"OK\"}", 0, 0);
+                request_event(hm, ret);
             }
-            catch (json::exception)
+            catch (json::exception &e)
             {
-                mg_http_reply(c, 200, "", "{\"result\": \"ERROR\"}", 0, 0);
+                json res = {{"result", "ERROR"}, {"err_msg", e.what()}};
+                ret = res.dump();
             }
+            mg_http_reply(c, 200, "", ret.c_str(), 0, 0);
         }
         else if (mg_http_match_uri(hm, "/api/f2/*"))
         {

@@ -6,12 +6,12 @@
 #define DeleteAtTextCacheCallOffset 0x78757780 - 0x786A0000
 
 /*
-* 外部调用时传递的参数结构
-* chatroomid：群聊ID的保存地址
-* wxidlist：艾特列表的保存地址，真实类型应当是`wchar_t**`
-* wxmsg：发送的内容保存地址
-* length：艾特的人数量，用于指示wxidlist长度
-*/
+ * 外部调用时传递的参数结构
+ * chatroomid：群聊ID的保存地址
+ * wxidlist：艾特列表的保存地址，真实类型应当是`wchar_t**`
+ * wxmsg：发送的内容保存地址
+ * length：艾特的人数量，用于指示wxidlist长度
+ */
 #ifndef USE_SOCKET
 struct SendAtTextStruct
 {
@@ -24,13 +24,13 @@ struct SendAtTextStruct
 #endif
 
 /*
-* 内存中使用的参数结构
-* 构造与Release版本vector动态数组相仿
-* 成员类型：`WxString`
-* AtUser：类似`vector`的`data`方法，保存数组首个成员的地址
-* addr_end1：数组尾地址
-* addr_end2：数组尾地址
-*/
+ * 内存中使用的参数结构
+ * 构造与Release版本vector动态数组相仿
+ * 成员类型：`WxString`
+ * AtUser：类似`vector`的`data`方法，保存数组首个成员的地址
+ * addr_end1：数组尾地址
+ * addr_end2：数组尾地址
+ */
 struct AtStruct
 {
     DWORD AtUser;
@@ -39,10 +39,10 @@ struct AtStruct
 };
 
 /*
-* 供外部调用的发送艾特消息接口
-* lpParameter：SendAtTextStruct类型结构体指针
-* return：void
-*/
+ * 供外部调用的发送艾特消息接口
+ * lpParameter：SendAtTextStruct类型结构体指针
+ * return：void
+ */
 #ifndef USE_SOCKET
 void SendAtTextRemote(LPVOID lpParameter)
 {
@@ -59,15 +59,15 @@ void SendAtTextRemote(LPVOID lpParameter)
 #endif
 
 /*
-* 发送艾特消息的具体实现
-* wsChatRoomId：群聊ID
-* wsWxId：艾特的人列表
-* wsTextMsg：发送的消息内容
-* length：艾特的人数量
-* AutoNickName：是否自动填充被艾特人昵称
-* return：void
-*/
-void __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsTextMsg, int length, BOOL AutoNickName)
+ * 发送艾特消息的具体实现
+ * wsChatRoomId：群聊ID
+ * wsWxId：艾特的人列表
+ * wsTextMsg：发送的消息内容
+ * length：艾特的人数量
+ * AutoNickName：是否自动填充被艾特人昵称
+ * return：BOOL，发送成功返回`1`，发送失败返回`0`
+ */
+BOOL __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsTextMsg, int length, BOOL AutoNickName)
 {
     // +1的作用是补充一个空结构体，将`AtStruct`尾地址设定为空结构的首地址即可
     WxString *AtUsers = new WxString[length + 1];
@@ -97,7 +97,7 @@ void __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsText
     }
     AtMessage += wsTextMsg;
     if (!querySuccess)
-        return;
+        return FALSE;
     WxString wxChatRoomId(wsChatRoomId);
     WxString wxTextMsg((wchar_t *)AtMessage.c_str());
     AtStruct at = {0};
@@ -111,7 +111,7 @@ void __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsText
     DWORD dllBaseAddress = GetWeChatWinBase();
     DWORD callAddress = dllBaseAddress + SendAtTextCallOffset;
     DWORD DeleteTextCacheCall = dllBaseAddress + DeleteAtTextCacheCallOffset;
-
+    int isSuccess = 0;
     __asm {
         lea eax, at;
         push 0x1;
@@ -121,10 +121,12 @@ void __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsText
         lea edx, wxChatRoomId;
         lea ecx, buffer;
         call callAddress;
+        mov isSuccess,eax;
         add esp, 0xC;
         lea ecx, buffer;
         call DeleteTextCacheCall;
     }
     delete[] AtUsers;
     AtUsers = NULL;
+    return isSuccess == 1;
 }

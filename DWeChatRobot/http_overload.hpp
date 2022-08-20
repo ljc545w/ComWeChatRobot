@@ -4,16 +4,16 @@
 #ifdef USE_SOCKET
 #define WS2LW(wstr) (LPWSTR) wstr.c_str()
 
-void __stdcall SendText(wstring wxid, wstring msg)
+BOOL __stdcall SendText(wstring wxid, wstring msg)
 {
     return SendText(WS2LW(wxid), WS2LW(msg));
 }
 
-void __stdcall SendAtText(wstring wsChatRoomId, vector<wstring> wxids, wstring wsTextMsg, BOOL AutoNickName)
+BOOL __stdcall SendAtText(wstring wsChatRoomId, vector<wstring> wxids, wstring wsTextMsg, BOOL AutoNickName)
 {
     vector<DWORD> wxid_list;
-    for (auto wxid : wxids)
-        wxid_list.push_back((DWORD)wxid.c_str());
+    for (unsigned int i = 0; i < wxids.size(); i++)
+        wxid_list.push_back((DWORD)wxids[i].c_str());
     return SendAtText(WS2LW(wsChatRoomId), wxid_list.data(), WS2LW(wsTextMsg), wxid_list.size(), AutoNickName);
 }
 
@@ -22,12 +22,12 @@ BOOL __stdcall SendCard(wstring receiver, wstring sharedwxid, wstring nickname)
     return SendCard(WS2LW(receiver), WS2LW(sharedwxid), WS2LW(nickname));
 }
 
-void __stdcall SendImage(wstring receiver, wstring ImagePath)
+BOOL __stdcall SendImage(wstring receiver, wstring ImagePath)
 {
     return SendImage(WS2LW(receiver), WS2LW(ImagePath));
 }
 
-void __stdcall SendFile(wstring receiver, wstring FilePath)
+BOOL __stdcall SendFile(wstring receiver, wstring FilePath)
 {
     return SendFile(WS2LW(receiver), WS2LW(FilePath));
 }
@@ -90,16 +90,16 @@ wstring __stdcall GetChatRoomMemberNickname(wstring chatroomid, wstring wxid)
 BOOL __stdcall DelChatRoomMember(wstring chatroomid, vector<wstring> wxids)
 {
     vector<wchar_t *> wxid_list;
-    for (auto wxid : wxids)
-        wxid_list.push_back((wchar_t *)wxid.c_str());
+    for (unsigned int i = 0; i < wxids.size(); i++)
+        wxid_list.push_back(WS2LW(wxids[i]));
     return DelChatRoomMember(WS2LW(chatroomid), wxid_list.data(), wxid_list.size());
 }
 
 BOOL __stdcall AddChatRoomMember(wstring chatroomid, vector<wstring> wxids)
 {
     vector<wchar_t *> wxid_list;
-    for (auto wxid : wxids)
-        wxid_list.push_back((wchar_t *)wxid.c_str());
+    for (unsigned int i = 0; i < wxids.size(); i++)
+        wxid_list.push_back(WS2LW(wxids[i]));
     return AddChatRoomMember(WS2LW(chatroomid), wxid_list.data(), wxid_list.size());
 }
 
@@ -123,9 +123,9 @@ BOOL __stdcall ChangeWeChatVersion(wstring verStr)
     return ChangeWeChatVer(WS2LW(verStr));
 }
 
-int __stdcall BackupSQLiteDB(DWORD DbHandle, wstring BackupFile)
+BOOL __stdcall BackupSQLiteDB(DWORD DbHandle, wstring BackupFile)
 {
     string filepath = unicode_to_utf8(WS2LW(BackupFile));
-    return BackupSQLiteDB(DbHandle, filepath.c_str());
+    return BackupSQLiteDB(DbHandle, filepath.c_str()) == SQLITE_OK;
 }
 #endif
