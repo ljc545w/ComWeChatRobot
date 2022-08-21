@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <map>
 
 // sqlite3_callback函数指针
 typedef int (*sqlite3_callback)(
@@ -17,10 +18,10 @@ typedef int(__cdecl *Sqlite3_exec)(
 );
 
 /*
-* 外部调用时传递的参数结构
-* ptrDb：数据库句柄
-* ptrSql：保存sql的地址
-*/
+ * 外部调用时传递的参数结构
+ * ptrDb：数据库句柄
+ * ptrSql：保存sql的地址
+ */
 #ifndef USE_SOCKET
 struct executeParams
 {
@@ -30,10 +31,10 @@ struct executeParams
 #endif
 
 /*
-* 保存查询结果的结构
-* ColName：字段名；l_ColName：`ColName`字符数
-* content：字段值；l_content：`content`字符数
-*/
+ * 保存查询结果的结构
+ * ColName：字段名；l_ColName：`ColName`字符数
+ * content：字段值；l_content：`content`字符数
+ */
 struct SQLResultStruct
 {
     char *ColName;
@@ -44,10 +45,10 @@ struct SQLResultStruct
 };
 
 /*
-* 外部调用时的返回类型
-* SQLResultAddr：`SQLResult`首成员地址
-* length：查询结果条数
-*/
+ * 外部调用时的返回类型
+ * SQLResultAddr：`SQLResult`首成员地址
+ * length：查询结果条数
+ */
 struct executeResult
 {
     DWORD SQLResultAddr;
@@ -60,8 +61,8 @@ executeResult result = {0};
 vector<vector<SQLResultStruct>> SQLResult;
 
 /*
-* 获取数据库信息的回调函数
-*/
+ * 获取数据库信息的回调函数
+ */
 int GetDbInfo(void *data, int argc, char **argv, char **azColName)
 {
     DbInfoStruct *pdata = (DbInfoStruct *)data;
@@ -112,8 +113,8 @@ int GetDbInfo(void *data, int argc, char **argv, char **azColName)
 }
 
 /*
-* DLL内部查询用的回调函数，直接显示查询结果，用处不大
-*/
+ * DLL内部查询用的回调函数，直接显示查询结果，用处不大
+ */
 int query(void *data, int argc, char **argv, char **azColName)
 {
     for (int i = 0; i < argc; i++)
@@ -126,9 +127,9 @@ int query(void *data, int argc, char **argv, char **azColName)
 }
 
 /*
-* 外部调用时使用的回调函数，将结果存入`SQLResult`中
-* return：int，执行成功返回`0`，执行失败返回非0值
-*/
+ * 外部调用时使用的回调函数，将结果存入`SQLResult`中
+ * return：int，执行成功返回`0`，执行失败返回非0值
+ */
 int selectdbinfo(void *data, int argc, char **argv, char **azColName)
 {
     executeResult *pdata = (executeResult *)data;
@@ -159,9 +160,9 @@ int selectdbinfo(void *data, int argc, char **argv, char **azColName)
 }
 
 /*
-* 清空查询结果，释放内存
-* return：void
-*/
+ * 清空查询结果，释放内存
+ * return：void
+ */
 void ClearResultArray()
 {
     if (SQLResult.size() == 0)
@@ -190,13 +191,13 @@ void ClearResultArray()
 }
 
 /*
-* 执行SQL的入口函数
-* ptrDb：数据库句柄
-* sql：要执行的SQL
-* callback：回调函数地址
-* data：传递给回调函数的参数
-* return：void*，执行成功返回数组指针，执行失败返回`0`
-*/
+ * 执行SQL的入口函数
+ * ptrDb：数据库句柄
+ * sql：要执行的SQL
+ * callback：回调函数地址
+ * data：传递给回调函数的参数
+ * return：void*，执行成功返回数组指针，执行失败返回`0`
+ */
 void *ExecuteSQL(DWORD ptrDb, const char *sql, DWORD callback, void *data)
 {
     DWORD WeChatWinBase = GetWeChatWinBase();
@@ -209,10 +210,10 @@ void *ExecuteSQL(DWORD ptrDb, const char *sql, DWORD callback, void *data)
 }
 
 /*
-* 供外部调用的执行SQL接口
-* lpParameter：`executeParams`类型结构体指针
-* return：DWORD，如果SQL执行成功，返回`SQLResult`首成员地址，否则返回0
-*/
+ * 供外部调用的执行SQL接口
+ * lpParameter：`executeParams`类型结构体指针
+ * return：DWORD，如果SQL执行成功，返回`SQLResult`首成员地址，否则返回0
+ */
 #ifndef USE_SOCKET
 DWORD ExecuteSQLRemote(LPVOID lpParameter)
 {
@@ -315,5 +316,38 @@ int SelectDataRemote(LPVOID lpParameter)
         result.length = 0;
     }
     return 0;
+}
+#else
+vector<vector<string>> SelectData(DWORD db_hanle, const char *sql)
+{
+    vector<vector<string>> ret;
+    ClearResultArray();
+    void *status = SelectData(db_hanle, sql, &result);
+    if (SQLResult.size() == 0)
+        return ret;
+    vector<string> index;
+    for (size_t i = 0; i < SQLResult[0].size(); i++)
+        index.push_back(SQLResult[0][i].ColName);
+    ret.push_back(index);
+    for (auto it : SQLResult)
+    {
+        vector<string> item;
+        for (size_t i = 0; i < it.size(); i++)
+        {
+            if (!it[i].isblob)
+            {
+                string content(it[i].content);
+                item.push_back(content);
+            }
+            else
+            {
+                string b64_str = base64_encode((BYTE *)it[i].content, it[i].l_content);
+                item.push_back(b64_str);
+            }
+        }
+        ret.push_back(item);
+    }
+    ClearResultArray();
+    return ret;
 }
 #endif

@@ -468,8 +468,18 @@ void request_event(mg_http_message *hm, string &ret)
         DWORD db_handle = get_http_param_int(hm, jData, "db_handle", method);
         wstring sql = get_http_param_str(hm, jData, "sql", method);
         string a_sql = unicode_to_utf8(WS2LW(sql));
-        // TODO: 数据库查询目前不可用
-        // SelectData(db_handle, a_sql.c_str(), NULL);
+        vector<vector<string>> items = SelectData(db_handle, a_sql.c_str());
+        json ret_data = {{"data", json::array()}, {"result", "OK"}};
+        for (auto it : items)
+        {
+            json temp_arr = json::array();
+            for (size_t i = 0; i < it.size(); i++)
+            {
+                temp_arr.push_back(it[i]);
+            }
+            ret_data["data"].push_back(temp_arr);
+        }
+        ret = ret_data.dump();
         break;
     }
     case WECHAT_SET_VERSION:

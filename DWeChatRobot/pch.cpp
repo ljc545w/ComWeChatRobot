@@ -237,7 +237,8 @@ void PrintProcAddr()
     printf("AddFriendByV3 0x%08X\n", (DWORD)AddFriendByV3);
     printf("AddFriendByWxid 0x%08X\n", (DWORD)AddFriendByWxid);
     printf("AddBrandContact 0x%08X\n", (DWORD)AddBrandContact);
-    printf("SelectData 0x%08X\n", (DWORD)SelectData);
+    void *(*select_data)(DWORD, const char *, void *) = SelectData;
+    printf("SelectData 0x%08X\n", (DWORD)select_data);
     void *(__stdcall * search_contact_by_net)(wchar_t *) = SearchContactByNet;
     printf("SearchContactByNet 0x%08X\n", (DWORD)search_contact_by_net);
     printf("AddChatRoomMember 0x%08X\n", (DWORD)AddChatRoomMember);

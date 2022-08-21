@@ -232,7 +232,6 @@ _declspec(naked) void dealReceiveMessage()
     __asm {
 		pushad;
 		pushfd;
-        // mov eax, [edi];
 		push edi;
 		call ReceiveMessage;
 		add esp, 0x4;
