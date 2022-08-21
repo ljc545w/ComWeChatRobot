@@ -1,7 +1,9 @@
 import ctypes
 import json
 import copy
+import threading
 import requests
+import socketserver
 
 if ctypes.sizeof(ctypes.c_void_p) == ctypes.sizeof(ctypes.c_ulonglong):
     driver = ctypes.cdll.LoadLibrary('./wxDriver64.dll')
@@ -10,7 +12,7 @@ else:
 
 new_wechat = driver.new_wechat
 new_wechat.argtypes = None
-new_wechat.restype = ctypes.c_bool
+new_wechat.restype = ctypes.c_int
 
 start_listen = driver.start_listen
 start_listen.argtypes = [ctypes.c_int,ctypes.c_int]
@@ -68,7 +70,6 @@ class WECHAT_HTTP_APIS:
     # database
     WECHAT_DATABASE_GET_HANDLES = 32            # 获取数据库句柄
     WECHAT_DATABASE_BACKUP = 33                 # 备份数据库
-    # TODO: 数据库查询目前不可用
     WECHAT_DATABASE_QUERY = 34                  # 数据库查询
 
     # version
@@ -99,7 +100,7 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
                                   "wxids": "",
                                   "msg": "",
                                   "auto_nickname": 1},
-        APIS.WECHAT_MSG_SEND_CARD: {"receiver":'',
+        APIS.WECHAT_MSG_SEND_CARD: {"receiver":"",
                                     "shared_wxid":"",
                                     "nickname":""},
         APIS.WECHAT_MSG_SEND_IMAGE: {"receiver":"",
@@ -185,6 +186,55 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
 
 get_http_template = WECHAT_HTTP_API_PARAM_TEMPLATES().get_http_template
 
+class ReceiveMsgSocketServer(socketserver.BaseRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class ReceiveMsgStruct(ctypes.Structure):
+        _fields_ = [("pid", ctypes.wintypes.DWORD),
+                    ("type", ctypes.wintypes.DWORD),
+                    ("isSendMsg", ctypes.wintypes.DWORD),
+                    ("msgid", ctypes.c_ulonglong),
+                    ("sender", ctypes.c_wchar * 80),
+                    ("wxid", ctypes.c_wchar * 80),
+                    ("message", ctypes.c_wchar * 0x1000B),
+                    ("filepath", ctypes.c_wchar * 260),
+                    ("time", ctypes.c_wchar * 30)
+                    ]
+
+    def handle(self):
+        conn = self.request
+        while True:
+            try:
+                ptr_data = conn.recv(1024)
+                try:
+                    if ptr_data.decode() == 'bye': break
+                except UnicodeDecodeError:
+                    pass
+                while len(ptr_data) < ctypes.sizeof(self.ReceiveMsgStruct):
+                    data = conn.recv(1024)
+                    if len(data) == 0: break
+                    ptr_data += data
+                if ptr_data:
+                    ptr_receive_msg = ctypes.cast(ptr_data, ctypes.POINTER(self.ReceiveMsgStruct))
+                    ReceiveMsgSocketServer.msg_callback(ptr_receive_msg.contents)
+            except OSError:
+                break
+            except:
+                pass
+            conn.sendall("200 OK".encode())
+        conn.close()
+
+    @staticmethod
+    def msg_callback(data):
+        msg = {'pid': data.pid, 'time': data.time, 'type': data.type,
+               'isSendMsg': data.isSendMsg, 'msgid': data.msgid,
+               'wxid': data.wxid,'message': data.message,
+               'sendto' if data.isSendMsg else 'from': data.sender}
+        # TODO: 在这里写额外的消息处理逻辑
+
+        print(msg)
+
 def post_wechat_http_api(api,port,data = {}):
     url = "http://127.0.0.1:{}/api/?type={}".format(port,api)
     resp = requests.post(url = url,data = json.dumps(data))
@@ -207,13 +257,27 @@ def get_wechat_pid_list() -> list:
             pass
     return pid_list
 
-def test():
-    test_port = 8000
-    pids = get_wechat_pid_list()
-    if len(pids) == 0:
-        pids.append(new_wechat())
-    start_listen(pids[0],test_port)
+def start_socket_server(port: int = 10808,
+                        request_handler = ReceiveMsgSocketServer,
+                        main_thread: bool = True) -> int or None:
+    ip_port = ("127.0.0.1", port)
+    try:
+        s = socketserver.ThreadingTCPServer(ip_port, request_handler)
+        if main_thread:
+            s.serve_forever()
+        else:
+            socket_server = threading.Thread(target=s.serve_forever)
+            socket_server.setDaemon(True)
+            socket_server.start()
+            return socket_server.ident
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        print(e)
+    return None
 
+def test(test_port):
+    post_wechat_http_api(APIS.WECHAT_LOG_START_HOOK,port = test_port)
     if post_wechat_http_api(APIS.WECHAT_IS_LOGIN,port = test_port)["is_login"] == 1:
         print(post_wechat_http_api(APIS.WECHAT_GET_SELF_INFO,port = test_port))
 
@@ -239,8 +303,21 @@ def test():
         print(post_wechat_http_api(APIS.WECHAT_CONTACT_GET_LIST,port = test_port))
         data = {"wxid":"filehelper"}
         print(post_wechat_http_api(APIS.WECHAT_CONTACT_CHECK_STATUS,data = data,port = test_port))
-
-    stop_listen(pids[0])
+        dbs = post_wechat_http_api(APIS.WECHAT_DATABASE_GET_HANDLES,port = test_port)
+        db_handle = dbs['data'][0]['handle']
+        sql = "select * from Contact limit 1;"
+        data = {"db_handle":db_handle,"sql":sql}
+        res = post_wechat_http_api(APIS.WECHAT_DATABASE_QUERY,data = data,port = test_port)
+        print(res)
+    post_wechat_http_api(APIS.WECHAT_LOG_STOP_HOOK,port = test_port)
 
 if __name__ == '__main__':
-    test()
+    port = 8000
+    pids = get_wechat_pid_list()
+    if len(pids) == 0:
+        pids.append(new_wechat())
+    start_listen(pids[0],port)
+    post_wechat_http_api(APIS.WECHAT_LOG_START_HOOK,8000)
+    post_wechat_http_api(APIS.WECHAT_MSG_START_HOOK,8000,{"port":10808})
+    start_socket_server()
+    stop_listen(pids[0])

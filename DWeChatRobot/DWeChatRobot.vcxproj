@@ -340,6 +340,7 @@
     <ClCompile Include="AddFriendByV3.cpp" />
     <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="AddBrandContact.cpp" />
+    <ClCompile Include="base64\base64.cpp" />
     <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="comclient.cpp" />
     <ClCompile Include="DbBackup.cpp" />

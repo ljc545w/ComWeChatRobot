@@ -42,6 +42,8 @@ BOOL RemoveDll(DWORD pid)
 #endif
     if (pFunc == NULL)
         return false;
-    CallRemoteFunction(hp.GetHandle(), pFunc, dwHandle);
+    do
+        CallRemoteFunction(hp.GetHandle(), pFunc, dwHandle);
+    while (hp.WeChatRobotBase() != 0);
     return true;
 }

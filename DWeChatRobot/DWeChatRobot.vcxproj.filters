@@ -338,5 +338,8 @@
     <ClCompile Include="GetChatRoomMemberNickname.cpp">
       <Filter>群相关\获取群成员昵称</Filter>
     </ClCompile>
+    <ClCompile Include="base64\base64.cpp">
+      <Filter>wxsocket</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
