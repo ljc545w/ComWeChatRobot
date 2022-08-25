@@ -39,6 +39,7 @@ BOOL CreateConsole(void);
 DWORD GetWeChatWinBase();
 string unicode_to_gb2312(wchar_t *wchar);
 string utf8_to_gb2312(const char *strUTF8);
+string gb2312_to_utf8(const char *strGB2312);
 string unicode_to_utf8(wchar_t *wstr);
 wstring utf8_to_unicode(const char *buffer);
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char *originalRecieveCode);

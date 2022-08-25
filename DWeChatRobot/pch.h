@@ -15,6 +15,7 @@
 #include <string>
 #include "wxdata.h"
 #include "wxapi.h"
+#include "base64/base64.h"
 #endif //PCH_H
 
 #ifdef USE_SOCKET

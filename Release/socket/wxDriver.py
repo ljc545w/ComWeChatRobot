@@ -3,6 +3,7 @@ import json
 import copy
 import threading
 import requests
+import base64
 import socketserver
 
 if ctypes.sizeof(ctypes.c_void_p) == ctypes.sizeof(ctypes.c_ulonglong):
@@ -190,47 +191,29 @@ class ReceiveMsgSocketServer(socketserver.BaseRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    class ReceiveMsgStruct(ctypes.Structure):
-        _fields_ = [("pid", ctypes.wintypes.DWORD),
-                    ("type", ctypes.wintypes.DWORD),
-                    ("isSendMsg", ctypes.wintypes.DWORD),
-                    ("msgid", ctypes.c_ulonglong),
-                    ("sender", ctypes.c_wchar * 80),
-                    ("wxid", ctypes.c_wchar * 80),
-                    ("message", ctypes.c_wchar * 0x1000B),
-                    ("filepath", ctypes.c_wchar * 260),
-                    ("time", ctypes.c_wchar * 30)
-                    ]
-
     def handle(self):
         conn = self.request
         while True:
             try:
-                ptr_data = conn.recv(1024)
-                try:
-                    if ptr_data.decode() == 'bye': break
-                except UnicodeDecodeError:
-                    pass
-                while len(ptr_data) < ctypes.sizeof(self.ReceiveMsgStruct):
+                ptr_data = b""
+                while True:
                     data = conn.recv(1024)
-                    if len(data) == 0: break
                     ptr_data += data
-                if ptr_data:
-                    ptr_receive_msg = ctypes.cast(ptr_data, ctypes.POINTER(self.ReceiveMsgStruct))
-                    ReceiveMsgSocketServer.msg_callback(ptr_receive_msg.contents)
+                    if len(data) == 0 or data[-1] == 0xA:
+                        break
+                msg = json.loads(ptr_data.decode('utf-8'))
+                ReceiveMsgSocketServer.msg_callback(msg)
             except OSError:
                 break
-            except:
+            except json.JSONDecodeError:
                 pass
             conn.sendall("200 OK".encode())
         conn.close()
 
     @staticmethod
-    def msg_callback(data):
-        msg = {'pid': data.pid, 'time': data.time, 'type': data.type,
-               'isSendMsg': data.isSendMsg, 'msgid': data.msgid,
-               'wxid': data.wxid,'message': data.message,
-               'sendto' if data.isSendMsg else 'from': data.sender}
+    def msg_callback(msg):
+        # 附加信息是protobuf格式，需要自行处理
+        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
         # TODO: 在这里写额外的消息处理逻辑
 
         print(msg)

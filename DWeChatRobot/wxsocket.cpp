@@ -28,7 +28,7 @@ json methods = {{"GET", HTTP_METHOD_GET}, {"POST", HTTP_METHOD_POST}};
 #endif
 
 #define STOI_S(str) (is_digit_number(str) ? stoi(str) : 0)
-#define POST_PARAM(jData, key) utf8_to_unicode(string(jData[key]).c_str())
+#define POST_PARAM(jData, key) utf8_to_unicode(jData[key].get<string>().c_str())
 #define GET_PARAM(hm, name) getMgVarW(hm, name)
 
 bool is_digit_number(string str)
@@ -94,11 +94,11 @@ static int get_http_param_int(mg_http_message *hm, json jData, string key, int m
     {
         try
         {
-            result = jData[key];
+            result = jData[key].get<int>();
         }
         catch (json::exception)
         {
-            result = STOI_S((string)jData[key]);
+            result = STOI_S(jData[key].get<string>());
         }
         break;
     }
@@ -153,8 +153,13 @@ void request_event(mg_http_message *hm, string &ret)
     }
     case WECHAT_GET_SELF_INFO:
     {
-        wstring self_info = GetSelfInfo();
-        json ret_data = {{"self_info", unicode_to_utf8(WS2LW(self_info))}, {"result", "OK"}};
+        json ret_data;
+        string self_info = unicode_to_utf8(WS2LW(GetSelfInfo()));
+        json j_info = json::parse(self_info.c_str(), self_info.c_str() + self_info.size(), nullptr, false);
+        if (j_info.is_discarded() != true)
+            ret_data = {{"data", j_info}, {"result", "OK"}};
+        else
+            ret_data = {{"data", self_info}, {"result", "OK"}};
         ret = ret_data.dump();
         break;
     }
@@ -308,8 +313,13 @@ void request_event(mg_http_message *hm, string &ret)
     case WECHAT_CONTACT_SEARCH_BY_CACHE:
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
-        wstring userinfo = GetUserInfoByWxId(wxid);
-        json ret_data = {{"userinfo", unicode_to_utf8(WS2LW(userinfo))}, {"result", "OK"}};
+        string userinfo = unicode_to_utf8(WS2LW(GetUserInfoByWxId(wxid)));
+        json ret_data;
+        json j_info = json::parse(userinfo.c_str(), userinfo.c_str() + userinfo.size(), nullptr, false);
+        if (j_info.is_discarded() != true)
+            ret_data = {{"data", j_info}, {"result", "OK"}};
+        else
+            ret_data = {{"data", userinfo}, {"result", "OK"}};
         ret = ret_data.dump();
         break;
     }

@@ -6,9 +6,10 @@ Created on Thu Feb 24 16:19:48 2022
 """
 
 # Before use,execute `CWeChatRobot.exe /regserver` in cmd by admin user
-import ast
 import os
 import ctypes
+import json
+import base64
 import ctypes.wintypes
 import socketserver
 import threading
@@ -51,6 +52,8 @@ class WeChatEventSink:
     """
 
     def OnGetMessageEvent(self, msg):
+        msg = json.loads(msg)
+        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
         print(msg)
 
 
@@ -58,65 +61,41 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    class ReceiveMsgStruct(ctypes.Structure):
-        _fields_ = [("pid", ctypes.wintypes.DWORD),
-                    ("type", ctypes.wintypes.DWORD),
-                    ("isSendMsg", ctypes.wintypes.DWORD),
-                    ("msgid", ctypes.c_ulonglong),
-                    ("sender", ctypes.c_wchar * 80),
-                    ("wxid", ctypes.c_wchar * 80),
-                    ("message", ctypes.c_wchar * 0x1000B),
-                    ("filepath", ctypes.c_wchar * 260),
-                    ("time", ctypes.c_wchar * 30)
-                    ]
-
     def handle(self):
         conn = self.request
         comtypes.CoInitialize()
         while True:
             try:
-                ptr_data = conn.recv(1024)
-                try:
-                    if ptr_data.decode() == 'bye':
-                        break
-                except UnicodeDecodeError:
-                    pass
-                while len(ptr_data) < ctypes.sizeof(self.ReceiveMsgStruct):
+                ptr_data = b""
+                while True:
                     data = conn.recv(1024)
-                    if len(data) == 0:
-                        break
                     ptr_data += data
-                if ptr_data:
-                    ptr_receive_msg = ctypes.cast(ptr_data, ctypes.POINTER(self.ReceiveMsgStruct))
-                    ReceiveMsgBaseServer.msg_callback(ptr_receive_msg.contents)
-                response = "200 OK"
-                conn.sendall(response.encode())
+                    if len(data) == 0 or data[-1] == 0xA:
+                        break
+                msg = json.loads(ptr_data.decode('utf-8'))
+                ReceiveMsgBaseServer.msg_callback(msg)
             except OSError:
                 break
-            except Exception as e:
-                print(e)
-                conn.sendall("200 OK".encode())
+            except json.JSONDecodeError:
+                pass
+            conn.sendall("200 OK".encode())
         conn.close()
         comtypes.CoUninitialize()
 
     @staticmethod
-    def msg_callback(data):
+    def msg_callback(msg):
+        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
         # 主线程中已经注入，此处禁止调用StartService和StopService
-        msg = {'pid': data.pid, 'time': data.time, 'type': data.type,
-               'isSendMsg': data.isSendMsg, 'msgid': data.msgid,
-               'wxid': data.wxid,
-               'sendto' if data.isSendMsg else 'from': data.sender,
-               'message': data.message}
         robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
         event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
-        wx = WeChatRobot(data.pid, robot, event)
-        userinfo = wx.GetWxUserInfo(data.wxid)
+        wx = WeChatRobot(msg['pid'], robot, event)
+        userinfo = wx.GetWxUserInfo(msg['wxid'])
         msg['alias'] = userinfo['wxNumber']
-        if data.isSendMsg == 0:
-            if '@chatroom' in data.sender:
-                chatroom_info = wx.GetWxUserInfo(data.sender)
+        if msg['isSendMsg'] == 0:
+            if '@chatroom' in msg['sender']:
+                chatroom_info = wx.GetWxUserInfo(msg['sender'])
                 msg['chatroom_name'] = chatroom_info['wxNickName']
-                msg['nickname'] = wx.GetChatRoomMemberNickname(data.sender, data.wxid)
+                msg['nickname'] = wx.GetChatRoomMemberNickname(msg['sender'], msg['wxid'])
             else:
                 msg['nickname'] = userinfo['wxNickName']
         # TODO: 在这里写额外的消息处理逻辑
@@ -330,12 +309,8 @@ class WeChatRobot:
             调用成功返回个人信息，否则返回空字典.
 
         """
-        self_info = self.robot.CGetSelfInfo(self.pid).replace('\n', '\\n')
-        try:
-            self_info = ast.literal_eval(self_info)
-        except SyntaxError:
-            return {}
-        return self_info
+        self_info = self.robot.CGetSelfInfo(self.pid)
+        return json.loads(self_info)
 
     def StopService(self) -> int:
         """
@@ -519,8 +494,8 @@ class WeChatRobot:
             联系人信息.
 
         """
-        userinfo = self.robot.CGetWxUserInfo(self.pid, wxid).replace('\n', '\\n')
-        return ast.literal_eval(userinfo)
+        userinfo = self.robot.CGetWxUserInfo(self.pid, wxid)
+        return json.loads(userinfo)
 
     def GetChatRoomMembers(self, chatroom_id: str) -> dict or None:
         """

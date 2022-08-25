@@ -87,6 +87,23 @@ string utf8_to_gb2312(const char *strUTF8)
     return strTemp;
 }
 
+string gb2312_to_utf8(const char *strGB2312)
+{
+    int len = MultiByteToWideChar(CP_ACP, 0, strGB2312, -1, NULL, 0);
+    wchar_t *wszGBK = new wchar_t[len + 1];
+    memset(wszGBK, 0, len * 2 + 2);
+    MultiByteToWideChar(CP_ACP, 0, strGB2312, -1, wszGBK, len);
+
+    len = WideCharToMultiByte(CP_UTF8, 0, wszGBK, -1, NULL, 0, NULL, NULL);
+    char *szGBK = new char[len + 1];
+    memset(szGBK, 0, len + 1);
+    WideCharToMultiByte(CP_UTF8, 0, wszGBK, -1, szGBK, len, NULL, NULL);
+    string strTemp(szGBK);
+    delete[] szGBK;
+    delete[] wszGBK;
+    return strTemp;
+}
+
 /*
  * 将UTF8编码数据转换为GBK编码
  */

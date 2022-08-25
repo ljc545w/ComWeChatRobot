@@ -3,7 +3,6 @@
 #include <signal.h>
 // mongoose: https://github.com/cesanta/mongoose
 #include "mongoose/mongoose.h"
-#include "base64/base64.h"
 #pragma comment(lib, "ws2_32.lib")
 extern "C" __declspec(dllexport) void http_start(int port);
 extern "C" __declspec(dllexport) int http_close();
