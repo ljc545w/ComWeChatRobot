@@ -65,6 +65,7 @@ struct ReceiveMsgStruct
     wstring message;
     wstring filepath;
     wstring time;
+    wstring extrainfo;
     ~ReceiveMsgStruct()
     {
     }

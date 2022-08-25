@@ -8,7 +8,7 @@
 
    Version: 2.rc.08 (release candidate)
 
-   Copyright (C) 2004-2017, 2020, 2021 Ren√© Nyffenegger
+   Copyright (C) 2004-2017, 2020, 2021 Ren®¶ Nyffenegger
 
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -28,7 +28,7 @@
 
    3. This notice may not be removed or altered from any source distribution.
 
-   Ren√© Nyffenegger rene.nyffenegger@adp-gmbh.ch
+   Ren®¶ Nyffenegger rene.nyffenegger@adp-gmbh.ch
 
 */
 
@@ -182,7 +182,7 @@ template <typename String>
 static std::string decode(String encoded_string, bool remove_linebreaks)
 {
     //
-    // decode(‚Ä¶) is templated so that it can be used with String = const std::string&
+    // decode(°≠) is templated so that it can be used with String = const std::string&
     // or std::string_view (requires at least C++17)
     //
 

@@ -3,6 +3,8 @@
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include <map>
+#include "json/json.hpp"
+using namespace nlohmann;
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -24,19 +26,6 @@ using namespace std;
 
 static int SRVPORT = 0;
 
-struct ScoketMsgStruct
-{
-    DWORD pid;
-    int messagetype;
-    BOOL isSendMessage;
-    unsigned long long msgid;
-    wchar_t sender[80];
-    wchar_t wxid[80];
-    wchar_t message[0x1000B];
-    wchar_t filepath[MAX_PATH];
-    wchar_t time[30];
-};
-
 // 是否开启接收消息HOOK标志
 BOOL ReceiveMessageHooked = false;
 // 保存HOOK前的字节码，用于恢复
@@ -56,10 +45,23 @@ static DWORD SendMessageNextCall = WeChatWinBase + SendMessageNextCallOffset;
 // 发送HOOK的跳转地址
 static DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 
-// 通过socket将消息发送给服务端
-BOOL SendSocketMessage(ReceiveMsgStruct *ms)
+struct SocketMessageStruct
 {
-    shared_ptr<ReceiveMsgStruct> shared_ms(ms);
+    char *buffer;
+    int length;
+    ~SocketMessageStruct()
+    {
+        if (this->buffer != NULL)
+        {
+            delete[] this->buffer;
+            this->buffer = NULL;
+        }
+    }
+};
+
+// 通过socket将消息发送给服务端
+BOOL SendSocketMessage(const char *buffer, size_t len)
+{
     if (SRVPORT == 0)
     {
         return false;
@@ -89,21 +91,7 @@ BOOL SendSocketMessage(ReceiveMsgStruct *ms)
         return false;
     }
     char recvbuf[1024] = {0};
-    auto sms = std::make_shared<ScoketMsgStruct>();
-    ZeroMemory(sms.get(), sizeof(ScoketMsgStruct));
-    sms->pid = shared_ms->pid;
-    sms->messagetype = shared_ms->messagetype;
-    sms->isSendMessage = shared_ms->isSendMessage;
-    sms->msgid = shared_ms->msgid;
-    memcpy(sms->wxid, shared_ms->wxid.c_str(), shared_ms->wxid.length() * 2);
-    memcpy(sms->sender, shared_ms->sender.c_str(), shared_ms->sender.length() * 2);
-    memcpy(sms->message, shared_ms->message.c_str(), shared_ms->message.length() * 2);
-    memcpy(sms->filepath, shared_ms->filepath.c_str(), shared_ms->filepath.length() * 2);
-    memcpy(sms->time, shared_ms->time.c_str(), shared_ms->time.length() * 2);
-#ifdef _DEBUG
-    wcout << sms->time << endl;
-#endif
-    int ret = send(clientsocket, (char *)sms.get(), sizeof(ScoketMsgStruct), 0);
+    int ret = send(clientsocket, buffer, len, 0);
     if (ret == -1 || ret == 0)
     {
 #ifdef _DEBUG
@@ -126,83 +114,43 @@ BOOL SendSocketMessage(ReceiveMsgStruct *ms)
     return true;
 }
 
-// 创建广播消息数组
-#ifndef USE_SOCKET
-static SAFEARRAY *CreateMessageArray(map<wstring, _variant_t> msg)
+void SendSocketMessageInThread(SocketMessageStruct *param)
 {
-    HRESULT hr = S_OK;
-    SAFEARRAY *psaValue;
-    vector<wstring> MessageInfoKey = {
-        L"pid",
-        L"type",
-        L"isSendMessage",
-        L"msgid",
-        msg[L"isSendMessage"].boolVal ? L"sendto" : L"from",
-        L"wxid",
-        L"message",
-        L"filepath",
-        L"time"};
-    SAFEARRAYBOUND rgsaBound[2] = {{MessageInfoKey.size(), 0}, {2, 0}};
-    psaValue = SafeArrayCreate(VT_VARIANT, 2, rgsaBound);
-    long keyIndex[2] = {0, 0};
-    keyIndex[0] = 0;
-    keyIndex[1] = 0;
-    for (unsigned int i = 0; i < MessageInfoKey.size(); i++)
-    {
-        keyIndex[0] = i;
-        keyIndex[1] = 0;
-        _variant_t key = MessageInfoKey[i].c_str();
-        hr = SafeArrayPutElement(psaValue, keyIndex, &key);
-        keyIndex[0] = i;
-        keyIndex[1] = 1;
-        hr = SafeArrayPutElement(psaValue, keyIndex, &msg[MessageInfoKey[i]]);
-    }
-    return psaValue;
+    if (param == NULL)
+        return;
+    unique_ptr<SocketMessageStruct> sms(param);
+    string jstr(param->buffer, param->length);
+    SendSocketMessage(jstr.c_str(), jstr.size());
 }
-#endif
 
 static void dealMessage(DWORD messageAddr)
 {
-    BOOL isSendMessage = *(BOOL *)(messageAddr + 0x3C);
-    ReceiveMsgStruct *message = new ReceiveMsgStruct;
-    ZeroMemory(message, sizeof(ReceiveMsgStruct));
-    message->pid = GetCurrentProcessId();
-    message->isSendMessage = isSendMessage;
-    message->time = GetTimeW(*(DWORD *)(messageAddr + 0x44));
-    message->messagetype = *(DWORD *)(messageAddr + 0x38);
-    message->msgid = *(unsigned long long *)(messageAddr + 0x30);
-    message->sender = READ_WSTRING(messageAddr, 0x48);
+    json jMsg;
+    unsigned long long msgid = *(unsigned long long *)(messageAddr + 0x30);
+    jMsg["pid"] = GetCurrentProcessId();
+    jMsg["type"] = *(DWORD *)(messageAddr + 0x38);
+    jMsg["isSendMsg"] = *(BOOL *)(messageAddr + 0x3C);
+    jMsg["msgid"] = msgid;
+    jMsg["sender"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x48).c_str());
     int length = *(DWORD *)(messageAddr + 0x170 + 0x4);
-    if (length == 0)
-    {
-        message->wxid = message->sender;
-    }
-    else
-    {
-        message->wxid = READ_WSTRING(messageAddr, 0x170);
-    }
-    message->message = READ_WSTRING(messageAddr, 0x70);
-    message->filepath = READ_WSTRING(messageAddr, 0x1AC);
+    jMsg["wxid"] = length == 0 ? jMsg["sender"].get<std::string>() : unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x170).c_str());
+    jMsg["message"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x70).c_str());
+    jMsg["filepath"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1AC).c_str());
+    string extrabuf = base64_encode((BYTE *)(*(DWORD *)(messageAddr + 0x8C)), *(DWORD *)(messageAddr + 0x8C + 0x4));
+    jMsg["extrainfo"] = extrabuf;
+    jMsg["time"] = unicode_to_utf8((wchar_t *)GetTimeW(*(DWORD *)(messageAddr + 0x44)).c_str());
+    string jstr = jMsg.dump() + '\n';
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端
-    map<wstring, _variant_t> msg_map;
-    msg_map[L"pid"] = message->pid;
-    msg_map[L"isSendMessage"] = isSendMessage;
-    msg_map[L"time"] = message->time.c_str();
-    msg_map[L"type"] = message->messagetype;
-    msg_map[L"msgid"] = message->msgid;
-    msg_map[L"sendto"] = message->sender.c_str();
-    msg_map[L"from"] = message->sender.c_str();
-    msg_map[L"wxid"] = message->wxid.c_str();
-    msg_map[L"message"] = message->message.c_str();
-    msg_map[L"filepath"] = message->filepath.c_str();
-    SAFEARRAY *psaValue = CreateMessageArray(msg_map);
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = psaValue;
-    PostComMessage(message->pid, WX_MESSAGE, message->msgid, &vsaValue);
+    VARIANT vsaValue = (_variant_t)jstr.c_str();
+    PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
 #endif
-    HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessage, message, NULL, 0);
+    // 为保证线程安全，需要手动管理内存
+    SocketMessageStruct *sms = new SocketMessageStruct;
+    sms->buffer = new char[jstr.size() + 1];
+    memcpy(sms->buffer, jstr.c_str(), jstr.size() + 1);
+    sms->length = jstr.size();
+    HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendSocketMessageInThread, sms, NULL, 0);
     if (hThread)
     {
         CloseHandle(hThread);

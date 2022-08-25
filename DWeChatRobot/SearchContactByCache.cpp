@@ -2,6 +2,9 @@
 #include <typeinfo>
 #include <string>
 #include <vector>
+#include <map>
+#include "json/json.hpp"
+using namespace nlohmann;
 
 // 获取好友信息CALL1偏移
 #define GetUserInfoCall1Offset 0x100BD5C0 - 0x10000000
@@ -34,50 +37,29 @@ struct GetUserInfoStruct
 */
 static wstring WxUserInfo(DWORD address)
 {
-    wstring wUserInfo = L"";
-    vector<DWORD> InfoType{
-        address + 0x10,
-        address + 0x24,
-        address + 0x38,
-        address + 0x58,
-        address + 0x6C,
-        address + 0xFC,
-        address + 0x110,
-        address + 0x19C,
-        address + 0x1B0,
-        address + 0x1C4,
-        address + 0x1D8,
-        address + 0x27C};
-    vector<wchar_t *> InfoTypeName{
-        (WCHAR *)L"\"wxId\"",
-        (WCHAR *)L"\"wxNumber\"",
-        (WCHAR *)L"\"wxV3\"",
-        (WCHAR *)L"\"wxRemark\"",
-        (WCHAR *)L"\"wxNickName\"",
-        (WCHAR *)L"\"wxBigAvatar\"",
-        (WCHAR *)L"\"wxSmallAvatar\"",
-        (WCHAR *)L"\"wxSignature\"",
-        (WCHAR *)L"\"wxNation\"",
-        (WCHAR *)L"\"wxProvince\"",
-        (WCHAR *)L"\"wxCity\"",
-        (WCHAR *)L"\"wxBackground\"",
-    };
-    wUserInfo += L"{";
-    for (unsigned int i = 0; i < InfoType.size(); i++)
+    json jData;
+    map<string, DWORD> key_addr_map;
+    key_addr_map["wxId"] = address + 0x10;
+    key_addr_map["wxNumber"] = address + 0x24;
+    key_addr_map["wxV3"] = address + 0x38;
+    key_addr_map["wxRemark"] = address + 0x58;
+    key_addr_map["wxNickName"] = address + 0x6C;
+    key_addr_map["wxBigAvatar"] = address + 0xFC;
+    key_addr_map["wxSmallAvatar"] = address + 0x110;
+    key_addr_map["wxSignature"] = address + 0x19C;
+    key_addr_map["wxNation"] = address + 0x1B0;
+    key_addr_map["wxProvince"] = address + 0x1C4;
+    key_addr_map["wxCity"] = address + 0x1D8;
+    key_addr_map["wxBackground"] = address + 0x27C;
+    for (auto it = key_addr_map.begin(); it != key_addr_map.end(); it++)
     {
-        wchar_t *wstemp = ((*((DWORD *)InfoType[i])) != 0) ? (WCHAR *)(*((LPVOID *)InfoType[i])) : (WCHAR *)L"null";
-        wstring wsrtemp = wreplace(wstemp, L'\"', L"\\\"");
-        wUserInfo = wUserInfo + InfoTypeName[i] + L":\"" + wsrtemp + L"\"";
-        if (i != InfoType.size() - 1)
-        {
-            wUserInfo += L",";
-        }
+        string key = it->first;
+        DWORD addr = it->second;
+        wstring wstemp = ((*((DWORD *)addr)) != 0) ? (wstring)(WCHAR *)(*((LPVOID *)addr)) : L"null";
+        string value = unicode_to_utf8((wchar_t *)wstemp.c_str());
+        jData[key] = value;
     }
-    wUserInfo += L"}";
-#ifdef _DEBUG
-    wcout.imbue(locale("chs"));
-    wcout << wUserInfo.c_str() << endl;
-#endif
+    wstring wUserInfo = utf8_to_unicode(jData.dump().c_str());
     return wUserInfo;
 }
 

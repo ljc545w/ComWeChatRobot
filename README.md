@@ -49,11 +49,11 @@ CWeChatRobot.exe /unregserver
 ```
 # 调用
 **Python：**
-参考[wxRobot.py](/Python/wxRobot.py)
-**C#：**
-参考[ComWechatRobotCsharp](https://github.com/RingoStudio/ComWechatRobotCsharp)，感谢@RingoStudio 的贡献
-**易语言：**
-参考[ESDK](/ESDK)，感谢@lovezm 的贡献
+参考[wxRobot.py](/Python/wxRobot.py)  
+**C#：**  
+参考[ComWechatRobotCsharp](https://github.com/RingoStudio/ComWechatRobotCsharp)，感谢@RingoStudio 的贡献  
+**易语言：**  
+参考[ESDK](/ESDK)，感谢@lovezm 的贡献  
 # 更多功能
 1. 尝试添加issue中的功能
 
@@ -119,11 +119,13 @@ CWeChatRobot.exe /unregserver
 ## 2022.08.13
 1. 现在消息HOOK内容包含消息ID
 2. 完成发送消息的http接口，可参考[wxDriver.py](/Release/socket/wxDriver.py)，其他接口还需要一点时间
-3. 新增项目配置文件，感谢@amchii 提供的方法
-
+3. 新增项目配置文件，感谢@amchii 提供的方法  
 ## 2022.08.21
-1. 所有功能http接口封装完成，可接受get、post请求
-2. 提供http接口调用示例，参考[wxDriver.py](/Release/socket/wxDriver.py)
+1. 所有功能http接口封装完成，可接受get、post请求  
+2. 提供http接口调用示例，参考[wxDriver.py](/Release/socket/wxDriver.py)  
+## 2022.08.25  
+1. 接收消息格式修改为json，现在也可以获取到扩展信息，可从扩展信息中获取到文件保存路径或被艾特人wxid  
+2. 优化获取个人信息，获取好友信息接口  
 
 # 打赏作者
 请给作者一个star，感谢感谢
