@@ -1,0 +1,2 @@
+comtypes==1.1.11
+psutil==5.9.0

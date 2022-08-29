@@ -1,6 +1,7 @@
 #include "base.h"
 
-DWORD GetWeChatRobotBase() {
+DWORD GetWeChatRobotBase()
+{
     if (!hProcess)
         return 0;
     DWORD dwWriteSize = 0;
@@ -12,11 +13,13 @@ DWORD GetWeChatRobotBase() {
     DWORD dwHandle, dwID;
     LPVOID pFunc = GetModuleHandleW;
     HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pFunc, pRemoteAddress, 0, &dwID);
-    if (hThread) {
+    if (hThread)
+    {
         WaitForSingleObject(hThread, INFINITE);
         GetExitCodeThread(hThread, &dwHandle);
     }
-    else {
+    else
+    {
         return 0;
     }
     CloseHandle(hThread);
