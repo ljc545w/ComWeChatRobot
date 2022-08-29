@@ -140,12 +140,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SOCKET_Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>SWeChatRobot</TargetName>
     <IntDir>$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Release\socket\</OutDir>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -208,6 +210,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d  "$(TargetPath)"  "$(SolutionDir)build\com\"
+xcopy /y /d  "$(OutDir)..\Python\com\wxRobot.py"  "$(SolutionDir)build\com\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SOCKET_Release|Win32'">
     <ClCompile>
@@ -228,6 +234,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d  "$(TargetPath)"  "$(SolutionDir)build\http\"
+xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

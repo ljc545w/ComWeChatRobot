@@ -142,7 +142,7 @@ static void dealMessage(DWORD messageAddr)
     string jstr = jMsg.dump() + '\n';
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端
-    VARIANT vsaValue = (_variant_t)jstr.c_str();
+    VARIANT vsaValue = (_variant_t)utf8_to_unicode(jstr.c_str()).c_str();
     PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
 #endif
     // 为保证线程安全，需要手动管理内存

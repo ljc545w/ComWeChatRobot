@@ -83,10 +83,9 @@ namespace wxRobot
                     wx.CStopReceiveMessage();
                 }
 
-
                 System.Object[,,] FriendList = wx.CGetFriendList() as System.Object[,,];
                 int length = FriendList.GetLength(0);
-                for (int i = 0; i < 1/*length*/; i++)
+                for (int i = 0; i < 1 /*length*/; i++)
                 {
                     Console.WriteLine(FriendList[i, 1, 1]);
                 }
@@ -125,7 +124,6 @@ namespace wxRobot
 
         Subscription = 3,
     }
-
 
     public class WxUserInfo
     {
