@@ -139,6 +139,7 @@ static void dealMessage(DWORD messageAddr)
     string extrabuf = base64_encode((BYTE *)(*(DWORD *)(messageAddr + 0x8C)), *(DWORD *)(messageAddr + 0x8C + 0x4));
     jMsg["extrainfo"] = extrabuf;
     jMsg["time"] = unicode_to_utf8((wchar_t *)GetTimeW(*(DWORD *)(messageAddr + 0x44)).c_str());
+    jMsg["self"] = unicode_to_utf8((wchar_t *)GetSelfWxid().c_str());
     string jstr = jMsg.dump() + '\n';
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端

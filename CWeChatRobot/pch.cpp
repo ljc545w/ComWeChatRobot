@@ -23,6 +23,21 @@ string unicode_to_utf8(wchar_t *wstr)
     return str;
 }
 
+/*
+ * 将GB2312编码数据转换为GBK编码
+ */
+wstring gb2312_to_unicode(const char *buffer)
+{
+    int c_size = MultiByteToWideChar(CP_ACP, 0, buffer, -1, 0, 0);
+    wchar_t *temp = new wchar_t[c_size + 1];
+    MultiByteToWideChar(CP_ACP, 0, buffer, -1, temp, c_size);
+    temp[c_size] = L'\0';
+    wstring ret(temp);
+    delete[] temp;
+    temp = NULL;
+    return ret;
+}
+
 BOOL isFileExists_stat(string &name)
 {
     struct stat buffer;

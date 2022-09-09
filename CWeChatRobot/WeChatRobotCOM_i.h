@@ -334,6 +334,17 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ VARIANT *wxids,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE COpenBrowser( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetHistoryPublicMsg( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR PublicId,
+            /* [in] */ BSTR Offset,
+            /* [retval][out] */ VARIANT *__result) = 0;
+        
     };
     
     
@@ -654,6 +665,19 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ VARIANT *wxids,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *COpenBrowser )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetHistoryPublicMsg )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR PublicId,
+            /* [in] */ BSTR Offset,
+            /* [retval][out] */ VARIANT *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -815,6 +839,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CAddChatRoomMember(This,pid,chatroomid,wxids,__result)	\
     ( (This)->lpVtbl -> CAddChatRoomMember(This,pid,chatroomid,wxids,__result) ) 
+
+#define IWeChatRobot_COpenBrowser(This,pid,url,__result)	\
+    ( (This)->lpVtbl -> COpenBrowser(This,pid,url,__result) ) 
+
+#define IWeChatRobot_CGetHistoryPublicMsg(This,pid,PublicId,Offset,__result)	\
+    ( (This)->lpVtbl -> CGetHistoryPublicMsg(This,pid,PublicId,Offset,__result) ) 
 
 #endif /* COBJMACROS */
 

@@ -965,7 +965,7 @@ class WeChatRobot:
         """
         return self.robot.CGetChatRoomMemberNickname(self.pid, chatroom_id, wxid)
 
-    def DelChatRoomMember(self, chatroom_id: str, wxid_list: str or list or tuple) -> str:
+    def DelChatRoomMember(self, chatroom_id: str, wxid_list: str or list or tuple) -> int:
         """
         删除群成员.请确认具有相关权限再调用。
 
@@ -984,7 +984,7 @@ class WeChatRobot:
         """
         return self.robot.CDelChatRoomMember(self.pid, chatroom_id, wxid_list)
 
-    def AddChatRoomMember(self, chatroom_id: str, wxid_list: str or list or tuple) -> str:
+    def AddChatRoomMember(self, chatroom_id: str, wxid_list: str or list or tuple) -> int:
         """
         添加群成员.请确认具有相关权限再调用。
 
@@ -1002,6 +1002,47 @@ class WeChatRobot:
 
         """
         return self.robot.CAddChatRoomMember(self.pid, chatroom_id, wxid_list)
+
+    def OpenBrowser(self,url: str) -> int:
+        """
+        打开微信内置浏览器
+
+        Parameters
+        ----------
+        url : str
+            目标网页url.
+
+        Returns
+        -------
+        int
+            成功返回0,失败返回非0值.
+
+        """
+        return self.robot.COpenBrowser(self.pid,url)
+
+    def GetHistoryPublicMsg(self,public_id:str,offset:str = "") -> str:
+        """
+        获取公众号历史消息，一次获取十条推送记录
+
+        Parameters
+        ----------
+        public_id : str
+            公众号id.
+        offset : str, optional
+            起始偏移，为空的话则从新到久获取十条，该值可从返回数据中取得. The default is "".
+
+        Returns
+        -------
+        str
+            成功返回json数据，失败返回错误信息或空字符串.
+
+        """
+        ret = self.robot.CGetHistoryPublicMsg(self.pid,public_id,offset)[0]
+        try:
+            ret = json.loads(ret)
+        except json.JSONDecodeError:
+            pass
+        return ret
 
 
 def get_wechat_pid_list() -> list:

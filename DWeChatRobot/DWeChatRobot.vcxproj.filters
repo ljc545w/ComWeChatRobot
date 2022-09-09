@@ -115,6 +115,15 @@
     <Filter Include="群相关\获取群成员昵称">
       <UniqueIdentifier>{cb62e2bc-3505-49dd-9b35-def28c95ff8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="浏览器相关">
+      <UniqueIdentifier>{84e424af-652f-41ff-8899-eca889227424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="浏览器相关\打开浏览器">
+      <UniqueIdentifier>{e308ad8c-60c5-4043-a30b-ee7acaf47f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="浏览器相关\获取公众号历史信息">
+      <UniqueIdentifier>{05d4d999-8961-4c1a-82fb-a36e3a4965f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -224,6 +233,12 @@
     </ClInclude>
     <ClInclude Include="http_overload.hpp">
       <Filter>wxsocket</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenBrowser.h">
+      <Filter>浏览器相关\打开浏览器</Filter>
+    </ClInclude>
+    <ClInclude Include="GetHistoryPublicMsg.h">
+      <Filter>浏览器相关\获取公众号历史信息</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +355,12 @@
     </ClCompile>
     <ClCompile Include="base64\base64.cpp">
       <Filter>wxsocket</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenBrowser.cpp">
+      <Filter>浏览器相关\打开浏览器</Filter>
+    </ClCompile>
+    <ClCompile Include="GetHistoryPublicMsg.cpp">
+      <Filter>浏览器相关\获取公众号历史信息</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -9,14 +9,17 @@ static DWORD HookVoiceMsgAddr = WeChatWinBase + HookVoiceMsgAddrOffset;
 static DWORD HookVoiceMsgNextCall = WeChatWinBase + HookVoiceMsgNextCallOffset;
 static DWORD HookVoiceMsgJmpBackAddr = HookVoiceMsgAddr + 0x5;
 static char VoiceMsgOldAsm[5] = {0};
-static wstring savepath = L"";
+static wstring global_save_path = L"";
 
 void SaveVoiceMsg(unsigned char *buffer, int length, DWORD msgHandle)
 {
-    /*time_t curtime = time(0);
-    wchar_t timestamp[32] = { 0 };
-    _itow_s((int)curtime, timestamp, 10);*/
+    wstring save_path = global_save_path + GetSelfWxid();
+    if (!FindOrCreateDirectory(save_path.c_str()))
+    {
+        return;
+    }
     wchar_t *temp;
+
     int wxid_length = *(DWORD *)(msgHandle + 0x174);
     temp = new wchar_t[wxid_length + 1];
     memcpy(temp, (void *)(*(DWORD *)(msgHandle + 0x170)), (wxid_length + 1) * 2);
@@ -30,8 +33,8 @@ void SaveVoiceMsg(unsigned char *buffer, int length, DWORD msgHandle)
     wstring clientmsgid(temp);
     delete[] temp;
     temp = NULL;
-    wstring filename = savepath + sender + L"-" + clientmsgid + L".amr";
-    HANDLE hFile = CreateFile(filename.c_str(), GENERIC_ALL, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    wstring file_path = save_path + L"\\" + clientmsgid + L".amr";
+    HANDLE hFile = CreateFile(file_path.c_str(), GENERIC_ALL, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return;
@@ -81,12 +84,12 @@ void UnHookVoiceMsg()
 #ifndef USE_SOCKET
 BOOL HookVoiceMsgRemote(LPVOID lpParameter)
 {
-    savepath = (wstring)(wchar_t *)lpParameter;
-    if (savepath.back() != '\\')
+    global_save_path = (wstring)(wchar_t *)lpParameter;
+    if (global_save_path.back() != '\\')
     {
-        savepath += L"\\";
+        global_save_path += L"\\";
     }
-    wstring createpath = savepath.substr(0, savepath.length() - 1);
+    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
     if (!FindOrCreateDirectory(createpath.c_str()))
     {
         return false;
@@ -95,13 +98,14 @@ BOOL HookVoiceMsgRemote(LPVOID lpParameter)
     return true;
 }
 #else
-BOOL __stdcall HookVoiceMsg(wstring savepath)
+BOOL __stdcall HookVoiceMsg(wstring save_path)
 {
-    if (savepath.back() != '\\')
+    global_save_path = save_path;
+    if (global_save_path.back() != '\\')
     {
-        savepath += L"\\";
+        global_save_path += L"\\";
     }
-    wstring createpath = savepath.substr(0, savepath.length() - 1);
+    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
     if (!FindOrCreateDirectory(createpath.c_str()))
     {
         return false;

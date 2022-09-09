@@ -10,10 +10,15 @@ static DWORD HookImageMsgAddr = WeChatWinBase + HookImageMsgAddrOffset;
 static DWORD HookImageMsgNextCall = WeChatWinBase + HookImageMsgNextCallOffset;
 static DWORD HookImageMsgJmpBackAddr = HookImageMsgAddr + 0x5;
 static char ImageMsgOldAsm[5] = {0};
-static wstring savepath = L"";
+static wstring global_save_path = L"";
 
 void SaveImageMsg(unsigned char *buffer, int length, DWORD msgHandle)
 {
+    wstring save_path = global_save_path + GetSelfWxid();
+    if (!FindOrCreateDirectory(save_path.c_str()))
+    {
+        return;
+    }
     int l_datpath = *(int *)(msgHandle + 0x4) + 1;
     wchar_t *datpath = new wchar_t[l_datpath];
     memcpy(datpath, (void *)(*(DWORD *)msgHandle), l_datpath * 2);
@@ -26,7 +31,7 @@ void SaveImageMsg(unsigned char *buffer, int length, DWORD msgHandle)
     }
     int pos_begin = wdatpath.find_last_of(L"\\") + 1;
     int pos_end = wdatpath.find_last_of(L".");
-    wstring filename = wdatpath.substr(pos_begin, pos_end - pos_begin);
+    wstring file_name = wdatpath.substr(pos_begin, pos_end - pos_begin);
 
     unsigned char magic_head[4] = {0};
     wchar_t postfix[5] = {0};
@@ -47,8 +52,8 @@ void SaveImageMsg(unsigned char *buffer, int length, DWORD msgHandle)
     {
         lstrcpy(postfix, L"");
     }
-    wstring filepath = savepath + filename + postfix;
-    HANDLE hFile = CreateFile(filepath.c_str(), GENERIC_ALL, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    wstring file_path = save_path + L"\\" + file_name + postfix;
+    HANDLE hFile = CreateFile(file_path.c_str(), GENERIC_ALL, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return;
@@ -101,12 +106,12 @@ void UnHookImageMsg()
 #ifndef USE_SOCKET
 BOOL HookImageMsgRemote(LPVOID lpParameter)
 {
-    savepath = (wstring)(wchar_t *)lpParameter;
-    if (savepath.back() != '\\')
+    global_save_path = (wstring)(wchar_t *)lpParameter;
+    if (global_save_path.back() != '\\')
     {
-        savepath += L"\\";
+        global_save_path += L"\\";
     }
-    wstring createpath = savepath.substr(0, savepath.length() - 1);
+    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
     if (!FindOrCreateDirectory(createpath.c_str()))
     {
         return false;
@@ -115,13 +120,14 @@ BOOL HookImageMsgRemote(LPVOID lpParameter)
     return true;
 }
 #else
-BOOL __stdcall HookImageMsg(wstring savepath)
+BOOL __stdcall HookImageMsg(wstring save_path)
 {
-    if (savepath.back() != '\\')
+    global_save_path = save_path;
+    if (global_save_path.back() != '\\')
     {
-        savepath += L"\\";
+        global_save_path += L"\\";
     }
-    wstring createpath = savepath.substr(0, savepath.length() - 1);
+    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
     if (!FindOrCreateDirectory(createpath.c_str()))
     {
         return false;

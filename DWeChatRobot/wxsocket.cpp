@@ -516,6 +516,21 @@ void request_event(mg_http_message *hm, string &ret)
         UnHookLogMsgInfo();
         break;
     }
+    case WECHAT_BROWSER_OPEN_WITH_URL:
+    {
+        wstring url = get_http_param_str(hm, jData, "url", method);
+        OpenBrowser(url);
+        break;
+    }
+    case WECHAT_GET_PUBLIC_MSG:
+    {
+        wstring public_id = get_http_param_str(hm, jData, "public_id", method);
+        wstring offset = get_http_param_str(hm, jData, "offset", method);
+        string resp = GetHistoryPublicMsg(public_id, offset);
+        json ret_data = {{"msg", resp}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
     default:
         // char* wxid = mg_json_get_str(hm->body, "$.wxid");
         break;

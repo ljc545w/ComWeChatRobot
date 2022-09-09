@@ -12,8 +12,8 @@ VOID HookReceiveMessage(int port);
 VOID UnHookReceiveMessage();
 void UnHookImageMsg();
 void UnHookVoiceMsg();
-BOOL __stdcall HookVoiceMsg(wstring savepath);
-BOOL __stdcall HookImageMsg(wstring savepath);
+BOOL __stdcall HookVoiceMsg(wstring save_path);
+BOOL __stdcall HookImageMsg(wstring save_path);
 #endif
 
 void __stdcall HookVoiceMsg();
