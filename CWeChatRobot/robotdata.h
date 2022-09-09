@@ -27,6 +27,8 @@
 #include "GetChatRoomMemberNickname.h"
 #include "DelChatRoomMember.h"
 #include "AddChatRoomMember.h"
+#include "OpenBrowser.h"
+#include "GetHistoryPublicMsg.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
@@ -82,3 +84,6 @@
 #define UnHookVoiceMsgRemote "UnHookVoiceMsg"
 
 #define ChangeWeChatVerRemote "ChangeWeChatVerRemote"
+
+#define OpenBrowserRemote "OpenBrowserRemote"
+#define GetHistoryPublicMsgRemote "GetHistoryPublicMsgRemote"

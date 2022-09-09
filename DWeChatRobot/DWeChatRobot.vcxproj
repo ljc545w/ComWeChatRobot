@@ -322,8 +322,10 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="GetChatRoomMemberNickname.h" />
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
+    <ClInclude Include="GetHistoryPublicMsg.h" />
     <ClInclude Include="LogMsgInfo.h" />
     <ClInclude Include="http_overload.hpp" />
+    <ClInclude Include="OpenBrowser.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="SelfInfo.h" />
@@ -363,8 +365,10 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClCompile Include="GetChatRoomMemberNickname.cpp" />
     <ClCompile Include="GetChatRoomMemebers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
+    <ClCompile Include="GetHistoryPublicMsg.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
+    <ClCompile Include="OpenBrowser.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='SOCKET_Debug|Win32'">Create</PrecompiledHeader>

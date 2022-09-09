@@ -187,6 +187,7 @@ void UnHookAll()
     UnHookSearchContact();
     UnHookVoiceMsg();
     UnHookImageMsg();
+    UnHookH5ExtBuf();
     return;
 }
 
@@ -263,6 +264,10 @@ void PrintProcAddr()
     printf("SetChatRoomAnnouncement 0x%08X\n", (DWORD)SetChatRoomAnnouncement);
     printf("SetChatRoomSelfNickname 0x%08X\n", (DWORD)SetChatRoomSelfNickname);
     printf("SetChatRoomName 0x%08X\n", (DWORD)SetChatRoomName);
+    printf("OpenBrowser 0x%08X\n", (DWORD)OpenBrowser);
+    BOOL(__stdcall * get_history_public_msg)
+    (wchar_t *, wchar_t *) = GetHistoryPublicMsg;
+    printf("GetHistoryPublicMsg 0x%08X\n", (DWORD)get_history_public_msg);
 }
 
 BOOL ProcessIsWeChat()

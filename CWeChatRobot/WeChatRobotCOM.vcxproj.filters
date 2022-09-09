@@ -116,6 +116,15 @@
     <Filter Include="template">
       <UniqueIdentifier>{fdd967bf-e9c0-4793-80a1-dcb87b061fc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="浏览器相关">
+      <UniqueIdentifier>{12952462-2a85-4d25-9361-e6bbf47079e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="浏览器相关\打开浏览器">
+      <UniqueIdentifier>{2f7581a1-536b-426a-af04-00fa2c356a73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="浏览器相关\获取公众号历史消息">
+      <UniqueIdentifier>{e54ac438-bc4e-46cf-9450-502e35daf385}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -241,6 +250,12 @@
     <ClInclude Include="utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="OpenBrowser.h">
+      <Filter>浏览器相关\打开浏览器</Filter>
+    </ClInclude>
+    <ClInclude Include="GetHistoryPublicMsg.h">
+      <Filter>浏览器相关\获取公众号历史消息</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -365,6 +380,12 @@
     </ClCompile>
     <ClCompile Include="templatefunc.cpp">
       <Filter>template</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenBrowser.cpp">
+      <Filter>浏览器相关\打开浏览器</Filter>
+    </ClCompile>
+    <ClCompile Include="GetHistoryPublicMsg.cpp">
+      <Filter>浏览器相关\获取公众号历史消息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

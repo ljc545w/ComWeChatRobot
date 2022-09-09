@@ -50,6 +50,7 @@ DWORD GetWeChatPid();
 DWORD StartRobotService(DWORD pid);
 DWORD StopRobotService(DWORD pid);
 string unicode_to_utf8(wchar_t *wstr);
+wstring gb2312_to_unicode(const char *buffer);
 
 BOOL CreateConsole();
 wstring GetComWorkPath();

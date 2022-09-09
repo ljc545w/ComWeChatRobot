@@ -22,7 +22,7 @@ struct WxString
     {
         WxString(NULL);
     }
-    WxString(wstring str)
+    WxString(wstring &str)
     {
         buffer = (wchar_t *)str.c_str();
         length = str.length();
@@ -166,4 +166,10 @@ struct WxFriendStruct
         this->wxNickNameAddr = wxNickNameAddr;
         this->wxRemarkAddr = wxRemarkAddr;
     }
+};
+
+struct GetPublicMsgStruct
+{
+    wchar_t *PublicId;
+    wchar_t *Offset;
 };
