@@ -84,6 +84,8 @@ class WECHAT_HTTP_APIS:
     WECHAT_BROWSER_OPEN_WITH_URL = 38           # 打开微信内置浏览器
     WECHAT_GET_PUBLIC_MSG = 39                  # 获取公众号历史消息
 
+    WECHAT_MSG_FORWARD_MESSAGE = 40             # 转发消息
+
 APIS = WECHAT_HTTP_APIS
 
 # http api 参数模板
@@ -184,7 +186,9 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
 
         # browser
         APIS.WECHAT_BROWSER_OPEN_WITH_URL: {"url": "https://www.baidu.com/"},
-        APIS.WECHAT_GET_PUBLIC_MSG: {"public_id": "","offset": ""}
+        APIS.WECHAT_GET_PUBLIC_MSG: {"public_id": "","offset": ""},
+
+        APIS.WECHAT_MSG_FORWARD_MESSAGE: {"wxid": "filehelper","localId": 1},
     }
 
     def get_http_template(self, api_number):

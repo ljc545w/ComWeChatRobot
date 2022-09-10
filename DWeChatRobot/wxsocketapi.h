@@ -70,6 +70,8 @@ typedef enum WECHAT_HTTP_APISTag
     // browser
     WECHAT_BROWSER_OPEN_WITH_URL,
     WECHAT_GET_PUBLIC_MSG,
+    // 后面的不再区分类型了
+    WECHAT_MSG_FORWARD_MESSAGE,
 } WECHAT_HTTP_APIS,
     *PWECHAT_HTTP_APIS;
 #endif

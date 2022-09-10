@@ -345,6 +345,12 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR Offset,
             /* [retval][out] */ VARIANT *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CForwardMessage( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ int localId,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -678,6 +684,13 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR Offset,
             /* [retval][out] */ VARIANT *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CForwardMessage )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ int localId,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -845,6 +858,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetHistoryPublicMsg(This,pid,PublicId,Offset,__result)	\
     ( (This)->lpVtbl -> CGetHistoryPublicMsg(This,pid,PublicId,Offset,__result) ) 
+
+#define IWeChatRobot_CForwardMessage(This,pid,wxid,localId,__result)	\
+    ( (This)->lpVtbl -> CForwardMessage(This,pid,wxid,localId,__result) ) 
 
 #endif /* COBJMACROS */
 

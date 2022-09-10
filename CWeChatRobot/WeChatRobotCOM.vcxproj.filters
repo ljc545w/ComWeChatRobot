@@ -125,6 +125,9 @@
     <Filter Include="浏览器相关\获取公众号历史消息">
       <UniqueIdentifier>{e54ac438-bc4e-46cf-9450-502e35daf385}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\转发消息">
+      <UniqueIdentifier>{f44839a7-3cf0-415f-886e-22a8635c3dbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -256,6 +259,9 @@
     <ClInclude Include="GetHistoryPublicMsg.h">
       <Filter>浏览器相关\获取公众号历史消息</Filter>
     </ClInclude>
+    <ClInclude Include="ForwardMessage.h">
+      <Filter>发送消息\转发消息</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -386,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="GetHistoryPublicMsg.cpp">
       <Filter>浏览器相关\获取公众号历史消息</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardMessage.cpp">
+      <Filter>发送消息\转发消息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

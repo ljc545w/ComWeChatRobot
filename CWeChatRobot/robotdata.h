@@ -29,6 +29,7 @@
 #include "AddChatRoomMember.h"
 #include "OpenBrowser.h"
 #include "GetHistoryPublicMsg.h"
+#include "ForwardMessage.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
@@ -39,6 +40,7 @@
 #define SendCardRemote "SendCardRemote"
 #define SendAtTextRemote "SendAtTextRemote"
 #define SendAppMsgRemote "SendAppMsgRemote"
+#define ForwardMessageRemote "ForwardMessageRemote"
 
 #define GetFriendListInit "GetFriendListInit"
 #define GetFriendListRemote "GetFriendListRemote"
