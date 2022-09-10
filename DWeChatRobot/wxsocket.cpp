@@ -531,6 +531,15 @@ void request_event(mg_http_message *hm, string &ret)
         ret = ret_data.dump();
         break;
     }
+    case WECHAT_MSG_FORWARD_MESSAGE:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        int localId = get_http_param_int(hm, jData, "localId", method);
+        BOOL status = ForwardMessage(wxid, localId);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
     default:
         // char* wxid = mg_json_get_str(hm->body, "$.wxid");
         break;

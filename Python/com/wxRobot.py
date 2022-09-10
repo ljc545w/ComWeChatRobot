@@ -1044,6 +1044,25 @@ class WeChatRobot:
             pass
         return ret
 
+    def ForwardMessage(self,wxid:str,localId:int) -> int:
+        """
+        转发消息，只支持单条转发
+
+        Parameters
+        ----------
+        wxid : str
+            消息接收人wxid.
+        localId : int
+            消息短id，可以在实时消息接口中获取或查询MSG{x}.db.
+
+        Returns
+        -------
+        int
+            成功返回0，失败返回非0值.
+
+        """
+        return self.robot.CForwardMessage(self.pid,wxid,localId)
+
 
 def get_wechat_pid_list() -> list:
     """

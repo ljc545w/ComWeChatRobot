@@ -5,9 +5,9 @@
 
 // CWeChatRobot
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CStartRobotService(DWORD pid, int *__result)
 {
     *__result = StartRobotService(pid);
@@ -15,9 +15,9 @@ STDMETHODIMP CWeChatRobot::CStartRobotService(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CStopRobotService(DWORD pid, int *__result)
 {
     *__result = StopRobotService(pid);
@@ -25,11 +25,11 @@ STDMETHODIMP CWeChatRobot::CStopRobotService(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：文本消息内容
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：文本消息内容
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendText(DWORD pid, BSTR wxid, BSTR wxmsg, int *__result)
 {
     *__result = SendText(pid, wxid, wxmsg);
@@ -37,12 +37,12 @@ STDMETHODIMP CWeChatRobot::CSendText(DWORD pid, BSTR wxid, BSTR wxmsg, int *__re
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：艾特的人wxid
-* 参数3：文本消息内容
-* 参数4：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：艾特的人wxid
+ * 参数3：文本消息内容
+ * 参数4：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendAtText(DWORD pid, BSTR chatroomid, VARIANT *wxid, BSTR wxmsg, BOOL AutoNickName, int *__result)
 {
     *__result = 0;
@@ -59,11 +59,11 @@ STDMETHODIMP CWeChatRobot::CSendAtText(DWORD pid, BSTR chatroomid, VARIANT *wxid
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：图片绝对路径
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：图片绝对路径
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendImage(DWORD pid, BSTR wxid, BSTR imagepath, int *__result)
 {
     *__result = SendImage(pid, wxid, imagepath);
@@ -71,11 +71,11 @@ STDMETHODIMP CWeChatRobot::CSendImage(DWORD pid, BSTR wxid, BSTR imagepath, int 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：文件绝对路径
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：文件绝对路径
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendFile(DWORD pid, BSTR wxid, BSTR filepath, int *__result)
 {
     *__result = SendFile(pid, wxid, filepath);
@@ -83,13 +83,13 @@ STDMETHODIMP CWeChatRobot::CSendFile(DWORD pid, BSTR wxid, BSTR filepath, int *_
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：文章标题
-* 参数3：文章摘要
-* 参数4：文章链接
-* 参数5：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：文章标题
+ * 参数3：文章摘要
+ * 参数4：文章链接
+ * 参数5：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendArticle(DWORD pid, BSTR wxid, BSTR title, BSTR abstract, BSTR url, BSTR imgpath, int *__result)
 {
     *__result = SendArticle(pid, wxid, title, abstract, url, imgpath);
@@ -97,12 +97,12 @@ STDMETHODIMP CWeChatRobot::CSendArticle(DWORD pid, BSTR wxid, BSTR title, BSTR a
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：被分享人wxid
-* 参数3：显示的名字
-* 参数4：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：被分享人wxid
+ * 参数3：显示的名字
+ * 参数4：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendCard(DWORD pid, BSTR receiver, BSTR sharedwxid, BSTR nickname, int *__result)
 {
     *__result = SendCard(pid, receiver, sharedwxid, nickname);
@@ -110,10 +110,10 @@ STDMETHODIMP CWeChatRobot::CSendCard(DWORD pid, BSTR receiver, BSTR sharedwxid, 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-* 返回一个三维数组，python的comtypes包会将其解析为元组
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ * 返回一个三维数组，python的comtypes包会将其解析为元组
+ */
 STDMETHODIMP CWeChatRobot::CGetFriendList(DWORD pid, VARIANT *__result)
 {
     VARIANT vsaValue;
@@ -137,10 +137,10 @@ STDMETHODIMP CWeChatRobot::CGetFriendListString(DWORD pid, BSTR *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：要查询的wxid
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：要查询的wxid
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetWxUserInfo(DWORD pid, BSTR wxid, BSTR *__result)
 {
     wstring info = GetWxUserInfo(pid, wxid);
@@ -149,9 +149,9 @@ STDMETHODIMP CWeChatRobot::CGetWxUserInfo(DWORD pid, BSTR wxid, BSTR *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetSelfInfo(DWORD pid, BSTR *__result)
 {
     wstring info = GetSelfInfo(pid);
@@ -160,10 +160,10 @@ STDMETHODIMP CWeChatRobot::CGetSelfInfo(DWORD pid, BSTR *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：查询的wxid
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：查询的wxid
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CCheckFriendStatus(DWORD pid, BSTR wxid, int *__result)
 {
     *__result = CheckFriendStatus(pid, (wchar_t *)wxid);
@@ -171,8 +171,8 @@ STDMETHODIMP CWeChatRobot::CCheckFriendStatus(DWORD pid, BSTR wxid, int *__resul
 }
 
 /*
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR *__result)
 {
     wstring path = GetComWorkPath();
@@ -181,9 +181,9 @@ STDMETHODIMP CWeChatRobot::CGetComWorkPath(BSTR *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CStartReceiveMessage(DWORD pid, int port, int *__result)
 {
     *__result = StartReceiveMessage(pid, port);
@@ -191,9 +191,9 @@ STDMETHODIMP CWeChatRobot::CStartReceiveMessage(DWORD pid, int port, int *__resu
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CStopReceiveMessage(DWORD pid, int *__result)
 {
     *__result = StopReceiveMessage(pid);
@@ -201,10 +201,10 @@ STDMETHODIMP CWeChatRobot::CStopReceiveMessage(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊ID
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊ID
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(DWORD pid, BSTR chatroomid, VARIANT *__result)
 {
     VARIANT vsaValue;
@@ -215,9 +215,9 @@ STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(DWORD pid, BSTR chatroomid, VARIA
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetDbHandles(DWORD pid, VARIANT *__result)
 {
     VARIANT vsaValue;
@@ -228,11 +228,11 @@ STDMETHODIMP CWeChatRobot::CGetDbHandles(DWORD pid, VARIANT *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：数据库句柄
-* 参数2：要执行的SQL语句
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：数据库句柄
+ * 参数2：要执行的SQL语句
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CExecuteSQL(DWORD pid, DWORD DbHandle, BSTR sql, VARIANT *__result)
 {
     VARIANT vsaValue;
@@ -243,11 +243,11 @@ STDMETHODIMP CWeChatRobot::CExecuteSQL(DWORD pid, DWORD DbHandle, BSTR sql, VARI
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：数据库句柄
-* 参数2：备份保存路径
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：数据库句柄
+ * 参数2：备份保存路径
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CBackupSQLiteDB(DWORD pid, DWORD DbHandle, BSTR savepath, int *__result)
 {
     *__result = BackupSQLiteDB(pid, DbHandle, savepath);
@@ -255,11 +255,11 @@ STDMETHODIMP CWeChatRobot::CBackupSQLiteDB(DWORD pid, DWORD DbHandle, BSTR savep
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：v3数据
-* 参数2：v4数据
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：v3数据
+ * 参数2：v4数据
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CVerifyFriendApply(DWORD pid, BSTR v3, BSTR v4, int *__result)
 {
     *__result = VerifyFriendApply(pid, v3, v4);
@@ -267,11 +267,11 @@ STDMETHODIMP CWeChatRobot::CVerifyFriendApply(DWORD pid, BSTR v3, BSTR v4, int *
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：wxid
-* 参数2：附加信息
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：wxid
+ * 参数2：附加信息
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CAddFriendByWxid(DWORD pid, BSTR wxid, BSTR message, int *__result)
 {
     *__result = AddFriendByWxid(pid, wxid, message);
@@ -279,12 +279,12 @@ STDMETHODIMP CWeChatRobot::CAddFriendByWxid(DWORD pid, BSTR wxid, BSTR message, 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：v3数据
-* 参数2：附加信息
-* 参数3：添加方式
-* 参数4：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：v3数据
+ * 参数2：附加信息
+ * 参数3：添加方式
+ * 参数4：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CAddFriendByV3(DWORD pid, BSTR v3, BSTR message, int AddType, int *__result)
 {
     *__result = AddFriendByV3(pid, v3, message, AddType);
@@ -292,9 +292,9 @@ STDMETHODIMP CWeChatRobot::CAddFriendByV3(DWORD pid, BSTR v3, BSTR message, int 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetWeChatVer(BSTR *__result)
 {
     wstring path = GetWeChatVerStr();
@@ -303,8 +303,8 @@ STDMETHODIMP CWeChatRobot::CGetWeChatVer(BSTR *__result)
 }
 
 /*
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CStartWeChat(int *__result)
 {
     *__result = StartWeChat();
@@ -312,10 +312,10 @@ STDMETHODIMP CWeChatRobot::CStartWeChat(int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：搜索关键字
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：搜索关键字
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSearchContactByNet(DWORD pid, BSTR keyword, VARIANT *__result)
 {
     VARIANT vsaValue;
@@ -326,10 +326,10 @@ STDMETHODIMP CWeChatRobot::CSearchContactByNet(DWORD pid, BSTR keyword, VARIANT 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：公众号id
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：公众号id
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CAddBrandContact(DWORD pid, BSTR PublicId, int *__result)
 {
     *__result = AddBrandContact(pid, PublicId);
@@ -337,10 +337,10 @@ STDMETHODIMP CWeChatRobot::CAddBrandContact(DWORD pid, BSTR PublicId, int *__res
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：保存路径
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：保存路径
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CHookVoiceMsg(DWORD pid, BSTR savepath, int *__result)
 {
     *__result = HookVoiceMsg(pid, savepath);
@@ -348,9 +348,9 @@ STDMETHODIMP CWeChatRobot::CHookVoiceMsg(DWORD pid, BSTR savepath, int *__result
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CUnHookVoiceMsg(DWORD pid, int *__result)
 {
     UnHookVoiceMsg(pid);
@@ -359,10 +359,10 @@ STDMETHODIMP CWeChatRobot::CUnHookVoiceMsg(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：保存路径
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：保存路径
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CHookImageMsg(DWORD pid, BSTR savepath, int *__result)
 {
     *__result = HookImageMsg(pid, savepath);
@@ -370,9 +370,9 @@ STDMETHODIMP CWeChatRobot::CHookImageMsg(DWORD pid, BSTR savepath, int *__result
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CUnHookImageMsg(DWORD pid, int *__result)
 {
     UnHookImageMsg(pid);
@@ -381,10 +381,10 @@ STDMETHODIMP CWeChatRobot::CUnHookImageMsg(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：版本号
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：版本号
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CChangeWeChatVer(DWORD pid, BSTR verStr, int *__result)
 {
     *__result = ChangeWeChatVer(pid, verStr);
@@ -392,11 +392,11 @@ STDMETHODIMP CWeChatRobot::CChangeWeChatVer(DWORD pid, BSTR verStr, int *__resul
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：接收人wxid
-* 参数2：小程序id
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：小程序id
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSendAppMsg(DWORD pid, BSTR wxid, BSTR appid, int *__result)
 {
     *__result = SendAppMsg(pid, wxid, appid);
@@ -404,10 +404,10 @@ STDMETHODIMP CWeChatRobot::CSendAppMsg(DWORD pid, BSTR wxid, BSTR appid, int *__
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：要删除的人wxid
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：要删除的人wxid
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CDeleteUser(DWORD pid, BSTR wxid, int *__result)
 {
     *__result = DeleteUser(pid, wxid);
@@ -415,9 +415,9 @@ STDMETHODIMP CWeChatRobot::CDeleteUser(DWORD pid, BSTR wxid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CIsWxLogin(DWORD pid, int *__result)
 {
     *__result = isWxLogin(pid);
@@ -425,11 +425,11 @@ STDMETHODIMP CWeChatRobot::CIsWxLogin(DWORD pid, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：wxid或群聊id
-* 参数2：备注内容
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：wxid或群聊id
+ * 参数2：备注内容
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CEditRemark(DWORD pid, BSTR wxid, BSTR remark, int *__result)
 {
     *__result = EditRemark(pid, wxid, remark);
@@ -437,11 +437,11 @@ STDMETHODIMP CWeChatRobot::CEditRemark(DWORD pid, BSTR wxid, BSTR remark, int *_
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：群聊名称
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：群聊名称
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSetChatRoomName(DWORD pid, BSTR chatroomid, BSTR name, int *__result)
 {
     *__result = SetChatRoomName(pid, chatroomid, name);
@@ -449,11 +449,11 @@ STDMETHODIMP CWeChatRobot::CSetChatRoomName(DWORD pid, BSTR chatroomid, BSTR nam
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：公告内容
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：公告内容
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSetChatRoomAnnouncement(DWORD pid, BSTR chatroomid, BSTR announcement, int *__result)
 {
     *__result = SetChatRoomAnnouncement(pid, chatroomid, announcement);
@@ -461,11 +461,11 @@ STDMETHODIMP CWeChatRobot::CSetChatRoomAnnouncement(DWORD pid, BSTR chatroomid, 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：个人昵称
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：个人昵称
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CSetChatRoomSelfNickname(DWORD pid, BSTR chatroomid, BSTR nickname, int *__result)
 {
     *__result = SetChatRoomSelfNickname(pid, chatroomid, nickname);
@@ -473,11 +473,11 @@ STDMETHODIMP CWeChatRobot::CSetChatRoomSelfNickname(DWORD pid, BSTR chatroomid, 
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：群成员wxid
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：群成员wxid
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetChatRoomMemberNickname(DWORD pid, BSTR chatroomid, BSTR wxid, BSTR *__result)
 {
     wstring nickname = GetChatRoomMemberNickname(pid, chatroomid, wxid);
@@ -486,11 +486,11 @@ STDMETHODIMP CWeChatRobot::CGetChatRoomMemberNickname(DWORD pid, BSTR chatroomid
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：wxid列表
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：wxid列表
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CDelChatRoomMember(DWORD pid, BSTR chatroomid, VARIANT *wxids, int *__result)
 {
     if (wxids->vt == VT_BSTR)
@@ -506,11 +506,11 @@ STDMETHODIMP CWeChatRobot::CDelChatRoomMember(DWORD pid, BSTR chatroomid, VARIAN
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：群聊id
-* 参数2：wxid列表
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：群聊id
+ * 参数2：wxid列表
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CAddChatRoomMember(DWORD pid, BSTR chatroomid, VARIANT *wxids, int *__result)
 {
     if (wxids->vt == VT_BSTR)
@@ -526,10 +526,10 @@ STDMETHODIMP CWeChatRobot::CAddChatRoomMember(DWORD pid, BSTR chatroomid, VARIAN
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：要打开的网页url
-* 参数2：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：要打开的网页url
+ * 参数2：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::COpenBrowser(DWORD pid, BSTR url, int *__result)
 {
     *__result = OpenBrowser(pid, url);
@@ -537,11 +537,11 @@ STDMETHODIMP CWeChatRobot::COpenBrowser(DWORD pid, BSTR url, int *__result)
 }
 
 /*
-* 参数0：目标进程pid
-* 参数1：公众号ID
-* 参数2：推送消息的偏移
-* 参数3：预返回的值，调用时无需提供
-*/
+ * 参数0：目标进程pid
+ * 参数1：公众号ID
+ * 参数2：推送消息的偏移
+ * 参数3：预返回的值，调用时无需提供
+ */
 STDMETHODIMP CWeChatRobot::CGetHistoryPublicMsg(DWORD pid, BSTR PublicId, BSTR Offset, VARIANT *__result)
 {
     HRESULT hr = S_OK;
@@ -555,5 +555,11 @@ STDMETHODIMP CWeChatRobot::CGetHistoryPublicMsg(DWORD pid, BSTR PublicId, BSTR O
     hr = SafeArrayPutElement(psaValue, &index, &(_variant_t)result.c_str());
     V_ARRAY(&vsaValue) = psaValue;
     *__result = vsaValue;
+    return S_OK;
+}
+
+STDMETHODIMP CWeChatRobot::CForwardMessage(DWORD pid, BSTR wxid, int localId, int *__result)
+{
+    *__result = ForwardMessage(pid, wxid, localId);
     return S_OK;
 }

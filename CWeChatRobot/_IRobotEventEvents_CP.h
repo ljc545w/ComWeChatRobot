@@ -17,7 +17,7 @@ public:
     {
         HRESULT hr = S_OK;
         static ExpireSet es(2000);
-        if (!es.CheckIfDuplicatedAndAdd(msgid))
+        if (msgid && !es.CheckIfDuplicatedAndAdd(msgid))
         {
             return hr;
         }

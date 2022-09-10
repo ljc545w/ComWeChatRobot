@@ -229,6 +229,7 @@
     <ClInclude Include="DelChatRoomMember.h" />
     <ClInclude Include="DeleteUser.h" />
     <ClInclude Include="EditRemark.h" />
+    <ClInclude Include="ForwardMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="GetChatRoomMemberNickname.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="DelChatRoomMember.cpp" />
     <ClCompile Include="DeleteUser.cpp" />
     <ClCompile Include="EditRemark.cpp" />
+    <ClCompile Include="ForwardMessage.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="GetChatRoomMemberNickname.cpp" />
     <ClCompile Include="GetChatRoomMembers.cpp" />

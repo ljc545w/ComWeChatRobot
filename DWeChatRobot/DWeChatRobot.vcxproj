@@ -317,6 +317,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="DelChatRoomMember.h" />
     <ClInclude Include="DeleteUser.h" />
     <ClInclude Include="EditRemark.h" />
+    <ClInclude Include="ForwardMessage.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FriendList.h" />
     <ClInclude Include="GetChatRoomMemberNickname.h" />
@@ -361,6 +362,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClCompile Include="DeleteUser.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EditRemark.cpp" />
+    <ClCompile Include="ForwardMessage.cpp" />
     <ClCompile Include="FriendList.cpp" />
     <ClCompile Include="GetChatRoomMemberNickname.cpp" />
     <ClCompile Include="GetChatRoomMemebers.cpp" />

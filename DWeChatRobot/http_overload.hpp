@@ -133,4 +133,9 @@ BOOL __stdcall OpenBrowser(wstring url)
 {
     return OpenBrowser(WS2LW(url));
 }
+
+BOOL __stdcall ForwardMessage(wstring wxid, int localId)
+{
+    return ForwardMessage(WS2LW(wxid), localId);
+}
 #endif
