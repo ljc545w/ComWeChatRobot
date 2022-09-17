@@ -11,12 +11,15 @@
 #include "framework.h"
 #include <iostream>
 #include <vector>
+#include <map>
 #include <strstream>
 #include <string>
+#include <string>
+#include <sstream>
 #include "wxdata.h"
 #include "wxapi.h"
 #include "base64/base64.h"
-#endif //PCH_H
+#endif // PCH_H
 
 #ifdef USE_SOCKET
 #include "wxsocketapi.h"

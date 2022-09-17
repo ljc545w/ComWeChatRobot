@@ -1,4 +1,5 @@
 #pragma once
+#include "wxsignal.h"
 #include "SendImage.h"
 #include "SendText.h"
 #include "SendFile.h"
@@ -31,6 +32,7 @@
 #include "OpenBrowser.h"
 #include "GetHistoryPublicMsg.h"
 #include "ForwardMessage.h"
+#include "GetQrcodeImage.h"
 
 using namespace std;
 #pragma comment(lib, "version.lib")

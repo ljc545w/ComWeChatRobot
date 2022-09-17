@@ -3,10 +3,10 @@
 struct ForwardMessageStruct
 {
     DWORD wxid;
-    DWORD localId;
+    ULONG64 msgid;
 };
 
-BOOL ForwardMessage(DWORD pid, wchar_t *wxid, int localId)
+BOOL ForwardMessage(DWORD pid, wchar_t *wxid, ULONG64 msgid)
 {
     WeChatProcess hp(pid);
     if (!hp.m_init)
@@ -19,7 +19,7 @@ BOOL ForwardMessage(DWORD pid, wchar_t *wxid, int localId)
     ForwardMessageStruct params = {0};
     WeChatData<wchar_t *> r_wxid(hp.GetHandle(), wxid, TEXTLENGTH(wxid));
     params.wxid = (DWORD)r_wxid.GetAddr();
-    params.localId = localId;
+    params.msgid = msgid;
     WeChatData<ForwardMessageStruct *> r_params(hp.GetHandle(), &params, sizeof(params));
     if (!params.wxid || !r_params.GetAddr())
     {

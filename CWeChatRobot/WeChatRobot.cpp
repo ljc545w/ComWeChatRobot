@@ -558,8 +558,24 @@ STDMETHODIMP CWeChatRobot::CGetHistoryPublicMsg(DWORD pid, BSTR PublicId, BSTR O
     return S_OK;
 }
 
-STDMETHODIMP CWeChatRobot::CForwardMessage(DWORD pid, BSTR wxid, int localId, int *__result)
+/*
+ * 参数0：目标进程pid
+ * 参数1：消息接收人wxid
+ * 参数2：要转发的消息id
+ * 参数3：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CForwardMessage(DWORD pid, BSTR wxid, ULONG64 msgid, int *__result)
 {
-    *__result = ForwardMessage(pid, wxid, localId);
+    *__result = ForwardMessage(pid, wxid, msgid);
+    return S_OK;
+}
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CGetQrcodeImage(DWORD pid, VARIANT *__result)
+{
+    *__result = GetQrcodeImage(pid);
     return S_OK;
 }

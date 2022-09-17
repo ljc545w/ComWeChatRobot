@@ -7,7 +7,7 @@
 struct ForwardMessageStruct
 {
     wchar_t *wxid;
-    int localId;
+    unsigned long long localId;
 };
 
 BOOL ForwardMessageRemote(LPVOID lpParameter)
@@ -17,17 +17,22 @@ BOOL ForwardMessageRemote(LPVOID lpParameter)
 }
 #endif
 
-BOOL __stdcall ForwardMessage(wchar_t *wxid, int localId)
+BOOL __stdcall ForwardMessage(wchar_t *wxid, unsigned long long msgid)
 {
     DWORD WeChatWinBase = GetWeChatWinBase();
     DWORD ForwardMessageCall1 = WeChatWinBase + ForwardMessageCall1Offset;
     DWORD ForwardMessageCall2 = WeChatWinBase + ForwardMessageCall2Offset;
+    int dbIndex = 0;
+    int localId = GetLocalIdByMsgId(msgid, dbIndex);
+    if (localId == 0)
+        return FALSE;
+    dbIndex = 0x5000000 + (dbIndex << 8);
     WxString p_wxid(wxid);
     int isSuccess = 0;
     __asm {
 		pushad;
 		pushfd;
-		mov eax, 0x5000100;
+		mov eax, dword ptr ds:[dbIndex];
 		push eax;
 		mov ecx, dword ptr ds:[localId];
 		push ecx;

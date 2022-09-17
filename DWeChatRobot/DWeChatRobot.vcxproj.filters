@@ -127,6 +127,9 @@
     <Filter Include="发送消息\转发消息">
       <UniqueIdentifier>{da7b0dbb-2d48-473f-9bb9-6d36ec5b02d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="二维码">
+      <UniqueIdentifier>{a0a64bc2-f48e-41a0-838a-45b9985f8d68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -245,6 +248,12 @@
     </ClInclude>
     <ClInclude Include="ForwardMessage.h">
       <Filter>发送消息\转发消息</Filter>
+    </ClInclude>
+    <ClInclude Include="GetQrcodeImage.h">
+      <Filter>二维码</Filter>
+    </ClInclude>
+    <ClInclude Include="wxsignal.h">
+      <Filter>通用标头</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="ForwardMessage.cpp">
       <Filter>发送消息\转发消息</Filter>
+    </ClCompile>
+    <ClCompile Include="GetQrcodeImage.cpp">
+      <Filter>二维码</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

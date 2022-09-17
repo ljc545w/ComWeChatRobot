@@ -3,7 +3,6 @@ import json
 import copy
 import threading
 import requests
-import base64
 import socketserver
 
 if ctypes.sizeof(ctypes.c_void_p) == ctypes.sizeof(ctypes.c_ulonglong):
@@ -85,6 +84,7 @@ class WECHAT_HTTP_APIS:
     WECHAT_GET_PUBLIC_MSG = 39                  # 获取公众号历史消息
 
     WECHAT_MSG_FORWARD_MESSAGE = 40             # 转发消息
+    WECHAT_GET_QRCODE_IMAGE = 41                # 获取二维码
 
 APIS = WECHAT_HTTP_APIS
 
@@ -188,7 +188,8 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
         APIS.WECHAT_BROWSER_OPEN_WITH_URL: {"url": "https://www.baidu.com/"},
         APIS.WECHAT_GET_PUBLIC_MSG: {"public_id": "","offset": ""},
 
-        APIS.WECHAT_MSG_FORWARD_MESSAGE: {"wxid": "filehelper","localId": 1},
+        APIS.WECHAT_MSG_FORWARD_MESSAGE: {"wxid": "filehelper","msgid": 2 ** 64 - 1},
+        APIS.WECHAT_GET_QRCODE_IMAGE: {}
     }
 
     def get_http_template(self, api_number):
@@ -224,11 +225,8 @@ class ReceiveMsgSocketServer(socketserver.BaseRequestHandler):
 
     @staticmethod
     def msg_callback(msg):
-        # 附加信息是protobuf格式，需要自行处理
-        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
-        # TODO: 在这里写额外的消息处理逻辑
-
         print(msg)
+        # TODO: 在这里写额外的消息处理逻辑
 
 def post_wechat_http_api(api,port,data = {}):
     url = "http://127.0.0.1:{}/api/?type={}".format(port,api)
@@ -334,6 +332,7 @@ if __name__ == '__main__':
         pids.append(new_wechat())
     start_listen(pids[0],port)
     post_wechat_http_api(APIS.WECHAT_LOG_START_HOOK,8000)
+    print(post_wechat_http_api(APIS.WECHAT_GET_SELF_INFO, 8000))
     post_wechat_http_api(APIS.WECHAT_MSG_START_HOOK,8000,{"port":10808})
     start_socket_server()
     stop_listen(pids[0])

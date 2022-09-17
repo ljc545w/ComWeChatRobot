@@ -8,3 +8,4 @@ vector<void *> GetDbHandles();
 extern "C" __declspec(dllexport) DWORD GetDbHandlesRemote();
 #endif
 DWORD GetDbHandleByDbName(wchar_t *dbname);
+unsigned int GetLocalIdByMsgId(ULONG64 msgid, int &dbIndex);

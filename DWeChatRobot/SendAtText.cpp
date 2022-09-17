@@ -81,7 +81,7 @@ BOOL __stdcall SendAtText(wchar_t *wsChatRoomId, DWORD wsWxId[], wchar_t *wsText
             nickname = L"À˘”–»À";
         }
         else
-            nickname = GetUserNickNameByWxId((wchar_t *)wsWxId[i]);
+            nickname = GetChatRoomMemberNickname(wsChatRoomId, (wchar_t *)wsWxId[i]);
         if (nickname.length() == 0)
             continue;
         WxString temp = {0};

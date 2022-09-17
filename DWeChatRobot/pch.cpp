@@ -188,6 +188,7 @@ void UnHookAll()
     UnHookVoiceMsg();
     UnHookImageMsg();
     UnHookH5ExtBuf();
+    UnHookQrcodeImage();
     return;
 }
 

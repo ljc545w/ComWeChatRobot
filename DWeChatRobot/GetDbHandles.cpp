@@ -9,20 +9,38 @@
 
 // 保存数据库信息的容器
 vector<DbInfoStruct> dbs;
+map<wstring, DbInfoStruct> dbmap;
 
 /*
- * 根据数据库名从`dbs`中检索数据库句柄
+ * 根据数据库名从`dbmap`中检索数据库句柄
  * dbname：数据库名
  * return：DWORD，如果检索成功，返回数据库句柄，否则返回`0`
  */
 DWORD GetDbHandleByDbName(wchar_t *dbname)
 {
-    if (dbs.size() == 0)
+    if (dbmap.size() == 0)
         GetDbHandles();
-    for (unsigned int i = 0; i < dbs.size() - 1; i++)
+    if (dbmap.find(dbname) != dbmap.end())
+        return dbmap[dbname].handle;
+    return 0;
+}
+
+unsigned int GetLocalIdByMsgId(ULONG64 msgid, int &dbIndex)
+{
+    char sql[260] = {0};
+    sprintf_s(sql, "select localId from MSG where MsgSvrID=%llu;", msgid);
+    wchar_t dbname[20] = {0};
+    for (int i = 0;; i++)
     {
-        if (!lstrcmpW(dbs[i].dbname, dbname))
-            return dbs[i].handle;
+        swprintf_s(dbname, L"MSG%d.db", i);
+        DWORD handle = GetDbHandleByDbName(dbname);
+        if (handle == 0)
+            return 0;
+        vector<vector<string>> result = SelectData(handle, (const char *)sql);
+        if (result.size() == 0)
+            continue;
+        dbIndex = i + 1;
+        return stoi(result[1][0]);
     }
     return 0;
 }
@@ -63,7 +81,6 @@ vector<void *> GetDbHandles()
 		mov SqlHandleEndAddr, eax;
     }
     DWORD dwHandle = 0x0;
-    wstring dbnames = L"";
     // 获取联系人数据库句柄
     while (SqlHandleBeginAddr < SqlHandleEndAddr)
     {
@@ -71,29 +88,31 @@ vector<void *> GetDbHandles()
         SqlHandleBeginAddr += 0x4;
         if (SqlHandleBeginAddr == SqlHandleEndAddr)
             break;
-        if (dbnames.find(L"|" + (wstring)(wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|", 0) != wstring::npos)
+        wstring dbname = wstring((wchar_t *)(*(DWORD *)(dwHandle + 0x50)));
+        if (dbmap.find(dbname) != dbmap.end())
             continue;
         DbInfoStruct db = {0};
-        dbnames = dbnames + L"|" + (wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|";
         db.dbname = (wchar_t *)(*(DWORD *)(dwHandle + 0x50));
         db.l_dbname = wcslen(db.dbname);
         db.handle = *(DWORD *)(dwHandle + 0x3C);
         ExecuteSQL(*(DWORD *)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
         dbs.push_back(db);
+        dbmap[dbname] = db;
     }
     // 获取公众号数据库句柄
     for (int i = 1; i < 4; i++)
     {
         dwHandle = *((DWORD *)(SqlHandlePublicMsgAddr + i * 0x4));
-        if (dbnames.find(L"|" + (wstring)(wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|", 0) != wstring::npos)
+        wstring dbname = wstring((wchar_t *)(*(DWORD *)(dwHandle + 0x50)));
+        if (dbmap.find(dbname) != dbmap.end())
             continue;
         DbInfoStruct db = {0};
-        dbnames = dbnames + L"|" + (wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|";
         db.dbname = (wchar_t *)(*(DWORD *)(dwHandle + 0x50));
         db.l_dbname = wcslen(db.dbname);
         db.handle = *(DWORD *)(dwHandle + 0x3C);
         ExecuteSQL(*(DWORD *)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
         dbs.push_back(db);
+        dbmap[dbname] = db;
     }
     // 获取聊天记录数据库句柄
     int msgdb_count = *(int *)(SqlHandleMSGAddr + 0x4);
@@ -103,15 +122,16 @@ vector<void *> GetDbHandles()
         for (int j = 0; j < 4; j++)
         {
             dwHandle = *(DWORD *)(MsgdwHandle + 0x14 + j * 4);
-            if (dbnames.find(L"|" + (wstring)(wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|", 0) != wstring::npos)
+            wstring dbname = wstring((wchar_t *)(*(DWORD *)(dwHandle + 0x50)));
+            if (dbmap.find(dbname) != dbmap.end())
                 continue;
             DbInfoStruct db = {0};
-            dbnames = dbnames + L"|" + (wchar_t *)(*(DWORD *)(dwHandle + 0x50)) + L"|";
             db.dbname = (wchar_t *)(*(DWORD *)(dwHandle + 0x50));
             db.l_dbname = wcslen(db.dbname);
             db.handle = *(DWORD *)(dwHandle + 0x3C);
             ExecuteSQL(*(DWORD *)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
             dbs.push_back(db);
+            dbmap[dbname] = db;
         }
         MsgdwHandle += 0x68;
     }

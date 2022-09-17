@@ -128,6 +128,9 @@
     <Filter Include="发送消息\转发消息">
       <UniqueIdentifier>{f44839a7-3cf0-415f-886e-22a8635c3dbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="二维码">
+      <UniqueIdentifier>{fb5a07d9-648d-4e1c-aed3-158f872c3d3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -262,6 +265,9 @@
     <ClInclude Include="ForwardMessage.h">
       <Filter>发送消息\转发消息</Filter>
     </ClInclude>
+    <ClInclude Include="GetQrcodeImage.h">
+      <Filter>二维码</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -395,6 +401,9 @@
     </ClCompile>
     <ClCompile Include="ForwardMessage.cpp">
       <Filter>发送消息\转发消息</Filter>
+    </ClCompile>
+    <ClCompile Include="GetQrcodeImage.cpp">
+      <Filter>二维码</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
