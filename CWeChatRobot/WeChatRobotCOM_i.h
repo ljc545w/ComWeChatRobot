@@ -348,8 +348,12 @@ EXTERN_C const IID IID_IWeChatRobot;
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CForwardMessage( 
             /* [in] */ DWORD pid,
             /* [in] */ BSTR wxid,
-            /* [in] */ int localId,
+            /* [in] */ unsigned long long localId,
             /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetQrcodeImage( 
+            /* [in] */ DWORD pid,
+            /* [retval][out] */ VARIANT *__result) = 0;
         
     };
     
@@ -688,8 +692,13 @@ EXTERN_C const IID IID_IWeChatRobot;
             IWeChatRobot * This,
             /* [in] */ DWORD pid,
             /* [in] */ BSTR wxid,
-            /* [in] */ int localId,
+            /* [in] */ unsigned long long localId,
             /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetQrcodeImage )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [retval][out] */ VARIANT *__result);
         
         END_INTERFACE
     } IWeChatRobotVtbl;
@@ -861,6 +870,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CForwardMessage(This,pid,wxid,localId,__result)	\
     ( (This)->lpVtbl -> CForwardMessage(This,pid,wxid,localId,__result) ) 
+
+#define IWeChatRobot_CGetQrcodeImage(This,pid,__result)	\
+    ( (This)->lpVtbl -> CGetQrcodeImage(This,pid,__result) ) 
 
 #endif /* COBJMACROS */
 

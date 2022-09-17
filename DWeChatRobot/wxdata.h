@@ -2,15 +2,18 @@
 #include <windows.h>
 using namespace std;
 
+// 用于Hook到数据后，给主线程发送信号
+#define WM_WAIT_QRCODE WM_USER + 0x1
+
 /*
-* 微信中的基础数据结构
-* buffer：UNICODE字符串
-* length：`buffer`字符数
-* maxLength：`buffer`最大字符数
-* fill1：占位成员1，默认为0
-* fill2：占位成员2，默认为0
-* WxString：默认构造函数
-*/
+ * 微信中的基础数据结构
+ * buffer：UNICODE字符串
+ * length：`buffer`字符数
+ * maxLength：`buffer`最大字符数
+ * fill1：占位成员1，默认为0
+ * fill2：占位成员2，默认为0
+ * WxString：默认构造函数
+ */
 struct WxString
 {
     wchar_t *buffer;
@@ -47,13 +50,13 @@ struct WxString
 };
 
 /*
-* 保存单条信息的结构
-* messagetype：消息类型
-* sender：发送者wxid
-* wxid：如果sender是群聊id，则此成员保存具体发送人wxid，否则与`sender`一致
-* message：消息内容，非文本消息是xml格式
-* filepath：图片、文件及其他资源的保存路径
-*/
+ * 保存单条信息的结构
+ * messagetype：消息类型
+ * sender：发送者wxid
+ * wxid：如果sender是群聊id，则此成员保存具体发送人wxid，否则与`sender`一致
+ * message：消息内容，非文本消息是xml格式
+ * filepath：图片、文件及其他资源的保存路径
+ */
 struct ReceiveMsgStruct
 {
     DWORD pid = 0;
@@ -110,12 +113,12 @@ struct UserInfo
 };
 
 /*
-* 保存数据库单个表信息的结构体
-* name：表名；l_name：`name`字符数
-* tbl_name：表名；l_tbl_name：`tbl_name`字符数
-* sql：建表语句；l_sql：`sql`字符数
-* rootpage：表编号；l_rootpage：`rootpage`字符数
-*/
+ * 保存数据库单个表信息的结构体
+ * name：表名；l_name：`name`字符数
+ * tbl_name：表名；l_tbl_name：`tbl_name`字符数
+ * sql：建表语句；l_sql：`sql`字符数
+ * rootpage：表编号；l_rootpage：`rootpage`字符数
+ */
 struct TableInfoStruct
 {
     char *name;
@@ -129,13 +132,13 @@ struct TableInfoStruct
 };
 
 /*
-* 保存数据库信息的结构体
-* handle：数据库句柄
-* dbname：数据库名
-* l_dbname：`dbname`字符数
-* tables：保存库中所有表信息的容器
-* count：库中表的数量
-*/
+ * 保存数据库信息的结构体
+ * handle：数据库句柄
+ * dbname：数据库名
+ * l_dbname：`dbname`字符数
+ * tables：保存库中所有表信息的容器
+ * count：库中表的数量
+ */
 struct DbInfoStruct
 {
     DWORD handle;
@@ -146,13 +149,13 @@ struct DbInfoStruct
 };
 
 /*
-* 保存单个好友信息的结构体
-* wxIdAddr：wxid保存地址
-* wxNumberAddr：微信号保存地址
-* wxNickNameAddr：昵称保存地址
-* wxRemarkAddr：备注保存地址
-* WxFriendStructW：默认构造函数
-*/
+ * 保存单个好友信息的结构体
+ * wxIdAddr：wxid保存地址
+ * wxNumberAddr：微信号保存地址
+ * wxNickNameAddr：昵称保存地址
+ * wxRemarkAddr：备注保存地址
+ * WxFriendStructW：默认构造函数
+ */
 struct WxFriendStruct
 {
     DWORD wxIdAddr;

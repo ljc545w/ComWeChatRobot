@@ -328,6 +328,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="http_overload.hpp" />
     <ClInclude Include="OpenBrowser.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="GetQrcodeImage.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="SelfInfo.h" />
     <ClInclude Include="SendAppMsg.h" />
@@ -346,6 +347,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="wechatver.h" />
     <ClInclude Include="wxapi.h" />
     <ClInclude Include="wxdata.h" />
+    <ClInclude Include="wxsignal.h" />
     <ClInclude Include="wxsocketapi.h" />
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +383,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='SOCKET_Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GetQrcodeImage.cpp" />
     <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="SearchContactByNet.cpp" />
     <ClCompile Include="SelfInfo.cpp" />

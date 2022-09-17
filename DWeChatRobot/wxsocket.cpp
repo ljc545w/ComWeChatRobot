@@ -108,6 +108,38 @@ static int get_http_param_int(mg_http_message *hm, json jData, string key, int m
     return result;
 }
 
+static unsigned long long get_http_param_ulong64(mg_http_message *hm, json jData, string key, int method)
+{
+    unsigned long long result = 0;
+    switch (method)
+    {
+    case HTTP_METHOD_GET:
+    {
+        string value = getMgVarA(hm, key);
+        istringstream is(value);
+        is >> result;
+        break;
+    }
+    case HTTP_METHOD_POST:
+    {
+        try
+        {
+            result = jData[key].get<ULONG64>();
+        }
+        catch (json::exception)
+        {
+            string value = jData[key].get<string>();
+            istringstream is(value);
+            is >> result;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    return result;
+}
+
 static vector<wstring> get_http_param_array(mg_http_message *hm, json jData, string key, int method)
 {
     vector<wstring> result;
@@ -129,12 +161,12 @@ static vector<wstring> get_http_param_array(mg_http_message *hm, json jData, str
     return result;
 }
 
-void request_event(mg_http_message *hm, string &ret)
+void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
 {
     int method = I_METHOD(getMgStrA(hm->method));
     // 第四个参数设置为false，不抛出异常
     json jData = json::parse(hm->body.ptr, hm->body.ptr + hm->body.len, nullptr, false);
-    if (jData.is_discarded() == true && method == HTTP_METHOD_POST)
+    if (hm->body.len != 0 && jData.is_discarded() == true && method == HTTP_METHOD_POST)
     {
         json ret_data = {{"result", "ERROR"},
                          {"err_msg", "json string is invalid."}};
@@ -534,10 +566,34 @@ void request_event(mg_http_message *hm, string &ret)
     case WECHAT_MSG_FORWARD_MESSAGE:
     {
         wstring wxid = get_http_param_str(hm, jData, "wxid", method);
-        int localId = get_http_param_int(hm, jData, "localId", method);
-        BOOL status = ForwardMessage(wxid, localId);
+        ULONG64 msgid = get_http_param_ulong64(hm, jData, "msgid", method);
+        BOOL status = ForwardMessage(wxid, msgid);
         json ret_data = {{"msg", status}, {"result", "OK"}};
         ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_GET_QRCODE_IMAGE:
+    {
+        int size = 0;
+        BYTE *image = GetQrcodeImage(size);
+        // string b64data = base64_encode(image, size,false);
+        if (image != NULL)
+        {
+            mg_printf(c, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Type: image/png\r\n\r\n");
+            mg_http_write_chunk(c, (const char *)image, size);
+            mg_http_printf_chunk(c, "");
+            ret = "";
+        }
+        else
+        {
+            string message;
+            if (isWxLogin())
+                message = "获取失败，微信已登录.";
+            else
+                message = "获取失败.";
+            json ret_data = {{"msg", gb2312_to_utf8(message.c_str())}, {"result", "OK"}};
+            ret = ret_data.dump();
+        }
         break;
     }
     default:
@@ -573,20 +629,15 @@ static void fn(struct mg_connection *c, int ev, void *ev_data, void *fn_data)
         {
             try
             {
-                request_event(hm, ret);
+                request_event(hm, ret, c);
             }
             catch (json::exception &e)
             {
                 json res = {{"result", "ERROR"}, {"err_msg", e.what()}};
                 ret = res.dump();
             }
-            mg_http_reply(c, 200, "", ret.c_str(), 0, 0);
-        }
-        else if (mg_http_match_uri(hm, "/api/f2/*"))
-        {
-            mg_printf(c, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-            mg_http_printf_chunk(c, "ID PROTO TYPE      LOCAL           REMOTE\n");
-            mg_http_printf_chunk(c, "");
+            if (ret != "")
+                mg_http_reply(c, 200, "", ret.c_str(), 0, 0);
         }
         else
         {

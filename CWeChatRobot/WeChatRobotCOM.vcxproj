@@ -240,6 +240,7 @@
     <ClInclude Include="ntapi.h" />
     <ClInclude Include="OpenBrowser.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="GetQrcodeImage.h" />
     <ClInclude Include="ReceiveMessage.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="robotdata.h" />
@@ -294,6 +295,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GetQrcodeImage.cpp" />
     <ClCompile Include="ReceiveMessage.cpp" />
     <ClCompile Include="RobotEvent.cpp" />
     <ClCompile Include="SearchContactByNet.cpp" />

@@ -13,9 +13,9 @@ using namespace std;
 #define CLTIP "127.0.0.1"
 
 // 接收消息的HOOK地址偏移
-#define ReceiveMessageHookOffset 0x5D39C359 - 0x5D1F0000
+#define ReceiveMessageHookOffset 0x655F0F4C - 0x650A0000 // 0x5D39C359 - 0x5D1F0000
 // 接收消息HOOK的CALL偏移
-#define ReceiveMessageNextCallOffset 0x5D5F7F00 - 0x5D1F0000
+#define ReceiveMessageNextCallOffset 0x65B36350 - 0x650A0000 // 0x5D5F7F00 - 0x5D1F0000
 
 // 发送消息的HOOK地址偏移
 #define SendMessageHookOffset 0x78B88E42 - 0x786A0000
@@ -27,7 +27,7 @@ using namespace std;
 // 撤回消息HOOK的CALL偏移
 #define RevokeMessageNextCallOffset 0x5D6D3430 - 0x5D1F0000
 
-#define READ_WSTRING(addr, offset) wstring((wchar_t *)(*(DWORD *)(addr + offset)), *(DWORD *)(addr + offset + 0x4))
+#define READ_WSTRING(addr, offset) ((*(DWORD *)(addr + offset + 0x4) == 0) ? wstring(L"") : wstring((wchar_t *)(*(DWORD *)(addr + offset)), *(DWORD *)(addr + offset + 0x4)))
 
 static int SRVPORT = 0;
 
@@ -131,17 +131,24 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
     if (param == NULL)
         return;
     unique_ptr<SocketMessageStruct> sms(param);
-    string jstr(param->buffer, param->length);
+    json jMsg = json::parse(param->buffer, param->buffer + param->length, nullptr, false);
+    if (jMsg.is_discarded() == true)
+    {
+        return;
+    }
+    /*int dbIndex;
+    while (jMsg["localId"].get<unsigned int>() == 0)
+    {
+        jMsg["localId"] = GetLocalIdByMsgId(jMsg["msgid"].get<ULONG64>(),dbIndex);
+        Sleep(200);
+    }*/
+    string jstr = jMsg.dump() + "\n";
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端；将广播过程放在线程中完成，客户端才可以等待图片、语音落地
     VARIANT vsaValue = (_variant_t)utf8_to_unicode(jstr.c_str()).c_str();
-    json jMsg = json::parse(param->buffer, param->buffer + param->length, nullptr, false);
-    if (jMsg.is_discarded() != true)
-    {
-        DWORD type = jMsg["type"].get<DWORD>();
-        ULONG64 msgid = (type != 10000) ? jMsg["msgid"].get<ULONG64>() : 0;
-        PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
-    }
+    DWORD type = jMsg["type"].get<DWORD>();
+    ULONG64 msgid = (type != 10000) ? jMsg["msgid"].get<ULONG64>() : 0;
+    PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
 #endif
     SendSocketMessage(jstr.c_str(), jstr.size());
 }
@@ -153,17 +160,23 @@ static void dealMessage(DWORD messageAddr)
     jMsg["pid"] = GetCurrentProcessId();
     jMsg["type"] = *(DWORD *)(messageAddr + 0x38);
     jMsg["isSendMsg"] = *(BOOL *)(messageAddr + 0x3C);
+    if (jMsg["isSendMsg"].get<BOOL>())
+    {
+        jMsg["isSendByPhone"] = (int)(*(BYTE *)(messageAddr + 0xD8));
+    }
     jMsg["msgid"] = msgid;
-    jMsg["localId"] = *(unsigned int *)(messageAddr + 0x20);
+    // jMsg["localId"] = *(unsigned int *)(messageAddr + 0x20);
     jMsg["sender"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x48).c_str());
     int length = *(DWORD *)(messageAddr + 0x170 + 0x4);
     jMsg["wxid"] = length == 0 ? jMsg["sender"].get<std::string>() : unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x170).c_str());
     jMsg["message"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x70).c_str());
+    jMsg["sign"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x184).c_str());
     if (jMsg["type"].get<int>() != 10000)
     {
         jMsg["filepath"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1AC).c_str());
-        string extrabuf = base64_encode((BYTE *)(*(DWORD *)(messageAddr + 0x8C)), *(DWORD *)(messageAddr + 0x8C + 0x4));
-        jMsg["extrainfo"] = extrabuf;
+        /*string extrabuf = base64_encode((BYTE *)(*(DWORD *)(messageAddr + 0x8C)), *(DWORD *)(messageAddr + 0x8C + 0x4));
+        jMsg["extrainfo"] = extrabuf;*/
+        jMsg["extrainfo"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1EC).c_str());
     }
     else
     {
@@ -190,14 +203,14 @@ static void dealMessage(DWORD messageAddr)
  * messageAddr：保存消息的缓冲区地址
  * return：void
  */
-// VOID ReceiveMessage(DWORD messagesAddr)
-//{
-//     DWORD *messages = (DWORD *)messagesAddr;
-//     for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298)
-//     {
-//         dealMessage(messageAddr);
-//     }
-// }
+VOID ReceiveMessage(DWORD messagesAddr)
+{
+    DWORD *messages = (DWORD *)messagesAddr;
+    for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298)
+    {
+        dealMessage(messageAddr);
+    }
+}
 
 /*
  * HOOK的具体实现，接收到消息后调用处理函数
@@ -208,7 +221,7 @@ _declspec(naked) void dealReceiveMessage()
 		pushad;
 		pushfd;
 		push edi;
-		call dealMessage;
+		call ReceiveMessage;
 		add esp, 0x4;
 		popfd;
 		popad;

@@ -60,7 +60,8 @@ interface IWeChatRobot : IDispatch
 	[id(45), helpstring("添加群成员")] HRESULT CAddChatRoomMember([in] DWORD pid, [in] BSTR chatroomid, [in] VARIANT* wxids, [out, retval] int* __result);
     [id(46), helpstring("打开微信内置浏览器")] HRESULT COpenBrowser([in] DWORD pid, [in] BSTR url, [ out, retval ] int *__result);
     [id(47), helpstring("获取公众号历史消息")] HRESULT CGetHistoryPublicMsg([in] DWORD pid, [in] BSTR PublicId, [in] BSTR Offset, [out, retval] VARIANT * __result);
-    [id(48), helpstring("转发消息") ] HRESULT CForwardMessage([in] DWORD pid, [in] BSTR wxid, [in] int localId, [out, retval] int * __result);
+    [id(48), helpstring("转发消息") ] HRESULT CForwardMessage([in] DWORD pid, [in] BSTR wxid, [in] unsigned long long localId, [out, retval] int * __result);
+    [id(49), helpstring("获取二维码")] HRESULT CGetQrcodeImage([in] DWORD pid, [out, retval] VARIANT * __result);
 };
 [
 	object,

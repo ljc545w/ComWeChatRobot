@@ -9,7 +9,6 @@ Created on Thu Feb 24 16:19:48 2022
 import os
 import ctypes
 import json
-import base64
 import ctypes.wintypes
 import socketserver
 import threading
@@ -53,7 +52,6 @@ class WeChatEventSink:
 
     def OnGetMessageEvent(self, msg):
         msg = json.loads(msg)
-        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
         print(msg)
 
 
@@ -84,7 +82,6 @@ class ReceiveMsgBaseServer(socketserver.BaseRequestHandler):
 
     @staticmethod
     def msg_callback(msg):
-        msg['extrainfo'] = base64.b64decode(msg['extrainfo'])
         # 主线程中已经注入，此处禁止调用StartService和StopService
         robot = comtypes.client.CreateObject("WeChatRobot.CWeChatRobot")
         event = comtypes.client.CreateObject("WeChatRobot.RobotEvent")
@@ -1044,7 +1041,7 @@ class WeChatRobot:
             pass
         return ret
 
-    def ForwardMessage(self,wxid:str,localId:int) -> int:
+    def ForwardMessage(self,wxid:str,msgid:int) -> int:
         """
         转发消息，只支持单条转发
 
@@ -1052,8 +1049,8 @@ class WeChatRobot:
         ----------
         wxid : str
             消息接收人wxid.
-        localId : int
-            消息短id，可以在实时消息接口中获取或查询MSG{x}.db.
+        msgid : int
+            消息id，可以在实时消息接口中获取.
 
         Returns
         -------
@@ -1061,7 +1058,26 @@ class WeChatRobot:
             成功返回0，失败返回非0值.
 
         """
-        return self.robot.CForwardMessage(self.pid,wxid,localId)
+        return self.robot.CForwardMessage(self.pid,wxid,msgid)
+
+    def GetQrcodeImage(self) -> bytes:
+        """
+        获取二维码，同时切换到扫码登录
+
+        Returns
+        -------
+        bytes
+            二维码bytes数据.
+        You can convert it to image object,like this:
+        >>> from io import BytesIO
+        >>> from PIL import Image
+        >>> buf = wx.GetQrcodeImage()
+        >>> image = Image.open(BytesIO(buf)).convert("L")
+        >>> image.save('./qrcode.png')
+
+        """
+        data = self.robot.CGetQrcodeImage(self.pid)
+        return bytes(data)
 
 
 def get_wechat_pid_list() -> list:

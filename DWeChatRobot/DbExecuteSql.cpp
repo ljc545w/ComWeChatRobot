@@ -317,7 +317,8 @@ int SelectDataRemote(LPVOID lpParameter)
     }
     return 0;
 }
-#else
+#endif
+
 vector<vector<string>> SelectData(DWORD db_hanle, const char *sql)
 {
     vector<vector<string>> ret;
@@ -350,4 +351,3 @@ vector<vector<string>> SelectData(DWORD db_hanle, const char *sql)
     ClearResultArray();
     return ret;
 }
-#endif
