@@ -23,9 +23,9 @@ using namespace std;
 #define SendMessageNextCallOffset 0x78AA8170 - 0x786A0000
 
 // 撤回消息的HOOK地址偏移
-#define RevokeMessageHookOffset 0x5D6D8A4C - 0x5D1F0000
+#define UpdateMessageHookOffset 0x5D6D8A4C - 0x5D1F0000
 // 撤回消息HOOK的CALL偏移
-#define RevokeMessageNextCallOffset 0x5D6D3430 - 0x5D1F0000
+#define UpdateMessageNextCallOffset 0x5D6D3430 - 0x5D1F0000
 
 #define READ_WSTRING(addr, offset) ((*(DWORD *)(addr + offset + 0x4) == 0) ? wstring(L"") : wstring((wchar_t *)(*(DWORD *)(addr + offset)), *(DWORD *)(addr + offset + 0x4)))
 
@@ -36,7 +36,7 @@ BOOL ReceiveMessageHooked = false;
 // 保存HOOK前的字节码，用于恢复
 static char OldReceiveMessageAsmCode[5] = {0};
 static char OldSendMessageAsmCode[5] = {0};
-static char OldRevokeMessageAsmCode[5] = {0};
+static char OldUpdateMessageAsmCode[5] = {0};
 static DWORD WeChatWinBase = GetWeChatWinBase();
 // 接收消息HOOK地址
 static DWORD ReceiveMessageHookAddress = WeChatWinBase + ReceiveMessageHookOffset;
@@ -51,11 +51,11 @@ static DWORD SendMessageNextCall = WeChatWinBase + SendMessageNextCallOffset;
 // 发送HOOK的跳转地址
 static DWORD SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
 // 撤回消息HOOK地址
-static DWORD RevokeMessageHookAddress = WeChatWinBase + RevokeMessageHookOffset;
+static DWORD UpdateMessageHookAddress = WeChatWinBase + UpdateMessageHookOffset;
 // 撤回消息HOOK的CALL地址
-static DWORD RevokeMessageNextCall = WeChatWinBase + RevokeMessageNextCallOffset;
+static DWORD UpdateMessageNextCall = WeChatWinBase + UpdateMessageNextCallOffset;
 // 撤回HOOK的跳转地址
-static DWORD RevokeMessageJmpBackAddress = RevokeMessageHookAddress + 0x5;
+static DWORD UpdateMessageJmpBackAddress = UpdateMessageHookAddress + 0x5;
 
 struct SocketMessageStruct
 {
@@ -136,12 +136,6 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
     {
         return;
     }
-    /*int dbIndex;
-    while (jMsg["localId"].get<unsigned int>() == 0)
-    {
-        jMsg["localId"] = GetLocalIdByMsgId(jMsg["msgid"].get<ULONG64>(),dbIndex);
-        Sleep(200);
-    }*/
     string jstr = jMsg.dump() + "\n";
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端；将广播过程放在线程中完成，客户端才可以等待图片、语音落地
@@ -174,8 +168,6 @@ static void dealMessage(DWORD messageAddr)
     if (jMsg["type"].get<int>() != 10000)
     {
         jMsg["filepath"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1AC).c_str());
-        /*string extrabuf = base64_encode((BYTE *)(*(DWORD *)(messageAddr + 0x8C)), *(DWORD *)(messageAddr + 0x8C + 0x4));
-        jMsg["extrainfo"] = extrabuf;*/
         jMsg["extrainfo"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1EC).c_str());
     }
     else
@@ -199,17 +191,35 @@ static void dealMessage(DWORD messageAddr)
 }
 
 /*
- * 消息处理函数，根据消息缓冲区组装结构并存入容器
- * messageAddr：保存消息的缓冲区地址
- * return：void
+ * 处理从网络同步的消息（他人发送或使用手机发送的消息）
  */
-VOID ReceiveMessage(DWORD messagesAddr)
+void OnReceiveMessage(DWORD messagesAddr)
 {
     DWORD *messages = (DWORD *)messagesAddr;
     for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298)
     {
         dealMessage(messageAddr);
     }
+}
+
+/*
+ * 处理本地发送的消息
+ */
+void OnSendMessage(DWORD messageAddr)
+{
+    BOOL isSendMsg = *(BOOL *)(messageAddr + 0x3C);
+    if (!isSendMsg)
+        return;
+    dealMessage(messageAddr);
+}
+
+/*
+ * 处理更新的消息，目前只处理撤回的消息
+ */
+void OnUpdateMessage(DWORD messageAddr)
+{
+    // DWORD type = *(DWORD *)(messageAddr + 0x38);
+    dealMessage(messageAddr);
 }
 
 /*
@@ -221,7 +231,7 @@ _declspec(naked) void dealReceiveMessage()
 		pushad;
 		pushfd;
 		push edi;
-		call ReceiveMessage;
+		call OnReceiveMessage;
 		add esp, 0x4;
 		popfd;
 		popad;
@@ -239,7 +249,7 @@ _declspec(naked) void dealSendMessage()
 		pushad;
 		pushfd;
 		push edi;
-		call dealMessage;
+		call OnSendMessage;
 		add esp, 0x4;
 		popfd;
 		popad;
@@ -257,12 +267,12 @@ _declspec(naked) void dealRevokeMessage()
 		pushad;
 		pushfd;
 		push edi;
-		call dealMessage;
+		call OnUpdateMessage;
 		add esp, 0x4;
 		popfd;
 		popad;
-		call RevokeMessageNextCall;
-		jmp RevokeMessageJmpBackAddress;
+		call UpdateMessageNextCall;
+		jmp UpdateMessageJmpBackAddress;
     }
 }
 
@@ -282,12 +292,12 @@ VOID HookReceiveMessage(int port)
     SendMessageHookAddress = WeChatWinBase + SendMessageHookOffset;
     SendMessageNextCall = WeChatWinBase + SendMessageNextCallOffset;
     SendMessageJmpBackAddress = SendMessageHookAddress + 0x5;
-    RevokeMessageHookAddress = WeChatWinBase + RevokeMessageHookOffset;
-    RevokeMessageNextCall = WeChatWinBase + RevokeMessageNextCallOffset;
-    RevokeMessageJmpBackAddress = RevokeMessageHookAddress + 0x5;
+    UpdateMessageHookAddress = WeChatWinBase + UpdateMessageHookOffset;
+    UpdateMessageNextCall = WeChatWinBase + UpdateMessageNextCallOffset;
+    UpdateMessageJmpBackAddress = UpdateMessageHookAddress + 0x5;
     HookAnyAddress(ReceiveMessageHookAddress, (LPVOID)dealReceiveMessage, OldReceiveMessageAsmCode);
     HookAnyAddress(SendMessageHookAddress, (LPVOID)dealSendMessage, OldSendMessageAsmCode);
-    HookAnyAddress(RevokeMessageHookAddress, (LPVOID)dealRevokeMessage, OldRevokeMessageAsmCode);
+    HookAnyAddress(UpdateMessageHookAddress, (LPVOID)dealRevokeMessage, OldUpdateMessageAsmCode);
     ReceiveMessageHooked = TRUE;
 }
 
@@ -302,6 +312,6 @@ VOID UnHookReceiveMessage()
         return;
     UnHookAnyAddress(ReceiveMessageHookAddress, OldReceiveMessageAsmCode);
     UnHookAnyAddress(SendMessageHookAddress, OldSendMessageAsmCode);
-    UnHookAnyAddress(RevokeMessageHookAddress, OldRevokeMessageAsmCode);
+    UnHookAnyAddress(UpdateMessageHookAddress, OldUpdateMessageAsmCode);
     ReceiveMessageHooked = FALSE;
 }

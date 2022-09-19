@@ -65,6 +65,7 @@ DWORD GetDbHandlesRemote()
 vector<void *> GetDbHandles()
 {
     dbs.clear();
+    dbmap.clear();
     DWORD WeChatWinBase = GetWeChatWinBase();
     DWORD SqlHandleBaseAddr = WeChatWinBase + SqlHandleMicroMsgOffset;
     DWORD SqlHandleBeginAddr = 0x0;
