@@ -18,26 +18,26 @@ PC微信机器人，实现以下功能：
 5. 其他你能想到的用途
 
 # 可用版本
-微信电脑版**3.5.0.46**
-微信电脑版**3.6.0.18**
-微信电脑版**3.7.0.26**
-微信电脑版**3.7.0.30**
-主分支对应微信3.7.0.30版本，其他版本请查看对应分支。
+微信电脑版**3.5.0.46**  
+微信电脑版**3.6.0.18**  
+微信电脑版**3.7.0.26**  
+微信电脑版**3.7.0.30**  
+主分支对应微信3.7.0.30版本，其他版本请查看对应分支。  
 
 # 编译环境
 **Visual Studio 2019**(平台配置：win32(x86))
 # 原理
-通过逆向PC微信，定位到关键CALL，dll内联汇编调用
-注册32位COM组件，供64位/32位进程外部调用
+通过逆向PC微信，定位到关键CALL，dll内联汇编调用  
+注册32位COM组件，供64位/32位进程外部调用  
 # 目录说明
-`./CWeChatRobot`：COM组件的实现代码
-`./DWeChatRobot`：注入的DLL实现代码，根据平台配置可编译出socket版和COM版
+`./CWeChatRobot`：COM组件的实现代码  
+`./DWeChatRobot`：注入的DLL实现代码，根据平台配置可编译出socket版和COM版  
 `./old_projects`:  包含C#的调用示例以及3.7.0.26版本的E语言调用  
-`./Python`：python示例和接口测试文件
-`./wxDriver`：driver的实现代码，有些函数具有一定的学习意义
-`./Release/CWeChatRobot.exe`：编译的COM组件
-`./Release/DWeChatRobot.dll`：编译的DLL文件
-`./Release/socket`：包含wxDriver.dll和socket接口的DLL
+`./Python`：python示例和接口测试文件  
+`./wxDriver`：driver的实现代码，有些函数具有一定的学习意义  
+`./Release/CWeChatRobot.exe`：编译的COM组件  
+`./Release/DWeChatRobot.dll`：编译的DLL文件  
+`./Release/socket`：包含wxDriver.dll和socket接口的DLL  
 `./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参阅相关代码
 # 快速启动
 以管理员权限执行以下命令：
@@ -55,7 +55,7 @@ CWeChatRobot.exe /unregserver
 **易语言：**  
 参考[ESDK](/old_projects/ESDK)，感谢@lovezm 的贡献  
 # 更多功能
-1. 尝试添加issue中的功能
+1. 尝试添加issue中的功能  
 
 有空的时候会按照上述顺序进行开发，不过嘛，计划只是计划，如果未实现也请见谅
 **也欢迎您提交PR**
@@ -145,6 +145,9 @@ CWeChatRobot.exe /unregserver
 5. 优化个人信息接口，现在可以返回个人文件夹路径  
 6. 优化群艾特接口，优先填充群内昵称  
 7. 新增获取二维码接口，调用该接口时会切换到二维码登录  
+## 2022.09.22  
+1. 新增获取a8key功能  
+2. 修复了一个bug，该bug曾导致获取数据库句柄接口只能生效一次  
 
 # 打赏作者
 请给作者一个star，感谢感谢
