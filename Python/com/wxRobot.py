@@ -1079,6 +1079,28 @@ class WeChatRobot:
         data = self.robot.CGetQrcodeImage(self.pid)
         return bytes(data)
 
+    def GetA8Key(self,url:str) -> dict or str:
+        """
+        获取A8Key
+
+        Parameters
+        ----------
+        url : str
+            公众号文章链接.
+
+        Returns
+        -------
+        dict
+            成功返回A8Key信息，失败返回空字符串.
+
+        """
+        ret = self.robot.CGetA8Key(self.pid,url)
+        try:
+            ret = json.loads(ret)
+        except json.JSONDecodeError:
+            pass
+        return ret
+
 
 def get_wechat_pid_list() -> list:
     """

@@ -87,6 +87,7 @@ public:
     STDMETHODIMP CGetHistoryPublicMsg(DWORD pid, BSTR PublicId, BSTR Offset, VARIANT *__result);
     STDMETHODIMP CForwardMessage(DWORD pid, BSTR wxid, ULONG64 msgid, int *__result);
     STDMETHODIMP CGetQrcodeImage(DWORD pid, VARIANT *__result);
+    STDMETHODIMP CGetA8Key(DWORD pid, BSTR url, BSTR *__result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

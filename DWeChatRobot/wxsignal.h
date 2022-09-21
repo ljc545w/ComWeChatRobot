@@ -6,9 +6,10 @@
 class WxSignal
 {
 public:
-    WxSignal(UINT uMsg)
+    WxSignal(UINT uMsg, DWORD &dwThread)
     {
         this->hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)this->Pump, (LPVOID)uMsg, 0, &this->threadId);
+        dwThread = this->threadId;
     }
     ~WxSignal()
     {

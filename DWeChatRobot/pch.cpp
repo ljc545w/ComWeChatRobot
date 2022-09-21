@@ -189,6 +189,7 @@ void UnHookAll()
     UnHookImageMsg();
     UnHookH5ExtBuf();
     UnHookQrcodeImage();
+    UnHookA8KeyBuf();
     return;
 }
 
@@ -269,34 +270,24 @@ void PrintProcAddr()
     BOOL(__stdcall * get_history_public_msg)
     (wchar_t *, wchar_t *) = GetHistoryPublicMsg;
     printf("GetHistoryPublicMsg 0x%08X\n", (DWORD)get_history_public_msg);
+    BOOL(__stdcall * get_a8_key)
+    (wchar_t *) = GetA8Key;
+    printf("GetA8Key 0x%08X\n", (DWORD)get_a8_key);
 }
 
 BOOL ProcessIsWeChat()
 {
-    char szFileFullPath[MAX_PATH] = {0}, szProcessName[MAX_PATH] = {0};
+    char szFileFullPath[MAX_PATH] = {0};
     GetModuleFileNameA(NULL, szFileFullPath, MAX_PATH);
     int length = ::strlen(szFileFullPath);
-    for (int i = length - 1; i >= 0; i--)
-    {
-        if (szFileFullPath[i] == '\\')
-        {
-            i++;
-            for (int j = 0; i <= length; j++)
-            {
-                szProcessName[j] = szFileFullPath[i++];
-            }
-            break;
-        }
-    }
-
-    if (::strcmp(szProcessName, "WeChat.exe") != 0)
-    {
-        return FALSE;
-    }
-    else
+    string szFile(szFileFullPath);
+    size_t pos = szFile.find_last_of('\\');
+    string szProcessName = szFile.substr(pos + 1, szFile.length() - pos - 1);
+    if (szProcessName == "WeChat.exe")
     {
         return TRUE;
     }
+    return FALSE;
 }
 
 DWORD OffsetFromIdaAddr(DWORD idaAddr)

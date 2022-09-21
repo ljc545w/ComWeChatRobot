@@ -3,7 +3,7 @@
 using namespace std;
 
 // 用于Hook到数据后，给主线程发送信号
-#define WM_WAIT_QRCODE WM_USER + 0x1
+#define WM_WAIT_HOOK_DATA WM_USER + 0x1
 
 /*
  * 微信中的基础数据结构

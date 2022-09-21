@@ -130,6 +130,9 @@
     <Filter Include="二维码">
       <UniqueIdentifier>{a0a64bc2-f48e-41a0-838a-45b9985f8d68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="浏览器相关\获取A8Key">
+      <UniqueIdentifier>{10054e30-1115-49df-b387-07c207f6cac4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -254,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="wxsignal.h">
       <Filter>通用标头</Filter>
+    </ClInclude>
+    <ClInclude Include="GetA8Key.h">
+      <Filter>浏览器相关\获取A8Key</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="GetQrcodeImage.cpp">
       <Filter>二维码</Filter>
+    </ClCompile>
+    <ClCompile Include="GetA8Key.cpp">
+      <Filter>浏览器相关\获取A8Key</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

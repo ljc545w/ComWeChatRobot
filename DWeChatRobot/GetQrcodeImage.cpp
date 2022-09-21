@@ -45,7 +45,7 @@ static unique_ptr<QrcodeStruct> qc(new QrcodeStruct);
 void SaveQrcodeImage(unsigned char *src, int size)
 {
     qc->update(src, size);
-    SIGNAL(SignalThreadId, WM_WAIT_QRCODE);
+    SIGNAL(SignalThreadId, WM_WAIT_HOOK_DATA);
 }
 
 _declspec(naked) void dealQrcodeImage()
@@ -112,8 +112,7 @@ DWORD GetQrcodeImageRemote()
         return 0;
     if (!SaveQrcodeImageHooked)
         HookQrcodeImage();
-    WxSignal sg(WM_WAIT_QRCODE);
-    SignalThreadId = sg.GetThreadId();
+    WxSignal sg(WM_WAIT_HOOK_DATA, SignalThreadId);
     SwitchToQrcodeLogin();
     sg.wait(5000);
     return (DWORD)qc.get();
@@ -125,7 +124,7 @@ BYTE *__stdcall GetQrcodeImage(int &size)
         return NULL;
     if (!SaveQrcodeImageHooked)
         HookQrcodeImage();
-    WxSignal sg(WM_WAIT_QRCODE);
+    WxSignal sg(WM_WAIT_HOOK_DATA, SignalThreadId);
     SignalThreadId = sg.GetThreadId();
     SwitchToQrcodeLogin();
     sg.wait(5000);

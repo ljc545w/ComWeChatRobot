@@ -31,6 +31,7 @@
 #include "GetHistoryPublicMsg.h"
 #include "ForwardMessage.h"
 #include "GetQrcodeImage.h"
+#include "GetA8Key.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
@@ -91,3 +92,4 @@
 #define OpenBrowserRemote "OpenBrowserRemote"
 #define GetHistoryPublicMsgRemote "GetHistoryPublicMsgRemote"
 #define GetQrcodeImageRemote "GetQrcodeImageRemote"
+#define GetA8KeyRemote "GetA8KeyRemote"
