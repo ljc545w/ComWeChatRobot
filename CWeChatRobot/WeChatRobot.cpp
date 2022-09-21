@@ -579,3 +579,14 @@ STDMETHODIMP CWeChatRobot::CGetQrcodeImage(DWORD pid, VARIANT *__result)
     *__result = GetQrcodeImage(pid);
     return S_OK;
 }
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：公众号文章链接
+ * 参数2：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CGetA8Key(DWORD pid, BSTR url, BSTR *__result)
+{
+    *__result = (_bstr_t)GetA8Key(pid, url).c_str();
+    return S_OK;
+}

@@ -85,6 +85,7 @@ class WECHAT_HTTP_APIS:
 
     WECHAT_MSG_FORWARD_MESSAGE = 40             # 转发消息
     WECHAT_GET_QRCODE_IMAGE = 41                # 获取二维码
+    WECHAT_GET_A8KEY = 42
 
 APIS = WECHAT_HTTP_APIS
 
@@ -189,7 +190,8 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
         APIS.WECHAT_GET_PUBLIC_MSG: {"public_id": "","offset": ""},
 
         APIS.WECHAT_MSG_FORWARD_MESSAGE: {"wxid": "filehelper","msgid": 2 ** 64 - 1},
-        APIS.WECHAT_GET_QRCODE_IMAGE: {}
+        APIS.WECHAT_GET_QRCODE_IMAGE: {},
+        APIS.WECHAT_GET_A8KEY: {"url":""}
     }
 
     def get_http_template(self, api_number):
@@ -309,6 +311,10 @@ def test_get_public_msg(test_port,public_id):
             Title = info['Title']
             Digest = info['Digest']
             ContentUrl = info['ContentUrl']
+            a8key_dict = post_wechat_http_api(APIS.WECHAT_GET_A8KEY,
+                                              port = test_port,
+                                              data = {"url":ContentUrl})
+            print(a8key_dict)
             post_wechat_http_api(APIS.WECHAT_BROWSER_OPEN_WITH_URL,
                                  test_port,
                                  {"url":ContentUrl}

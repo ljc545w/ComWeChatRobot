@@ -73,6 +73,7 @@ wstring GetSelfInfo()
     self_info_addr["wxCity"] = WeChatWinBase + 0x2366214;
     self_info_addr["PhoneNumber"] = WeChatWinBase + 0x2366128;
     self_info_addr["wxFilePath"] = *(DWORD *)(WeChatWinBase + 0x2385020);
+    self_info_addr["uin"] = WeChatWinBase + 0x23661C8;
     for (auto it = self_info_addr.begin(); it != self_info_addr.end(); it++)
     {
         string key = it->first;
@@ -86,6 +87,11 @@ wstring GetSelfInfo()
         else if (key == "wxFilePath")
         {
             utf8_str = unicode_to_utf8((wchar_t *)addr);
+        }
+        else if (key == "uin")
+        {
+            jData[key] = *(unsigned int *)addr;
+            continue;
         }
         else
         {

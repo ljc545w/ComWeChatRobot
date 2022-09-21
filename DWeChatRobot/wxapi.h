@@ -33,6 +33,7 @@
 #include "GetHistoryPublicMsg.h"
 #include "ForwardMessage.h"
 #include "GetQrcodeImage.h"
+#include "GetA8Key.h"
 
 using namespace std;
 #pragma comment(lib, "version.lib")

@@ -576,7 +576,6 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
     {
         int size = 0;
         BYTE *image = GetQrcodeImage(size);
-        // string b64data = base64_encode(image, size,false);
         if (image != NULL)
         {
             mg_printf(c, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\nContent-Type: image/png\r\n\r\n");
@@ -594,6 +593,14 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
             json ret_data = {{"msg", gb2312_to_utf8(message.c_str())}, {"result", "OK"}};
             ret = ret_data.dump();
         }
+        break;
+    }
+    case WECHAT_GET_A8KEY:
+    {
+        wstring url = get_http_param_str(hm, jData, "url", method);
+        string response = GetA8Key(url);
+        json ret_data = {{"msg", response}, {"result", "OK"}};
+        ret = ret_data.dump();
         break;
     }
     default:

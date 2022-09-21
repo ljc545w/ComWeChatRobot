@@ -131,6 +131,9 @@
     <Filter Include="二维码">
       <UniqueIdentifier>{fb5a07d9-648d-4e1c-aed3-158f872c3d3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="浏览器相关\获取A8Key">
+      <UniqueIdentifier>{caeac105-0e3b-497e-a73e-f1233b3888aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -268,6 +271,9 @@
     <ClInclude Include="GetQrcodeImage.h">
       <Filter>二维码</Filter>
     </ClInclude>
+    <ClInclude Include="GetA8Key.h">
+      <Filter>浏览器相关\获取A8Key</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -404,6 +410,9 @@
     </ClCompile>
     <ClCompile Include="GetQrcodeImage.cpp">
       <Filter>二维码</Filter>
+    </ClCompile>
+    <ClCompile Include="GetA8Key.cpp">
+      <Filter>浏览器相关\获取A8Key</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

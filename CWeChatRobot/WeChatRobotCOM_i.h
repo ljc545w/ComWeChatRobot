@@ -355,6 +355,11 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ DWORD pid,
             /* [retval][out] */ VARIANT *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetA8Key( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ BSTR *__result) = 0;
+        
     };
     
     
@@ -700,6 +705,12 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ DWORD pid,
             /* [retval][out] */ VARIANT *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetA8Key )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR url,
+            /* [retval][out] */ BSTR *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -873,6 +884,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetQrcodeImage(This,pid,__result)	\
     ( (This)->lpVtbl -> CGetQrcodeImage(This,pid,__result) ) 
+
+#define IWeChatRobot_CGetA8Key(This,pid,url,__result)	\
+    ( (This)->lpVtbl -> CGetA8Key(This,pid,url,__result) ) 
 
 #endif /* COBJMACROS */
 

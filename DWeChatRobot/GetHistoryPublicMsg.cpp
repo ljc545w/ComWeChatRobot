@@ -11,7 +11,7 @@
 static BOOL H5ExtBufHooked = FALSE;
 static char H5ExtBufOldAsmCode[5] = {0};
 static DWORD HookAddr = 0;
-static DWORD JmpBackAdrr = 0;
+static DWORD JmpBackAddr = 0;
 static string response = "";
 
 static unsigned long long systemtime()
@@ -64,7 +64,7 @@ _declspec(naked) void dealH5ExtBuf()
         popfd;
         popad;
         mov edi,dword ptr ds:[ebp - 0x5C];
-        jmp JmpBackAdrr;
+        jmp JmpBackAddr;
     }
 }
 
@@ -74,7 +74,7 @@ void HookH5ExtBuf()
         return;
     DWORD WeChatWinBase = GetWeChatWinBase();
     HookAddr = WeChatWinBase + GetHistoryPublicHookAddrOffset;
-    JmpBackAdrr = WeChatWinBase + GetHistoryPublicJmpBackAddrOffset;
+    JmpBackAddr = WeChatWinBase + GetHistoryPublicJmpBackAddrOffset;
     HookAnyAddress(HookAddr, (LPVOID)dealH5ExtBuf, H5ExtBufOldAsmCode);
     H5ExtBufHooked = TRUE;
 }
