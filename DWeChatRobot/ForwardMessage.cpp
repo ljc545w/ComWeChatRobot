@@ -26,7 +26,6 @@ BOOL __stdcall ForwardMessage(wchar_t *wxid, unsigned long long msgid)
     int localId = GetLocalIdByMsgId(msgid, dbIndex);
     if (localId == 0)
         return FALSE;
-    dbIndex = 0x5000000 + (dbIndex << 8);
     WxString p_wxid(wxid);
     int isSuccess = 0;
     __asm {

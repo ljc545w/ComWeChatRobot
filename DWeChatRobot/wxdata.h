@@ -141,11 +141,12 @@ struct TableInfoStruct
  */
 struct DbInfoStruct
 {
-    DWORD handle;
-    wchar_t *dbname;
-    DWORD l_dbname;
+    DWORD handle = 0;
+    wchar_t *dbname = NULL;
+    DWORD l_dbname = 0;
     vector<TableInfoStruct> tables;
-    DWORD count;
+    DWORD count = 0;
+    DWORD extrainfo = 0;
 };
 
 /*

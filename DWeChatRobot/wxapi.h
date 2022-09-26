@@ -44,10 +44,14 @@ using namespace std;
 BOOL CreateConsole(void);
 DWORD GetWeChatWinBase();
 string unicode_to_gb2312(wchar_t *wchar);
-string utf8_to_gb2312(const char *strUTF8);
-string gb2312_to_utf8(const char *strGB2312);
 string unicode_to_utf8(wchar_t *wstr);
+
+string utf8_to_gb2312(const char *strUTF8);
 wstring utf8_to_unicode(const char *buffer);
+
+string gb2312_to_utf8(const char *strGB2312);
+wstring gb2312_to_unicode(const char *buffer);
+
 void HookAnyAddress(DWORD dwHookAddr, LPVOID dwJmpAddress, char *originalRecieveCode);
 void UnHookAnyAddress(DWORD dwHookAddr, char *originalRecieveCode);
 DLLEXPORT void UnHookAll();
@@ -70,4 +74,20 @@ vector<T1> split(T1 str, T2 letter)
     }
     arr.push_back(str);
     return arr;
+}
+
+template <typename T1, typename T2>
+T1 replace(T1 source, T2 replaced, T1 replaceto)
+{
+    vector<T1> v_arr = split(source, replaced);
+    if (v_arr.size() < 2)
+        return source;
+    T1 temp;
+    for (unsigned int i = 0; i < v_arr.size() - 1; i++)
+    {
+        temp += v_arr[i];
+        temp += replaceto;
+    }
+    temp += v_arr[v_arr.size() - 1];
+    return temp;
 }
