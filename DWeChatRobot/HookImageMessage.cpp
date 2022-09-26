@@ -92,6 +92,17 @@ void __stdcall HookImageMsg()
     char settime[] = "00:00-00:00";
     DWORD AutoDownloadTimeSettingAddr = GetWeChatWinBase() + AutoDownloadTimeSettingOffset;
     WriteProcessMemory(GetCurrentProcess(), (LPVOID)AutoDownloadTimeSettingAddr, settime, strlen(settime) + 1, 0);
+
+    // video auto
+    BYTE nopVideo[] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90};
+    DWORD nopVideoAddr = WeChatWinBase + 0x48CE1B;
+    WriteProcessMemory(GetCurrentProcess(), (LPVOID)nopVideoAddr, &nopVideo, sizeof(nopVideo), 0);
+
+    // image auto
+    BYTE nopImg[] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90};
+    DWORD nopImgAddr = WeChatWinBase + 0x48D56B;
+    WriteProcessMemory(GetCurrentProcess(), (LPVOID)nopImgAddr, &nopImg, sizeof(nopImg), 0);
+
     ImageMsgHooked = true;
 }
 
