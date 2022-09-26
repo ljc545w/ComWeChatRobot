@@ -176,6 +176,7 @@ static void dealMessage(DWORD messageAddr)
         jMsg["extrainfo"] = "";
     }
     jMsg["time"] = unicode_to_utf8((wchar_t *)GetTimeW(*(DWORD *)(messageAddr + 0x44)).c_str());
+    jMsg["timestamp"] = *(DWORD *)(messageAddr + 0x44);
     jMsg["self"] = unicode_to_utf8((wchar_t *)GetSelfWxid().c_str());
     string jstr = jMsg.dump() + '\n';
     // 为保证线程安全，需要手动管理内存

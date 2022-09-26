@@ -104,8 +104,20 @@ string gb2312_to_utf8(const char *strGB2312)
     return strTemp;
 }
 
+wstring gb2312_to_unicode(const char *buffer)
+{
+    int c_size = MultiByteToWideChar(CP_ACP, 0, buffer, -1, 0, 0);
+    wchar_t *temp = new wchar_t[c_size + 1];
+    MultiByteToWideChar(CP_ACP, 0, buffer, -1, temp, c_size);
+    temp[c_size] = L'\0';
+    wstring ret(temp);
+    delete[] temp;
+    temp = NULL;
+    return ret;
+}
+
 /*
- * 将UTF8编码数据转换为GBK编码
+ * 将UTF8编码数据转换为UNICODE编码
  */
 wstring utf8_to_unicode(const char *buffer)
 {
@@ -221,17 +233,15 @@ wstring wreplace(wstring source, wchar_t replaced, wstring replaceto)
  */
 wstring GetTimeW(long long timestamp)
 {
-    wchar_t *wstr = new wchar_t[20];
-    memset(wstr, 0, 20 * 2);
-    // time_t cTime = time(NULL);
-    tm tm_out;
-    localtime_s(&tm_out, &timestamp);
-    swprintf_s(wstr, 20, L"%04d-%02d-%02d %02d:%02d:%02d",
-               1900 + tm_out.tm_year, tm_out.tm_mon + 1, tm_out.tm_mday,
-               tm_out.tm_hour, tm_out.tm_min, tm_out.tm_sec);
-    wstring strTimeW(wstr);
-    delete[] wstr;
-    return strTimeW;
+    char time_buf[20] = {0};
+    memset(time_buf, 0, 20);
+    tm tm_out = {0};
+    gmtime_s(&tm_out, &timestamp);
+    // localtime_s(tm_out, &timestamp);
+    tm_out.tm_hour += 8;
+    strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", &tm_out);
+    string strTime(time_buf);
+    return utf8_to_unicode(strTime.c_str());
 }
 
 void PrintProcAddr()

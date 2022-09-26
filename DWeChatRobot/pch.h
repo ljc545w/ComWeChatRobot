@@ -16,6 +16,7 @@
 #include <string>
 #include <string>
 #include <sstream>
+#include <time.h>
 #include "wxdata.h"
 #include "wxapi.h"
 #include "base64/base64.h"
