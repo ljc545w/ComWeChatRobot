@@ -6,6 +6,8 @@
 #define SqlHandlePublicMsgOffset 0x239E3C8
 // 聊天记录相关库偏移
 #define SqlHandleMSGOffset 0x239FF68
+// 企业微信相关库偏移
+#define SqlHandleOpenIMContactOffset 0x239E6E0
 
 // 保存数据库信息的容器
 vector<DbInfoStruct> dbs;
@@ -72,6 +74,7 @@ vector<void *> GetDbHandles()
     DWORD SqlHandleEndAddr = 0x0;
     DWORD SqlHandlePublicMsgAddr = *(DWORD *)(WeChatWinBase + SqlHandlePublicMsgOffset);
     DWORD SqlHandleMSGAddr = *(DWORD *)(WeChatWinBase + SqlHandleMSGOffset);
+    DWORD SqlHandleOpenIMContactAddr = *(DWORD *)(WeChatWinBase + SqlHandleOpenIMContactOffset);
     __asm {
 		mov eax, [SqlHandleBaseAddr];
 		mov ecx, [eax];
@@ -135,6 +138,18 @@ vector<void *> GetDbHandles()
             dbmap[dbname] = db;
         }
         MsgdwHandle += 0x68;
+    }
+    // 获取企业微信数据库句柄
+    {
+        dwHandle = *((DWORD *)(SqlHandleOpenIMContactAddr + 0x4 + 0x4));
+        wstring dbname = wstring((wchar_t *)(*(DWORD *)(dwHandle + 0x50)));
+        DbInfoStruct db = {0};
+        db.dbname = (wchar_t *)(*(DWORD *)(dwHandle + 0x50));
+        db.l_dbname = wcslen(db.dbname);
+        db.handle = *(DWORD *)(dwHandle + 0x3C);
+        ExecuteSQL(*(DWORD *)(dwHandle + 0x3C), "select * from sqlite_master where type=\"table\";", (DWORD)GetDbInfo, &db);
+        dbs.push_back(db);
+        dbmap[dbname] = db;
     }
     // 添加一个空结构体，作为读取结束标志
     DbInfoStruct db_end = {0};
