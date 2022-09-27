@@ -1,6 +1,5 @@
 build/
 Debug/
-!/Release
 Release/
 SOCKET_Debug/
 SOCKET_Release/

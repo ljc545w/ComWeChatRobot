@@ -56,6 +56,7 @@ BOOL PostComMessage(DWORD pid, int msgtype, unsigned long long msgid, VARIANT *m
     }
     else
     {
+        CoUninitialize();
         return false;
     }
     CoUninitialize();

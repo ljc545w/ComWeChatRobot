@@ -137,6 +137,9 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
         return;
     }
     string jstr = jMsg.dump() + "\n";
+    LOG(INFO) << "msgid: " << jMsg["msgid"].get<ULONG64>() << " send begin." << endl;
+    LOG(INFO) << "type: " << jMsg["type"].get<int>() << ", sender: " << jMsg["wxid"].get<string>() << endl;
+    LOG(INFO) << "content: " << jMsg["message"].get<string>() << endl;
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端；将广播过程放在线程中完成，客户端才可以等待图片、语音落地
     VARIANT vsaValue = (_variant_t)utf8_to_unicode(jstr.c_str()).c_str();
@@ -145,6 +148,7 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
     PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
 #endif
     SendSocketMessage(jstr.c_str(), jstr.size());
+    LOG(INFO) << "msgid: " << jMsg["msgid"].get<ULONG64>() << " send end." << endl;
 }
 
 static void dealMessage(DWORD messageAddr)

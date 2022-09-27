@@ -374,9 +374,6 @@
     <ClCompile Include="GetChatRoomMemberNickname.cpp">
       <Filter>群相关\获取群成员昵称</Filter>
     </ClCompile>
-    <ClCompile Include="base64\base64.cpp">
-      <Filter>wxsocket</Filter>
-    </ClCompile>
     <ClCompile Include="OpenBrowser.cpp">
       <Filter>浏览器相关\打开浏览器</Filter>
     </ClCompile>
@@ -391,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="GetA8Key.cpp">
       <Filter>浏览器相关\获取A8Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\include\base64\base64.cpp">
+      <Filter>wxsocket</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
