@@ -8,18 +8,21 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
+#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include "framework.h"
 #include <iostream>
 #include <vector>
 #include <map>
 #include <strstream>
 #include <string>
-#include <string>
 #include <sstream>
+#include <fstream>
 #include <time.h>
 #include "wxdata.h"
 #include "wxapi.h"
 #include "base64/base64.h"
+#include <glog/logging.h>
+#pragma comment(lib, "glog.lib")
 #endif // PCH_H
 
 #ifdef USE_SOCKET

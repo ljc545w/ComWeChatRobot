@@ -128,19 +128,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath);../3rdparty/include</IncludePath>
+    <LibraryPath>../3rdparty/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SOCKET_Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>SWeChatRobot</TargetName>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath);../3rdparty/include</IncludePath>
     <IntDir>$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Debug\socket\</OutDir>
+    <LibraryPath>../3rdparty/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)</TargetName>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../3rdparty/include</IncludePath>
+    <LibraryPath>../3rdparty/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SOCKET_Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,6 +152,8 @@
     <IntDir>$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Release\socket\</OutDir>
     <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;../3rdparty/include</IncludePath>
+    <LibraryPath>../3rdparty/lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -352,11 +358,11 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="wxsocketapi.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rdparty\include\base64\base64.cpp" />
     <ClCompile Include="AddChatRoomMember.cpp" />
     <ClCompile Include="AddFriendByV3.cpp" />
     <ClCompile Include="AddFriendByWxid.cpp" />
     <ClCompile Include="AddBrandContact.cpp" />
-    <ClCompile Include="base64\base64.cpp" />
     <ClCompile Include="CheckFriendStatus.cpp" />
     <ClCompile Include="comclient.cpp" />
     <ClCompile Include="DbBackup.cpp" />

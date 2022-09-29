@@ -60,6 +60,7 @@ void PrintProcAddr();
 wstring GetTimeW(long long timestamp);
 BOOL ProcessIsWeChat();
 BOOL FindOrCreateDirectory(const wchar_t *pszPath);
+void gLogInit();
 
 template <typename T1, typename T2>
 vector<T1> split(T1 str, T2 letter)

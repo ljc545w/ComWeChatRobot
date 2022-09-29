@@ -51,7 +51,7 @@ class WeChatEventSink:
     """
 
     def OnGetMessageEvent(self, msg):
-        msg = json.loads(msg)
+        msg = json.loads(msg[0])
         print(msg)
 
 

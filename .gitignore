@@ -1,6 +1,5 @@
 build/
 Debug/
-!/Release
 Release/
 SOCKET_Debug/
 SOCKET_Release/
@@ -9,6 +8,7 @@ x64/
 *.rar
 obj/
 packages/
+!/3rdparty/lib/
 
 mongoose.c
 mongoose.h

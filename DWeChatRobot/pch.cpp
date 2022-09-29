@@ -304,3 +304,52 @@ DWORD OffsetFromIdaAddr(DWORD idaAddr)
 {
     return idaAddr - IDA_BASE;
 }
+
+void SignalHandler(const char *data, size_t size)
+{
+#ifdef USE_SOCKET
+    string dllname = "SWeChatRobot";
+#else
+    string dllname = "DWeChatRobot";
+#endif // USE_SOCKET
+    char szFileFullPath[MAX_PATH] = {0};
+    HMODULE hd = GetModuleHandleA(dllname.c_str());
+    GetModuleFileNameA(hd, szFileFullPath, MAX_PATH);
+    string szFile(szFileFullPath);
+    size_t pos = szFile.find_last_of('\\');
+    string szFilePath = szFile.substr(0, pos + 1);
+    std::string glog_file = szFilePath + "\\log\\error.log";
+    std::ofstream fs(glog_file, std::ios::app);
+    std::string str = std::string(data, size);
+    fs << str;
+    fs.close();
+    LOG(INFO) << str;
+    google::ShutdownGoogleLogging();
+}
+
+void gLogInit()
+{
+#ifdef USE_SOCKET
+    string dllname = "SWeChatRobot";
+#else
+    string dllname = "DWeChatRobot";
+#endif // USE_SOCKET
+#ifdef _DEBUG
+    FLAGS_colorlogtostderr = true; // log信息区分颜色
+    FLAGS_logtostderr = 1;
+#endif
+    google::SetStderrLogging(google::GLOG_INFO);  // 输出log的最低等级是 INFO (可以设置为WARNING或者更高)
+    google::InstallFailureSignalHandler();        // 配置安装程序崩溃失败信号处理器
+    google::InstallFailureWriter(&SignalHandler); // 安装配置程序失败信号的信息打印过程，设置回调函数
+    google::InitGoogleLogging(dllname.c_str());
+#ifndef _DEBUG
+    char szFileFullPath[MAX_PATH] = {0};
+    HMODULE hd = GetModuleHandleA(dllname.c_str());
+    GetModuleFileNameA(hd, szFileFullPath, MAX_PATH);
+    string szFile(szFileFullPath);
+    size_t pos = szFile.find_last_of('\\');
+    string szFilePath = szFile.substr(0, pos + 1) + "log\\";
+    FindOrCreateDirectory(gb2312_to_unicode(szFilePath.c_str()).c_str());
+    google::SetLogDestination(google::GLOG_INFO, szFilePath.c_str());
+#endif
+}
