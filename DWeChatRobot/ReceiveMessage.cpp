@@ -139,10 +139,18 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
     string jstr = jMsg.dump() + "\n";
     LOG(INFO) << "msgid: " << jMsg["msgid"].get<ULONG64>() << " send begin." << endl;
     LOG(INFO) << "type: " << jMsg["type"].get<int>() << ", sender: " << jMsg["wxid"].get<string>() << endl;
-    LOG(INFO) << "content: " << jMsg["message"].get<string>() << endl;
+    LOG(INFO) << "content size: " << jstr.length() << endl;
 #ifdef USE_COM
     // 通过连接点，将消息广播给客户端；将广播过程放在线程中完成，客户端才可以等待图片、语音落地
-    VARIANT vsaValue = (_variant_t)utf8_to_unicode(jstr.c_str()).c_str();
+    VARIANT vsaValue;
+    _variant_t szWMsg = (_variant_t)utf8_to_unicode(jstr.c_str()).c_str();
+    vsaValue.vt = VT_ARRAY | VT_VARIANT;
+    SAFEARRAYBOUND rgsaBound = {1, 0};
+    SAFEARRAY *psaValue = SafeArrayCreate(VT_VARIANT, 1, &rgsaBound);
+    long index = 0;
+    // 数据大小超过16382个字符，客户端调用可能出现异常，因此将数据放入安全数组中传递
+    HRESULT hr = SafeArrayPutElement(psaValue, &index, &szWMsg);
+    V_ARRAY(&vsaValue) = psaValue;
     DWORD type = jMsg["type"].get<DWORD>();
     ULONG64 msgid = (type != 10000) ? jMsg["msgid"].get<ULONG64>() : 0;
     PostComMessage(jMsg["pid"].get<int>(), WX_MESSAGE, msgid, &vsaValue);
