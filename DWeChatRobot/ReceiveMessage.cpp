@@ -180,6 +180,7 @@ static void dealMessage(DWORD messageAddr)
     if (jMsg["type"].get<int>() != 10000)
     {
         jMsg["filepath"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1AC).c_str());
+        jMsg["thumbnail"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x198).c_str());
         jMsg["extrainfo"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1EC).c_str());
     }
     else
