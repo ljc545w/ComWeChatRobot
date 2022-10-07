@@ -62,7 +62,9 @@ interface IWeChatRobot : IDispatch
     [id(47), helpstring("获取公众号历史消息")] HRESULT CGetHistoryPublicMsg([in] DWORD pid, [in] BSTR PublicId, [in] BSTR Offset, [out, retval] VARIANT * __result);
     [id(48), helpstring("转发消息") ] HRESULT CForwardMessage([in] DWORD pid, [in] BSTR wxid, [in] unsigned long long localId, [out, retval] int * __result);
     [id(49), helpstring("获取二维码")] HRESULT CGetQrcodeImage([in] DWORD pid, [out, retval] VARIANT * __result);
-    [id(50), helpstring("获取二维码")] HRESULT CGetA8Key([in] DWORD pid, [in] BSTR url, [ out, retval ] BSTR * __result);
+    [id(50), helpstring("获取A8Key")] HRESULT CGetA8Key([in] DWORD pid, [in] BSTR url, [ out, retval ] BSTR * __result);
+    [id(51), helpstring("发送xml消息")] HRESULT CSendXmlMsg([in] DWORD pid, [in] BSTR wxid, [in] BSTR xml, [in] BSTR imgpath,[out, retval] int *__result);
+    [id(52), helpstring("退出登录")] HRESULT CLogout([in] DWORD pid,[out, retval] int *__result);
 };
 [
 	object,

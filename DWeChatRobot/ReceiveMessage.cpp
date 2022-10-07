@@ -6,8 +6,6 @@
 #include "json/json.hpp"
 using namespace nlohmann;
 
-#pragma comment(lib, "ws2_32.lib")
-
 using namespace std;
 
 #define CLTIP "127.0.0.1"
@@ -177,6 +175,7 @@ static void dealMessage(DWORD messageAddr)
     jMsg["wxid"] = length == 0 ? jMsg["sender"].get<std::string>() : unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x170).c_str());
     jMsg["message"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x70).c_str());
     jMsg["sign"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x184).c_str());
+    jMsg["thumb_path"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x198).c_str());
     if (jMsg["type"].get<int>() != 10000)
     {
         jMsg["filepath"] = unicode_to_utf8((wchar_t *)READ_WSTRING(messageAddr, 0x1AC).c_str());

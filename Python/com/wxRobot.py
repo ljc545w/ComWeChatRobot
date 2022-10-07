@@ -1101,6 +1101,39 @@ class WeChatRobot:
             pass
         return ret
 
+    def SendXmlMsg(self,wxid:str,xml:str,img_path:str="") -> int:
+        """
+        发送原始xml消息
+
+        Parameters
+        ----------
+        wxid : str
+            消息接收人.
+        xml : str
+            xml内容.
+        img_path : str, optional
+            图片路径. 默认为空.
+
+        Returns
+        -------
+        int
+            发送成功返回0，发送失败返回非0值.
+
+        """
+        return self.robot.CSendXmlMsg(self.pid,wxid,xml,img_path)
+
+    def Logout(self) -> int:
+        """
+        退出登录
+
+        Returns
+        -------
+        int
+            成功返回0，失败返回非0值.
+
+        """
+        return self.robot.CLogout(self.pid)
+
 
 def get_wechat_pid_list() -> list:
     """

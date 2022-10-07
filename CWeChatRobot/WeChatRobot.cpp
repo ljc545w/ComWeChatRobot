@@ -590,3 +590,26 @@ STDMETHODIMP CWeChatRobot::CGetA8Key(DWORD pid, BSTR url, BSTR *__result)
     *__result = (_bstr_t)GetA8Key(pid, url).c_str();
     return S_OK;
 }
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：消息接收人wxid
+ * 参数2：xml内容
+ * 参数3：图片绝对路径
+ * 参数4：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CSendXmlMsg(DWORD pid, BSTR wxid, BSTR xml, BSTR imgpath, int *__result)
+{
+    *__result = SendXmlMsg(pid, wxid, xml, imgpath);
+    return S_OK;
+}
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CLogout(DWORD pid, int *__result)
+{
+    *__result = Logout(pid);
+    return S_OK;
+}
