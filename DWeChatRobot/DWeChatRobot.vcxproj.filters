@@ -127,11 +127,20 @@
     <Filter Include="发送消息\转发消息">
       <UniqueIdentifier>{da7b0dbb-2d48-473f-9bb9-6d36ec5b02d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="二维码">
-      <UniqueIdentifier>{a0a64bc2-f48e-41a0-838a-45b9985f8d68}</UniqueIdentifier>
-    </Filter>
     <Filter Include="浏览器相关\获取A8Key">
       <UniqueIdentifier>{10054e30-1115-49df-b387-07c207f6cac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送xml">
+      <UniqueIdentifier>{33945d7c-a756-4162-8f3a-bba729746df2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关">
+      <UniqueIdentifier>{21c70796-80d4-410d-b077-31f75f24cf9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关\获取二维码">
+      <UniqueIdentifier>{a0a64bc2-f48e-41a0-838a-45b9985f8d68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关\退出登录">
+      <UniqueIdentifier>{e00caf3d-a0c2-4915-9ca5-47e429b4fcbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -253,13 +262,19 @@
       <Filter>发送消息\转发消息</Filter>
     </ClInclude>
     <ClInclude Include="GetQrcodeImage.h">
-      <Filter>二维码</Filter>
+      <Filter>登录相关\获取二维码</Filter>
     </ClInclude>
     <ClInclude Include="wxsignal.h">
       <Filter>通用标头</Filter>
     </ClInclude>
     <ClInclude Include="GetA8Key.h">
       <Filter>浏览器相关\获取A8Key</Filter>
+    </ClInclude>
+    <ClInclude Include="SendXmlMsg.h">
+      <Filter>发送消息\发送xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Logout.h">
+      <Filter>登录相关\退出登录</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -384,13 +399,19 @@
       <Filter>发送消息\转发消息</Filter>
     </ClCompile>
     <ClCompile Include="GetQrcodeImage.cpp">
-      <Filter>二维码</Filter>
+      <Filter>登录相关\获取二维码</Filter>
     </ClCompile>
     <ClCompile Include="GetA8Key.cpp">
       <Filter>浏览器相关\获取A8Key</Filter>
     </ClCompile>
     <ClCompile Include="..\3rdparty\include\base64\base64.cpp">
       <Filter>wxsocket</Filter>
+    </ClCompile>
+    <ClCompile Include="SendXmlMsg.cpp">
+      <Filter>发送消息\发送xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Logout.cpp">
+      <Filter>登录相关\退出登录</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#define CheckLoginOffset 0x2366538
+
 #define SwitchQrcodeLoginCall1Offset 0x372AA0
 #define SwitchQrcodeLoginCall2Offset 0x5177D0
 
@@ -41,6 +43,12 @@ struct QrcodeStruct
 };
 
 static unique_ptr<QrcodeStruct> qc(new QrcodeStruct);
+
+BOOL isWxLogin()
+{
+    DWORD CheckLoginAddr = GetWeChatWinBase() + CheckLoginOffset;
+    return *(BOOL *)CheckLoginAddr;
+}
 
 void SaveQrcodeImage(unsigned char *src, int size)
 {

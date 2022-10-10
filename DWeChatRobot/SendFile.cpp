@@ -70,7 +70,7 @@ BOOL __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 {
     WxString pReceiver(receiver);
     WxString pFilePath(FilePath);
-    WxFileStruct esi_(FilePath);
+    // WxFileStruct esi_(FilePath);
     WxString nullbuffer = {0};
 
     DWORD WeChatWinBase = GetWeChatWinBase();
@@ -83,7 +83,7 @@ BOOL __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 
     char buffer[0x3B0] = {0};
 
-    DWORD edi_ = pReceiver.length;
+    // DWORD edi_ = pReceiver.length;
     DWORD ptrReceiver = (DWORD)pReceiver.buffer;
     int isSuccess = 0;
     __asm {
@@ -118,11 +118,15 @@ BOOL __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 		lea eax, buffer;
 		push eax;
 		call WxSendFileCall3;
+		mov al,byte ptr [eax + 0x38];
+		movzx eax,al;
 		mov isSuccess,eax;
+		push 200;
+		call Sleep;
 		lea ecx, buffer;
 		call DeleteSendFileCacheCall;
 		popfd;
 		popad;
     }
-    return isSuccess == 1;
+    return (isSuccess == 0x31);
 }

@@ -2,7 +2,6 @@
 #include "json/json.hpp"
 using namespace nlohmann;
 
-#define CheckLoginOffset 0x2366538
 // ¸öÈËWXIDÆ«ÒÆ
 #define SelfWxidAddrOffset 0x236607C
 
@@ -112,12 +111,6 @@ wstring GetSelfInfo()
     }
     wstring selfinfo = utf8_to_unicode(jData.dump().c_str());
     return selfinfo;
-}
-
-BOOL isWxLogin()
-{
-    DWORD CheckLoginAddr = GetWeChatWinBase() + CheckLoginOffset;
-    return *(BOOL *)CheckLoginAddr;
 }
 
 /*

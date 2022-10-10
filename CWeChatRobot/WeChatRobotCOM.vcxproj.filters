@@ -128,11 +128,20 @@
     <Filter Include="发送消息\转发消息">
       <UniqueIdentifier>{f44839a7-3cf0-415f-886e-22a8635c3dbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="二维码">
-      <UniqueIdentifier>{fb5a07d9-648d-4e1c-aed3-158f872c3d3e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="浏览器相关\获取A8Key">
       <UniqueIdentifier>{caeac105-0e3b-497e-a73e-f1233b3888aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="发送消息\发送xml">
+      <UniqueIdentifier>{92135af3-229e-47c3-883f-466aa593d43e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关">
+      <UniqueIdentifier>{edd692fc-a34d-4c3d-b2a9-36dd48ec73b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关\获取二维码">
+      <UniqueIdentifier>{fb5a07d9-648d-4e1c-aed3-158f872c3d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="登录相关\退出登录">
+      <UniqueIdentifier>{33279923-8158-4b6f-af06-e7f093852e5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -269,10 +278,16 @@
       <Filter>发送消息\转发消息</Filter>
     </ClInclude>
     <ClInclude Include="GetQrcodeImage.h">
-      <Filter>二维码</Filter>
+      <Filter>登录相关\获取二维码</Filter>
     </ClInclude>
     <ClInclude Include="GetA8Key.h">
       <Filter>浏览器相关\获取A8Key</Filter>
+    </ClInclude>
+    <ClInclude Include="SendXmlMsg.h">
+      <Filter>发送消息\发送xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Logout.h">
+      <Filter>登录相关\退出登录</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -409,10 +424,16 @@
       <Filter>发送消息\转发消息</Filter>
     </ClCompile>
     <ClCompile Include="GetQrcodeImage.cpp">
-      <Filter>二维码</Filter>
+      <Filter>登录相关\获取二维码</Filter>
     </ClCompile>
     <ClCompile Include="GetA8Key.cpp">
       <Filter>浏览器相关\获取A8Key</Filter>
+    </ClCompile>
+    <ClCompile Include="SendXmlMsg.cpp">
+      <Filter>发送消息\发送xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Logout.cpp">
+      <Filter>登录相关\退出登录</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

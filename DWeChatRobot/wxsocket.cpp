@@ -603,6 +603,23 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
         ret = ret_data.dump();
         break;
     }
+    case WECHAT_MSG_SEND_XML:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring xml = get_http_param_str(hm, jData, "xml", method);
+        wstring img_path = get_http_param_str(hm, jData, "img_path", method);
+        BOOL response = SendXmlMsg(wxid, xml, img_path);
+        json ret_data = {{"msg", response}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_LOGOUT:
+    {
+        BOOL response = Logout();
+        json ret_data = {{"msg", response}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
     default:
         // char* wxid = mg_json_get_str(hm->body, "$.wxid");
         break;

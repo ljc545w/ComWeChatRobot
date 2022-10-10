@@ -238,6 +238,7 @@
     <ClInclude Include="GetDbHandles.h" />
     <ClInclude Include="GetHistoryPublicMsg.h" />
     <ClInclude Include="InjectDll.h" />
+    <ClInclude Include="Logout.h" />
     <ClInclude Include="ntapi.h" />
     <ClInclude Include="OpenBrowser.h" />
     <ClInclude Include="pch.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
+    <ClInclude Include="SendXmlMsg.h" />
     <ClInclude Include="SetChatRoomAnnouncement.h" />
     <ClInclude Include="SetChatRoomName.h" />
     <ClInclude Include="SetChatRoomSelfNickname.h" />
@@ -289,6 +291,7 @@
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
     <ClCompile Include="InjectDll.cpp" />
+    <ClCompile Include="Logout.cpp" />
     <ClCompile Include="ntapi.cpp" />
     <ClCompile Include="OpenBrowser.cpp" />
     <ClCompile Include="pch.cpp">
@@ -310,6 +313,7 @@
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />
     <ClCompile Include="SearchContactByCache.cpp" />
+    <ClCompile Include="SendXmlMsg.cpp" />
     <ClCompile Include="SetChatRoomAnnouncement.cpp" />
     <ClCompile Include="SetChatRoomName.cpp" />
     <ClCompile Include="SetChatRoomSelfNickname.cpp" />

@@ -29,3 +29,15 @@ VARIANT GetQrcodeImage(DWORD pid)
     V_ARRAY(&vsa) = psaValue;
     return vsa;
 }
+
+BOOL isWxLogin(DWORD pid)
+{
+    WeChatProcess hp(pid);
+    if (!hp.m_init)
+        return 1;
+    DWORD isWxLoginRemoteAddr = hp.GetProcAddr(isWxLoginRemote);
+    if (isWxLoginRemoteAddr == 0)
+        return 1;
+    DWORD ret = CallRemoteFunction(hp.GetHandle(), isWxLoginRemoteAddr, NULL);
+    return ret == 1;
+}

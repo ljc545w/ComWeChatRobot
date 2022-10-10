@@ -233,15 +233,17 @@ wstring wreplace(wstring source, wchar_t replaced, wstring replaceto)
  */
 wstring GetTimeW(long long timestamp)
 {
-    char time_buf[20] = {0};
-    memset(time_buf, 0, 20);
-    tm tm_out = {0};
-    gmtime_s(&tm_out, &timestamp);
-    // localtime_s(tm_out, &timestamp);
-    tm_out.tm_hour += 8;
-    strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", &tm_out);
-    string strTime(time_buf);
-    return utf8_to_unicode(strTime.c_str());
+    wchar_t *wstr = new wchar_t[20];
+    memset(wstr, 0, 20 * 2);
+    // time_t cTime = time(NULL);
+    tm tm_out;
+    localtime_s(&tm_out, &timestamp);
+    swprintf_s(wstr, 20, L"%04d-%02d-%02d %02d:%02d:%02d",
+               1900 + tm_out.tm_year, tm_out.tm_mon + 1, tm_out.tm_mday,
+               tm_out.tm_hour, tm_out.tm_min, tm_out.tm_sec);
+    wstring strTimeW(wstr);
+    delete[] wstr;
+    return strTimeW;
 }
 
 void PrintProcAddr()

@@ -333,6 +333,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="GetHistoryPublicMsg.h" />
     <ClInclude Include="LogMsgInfo.h" />
     <ClInclude Include="http_overload.hpp" />
+    <ClInclude Include="Logout.h" />
     <ClInclude Include="OpenBrowser.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="GetQrcodeImage.h" />
@@ -346,6 +347,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
     <ClInclude Include="SearchContact.h" />
+    <ClInclude Include="SendXmlMsg.h" />
     <ClInclude Include="SetChatRoomAnnouncement.h" />
     <ClInclude Include="SetChatRoomName.h" />
     <ClInclude Include="SetChatRoomSelfNickname.h" />
@@ -380,6 +382,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClCompile Include="GetHistoryPublicMsg.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
+    <ClCompile Include="Logout.cpp" />
     <ClCompile Include="OpenBrowser.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -404,6 +407,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClCompile Include="SendText.cpp" />
     <ClCompile Include="SearchContactByCache.cpp" />
     <ClCompile Include="LogMsgInfo.cpp" />
+    <ClCompile Include="SendXmlMsg.cpp" />
     <ClCompile Include="SetChatRoomAnnouncement.cpp" />
     <ClCompile Include="SetChatRoomName.cpp" />
     <ClCompile Include="SetChatRoomSelfNickname.cpp" />

@@ -32,6 +32,8 @@
 #include "ForwardMessage.h"
 #include "GetQrcodeImage.h"
 #include "GetA8Key.h"
+#include "SendXmlMsg.h"
+#include "Logout.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
@@ -93,3 +95,5 @@
 #define GetHistoryPublicMsgRemote "GetHistoryPublicMsgRemote"
 #define GetQrcodeImageRemote "GetQrcodeImageRemote"
 #define GetA8KeyRemote "GetA8KeyRemote"
+#define SendXmlMsgRemote "SendXmlMsgRemote"
+#define LogoutRemote "Logout"

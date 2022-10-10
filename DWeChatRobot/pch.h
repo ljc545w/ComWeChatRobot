@@ -22,8 +22,13 @@
 #include "wxapi.h"
 #include "base64/base64.h"
 #include <glog/logging.h>
-#pragma comment(lib, "glog.lib")
 #endif // PCH_H
+
+#ifndef _DEBUG
+#pragma comment(lib, "glog.lib")
+#else
+#pragma comment(lib, "glogd.lib")
+#endif
 
 #ifdef USE_SOCKET
 #include "wxsocketapi.h"

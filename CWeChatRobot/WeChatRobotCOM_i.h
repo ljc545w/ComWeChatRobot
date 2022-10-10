@@ -360,6 +360,17 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR url,
             /* [retval][out] */ BSTR *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendXmlMsg( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR xml,
+            /* [in] */ BSTR imgpath,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CLogout( 
+            /* [in] */ DWORD pid,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -711,6 +722,19 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR url,
             /* [retval][out] */ BSTR *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendXmlMsg )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR xml,
+            /* [in] */ BSTR imgpath,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CLogout )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -887,6 +911,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetA8Key(This,pid,url,__result)	\
     ( (This)->lpVtbl -> CGetA8Key(This,pid,url,__result) ) 
+
+#define IWeChatRobot_CSendXmlMsg(This,pid,wxid,xml,imgpath,__result)	\
+    ( (This)->lpVtbl -> CSendXmlMsg(This,pid,wxid,xml,imgpath,__result) ) 
+
+#define IWeChatRobot_CLogout(This,pid,__result)	\
+    ( (This)->lpVtbl -> CLogout(This,pid,__result) ) 
 
 #endif /* COBJMACROS */
 

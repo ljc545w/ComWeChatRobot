@@ -4,6 +4,7 @@
 #include "SendText.h"
 #include "SendFile.h"
 #include "SendArticle.h"
+#include "SendXmlMsg.h"
 #include "FriendList.h"
 #include "SearchContact.h"
 #include "SelfInfo.h"
@@ -34,9 +35,11 @@
 #include "ForwardMessage.h"
 #include "GetQrcodeImage.h"
 #include "GetA8Key.h"
+#include "Logout.h"
 
 using namespace std;
 #pragma comment(lib, "version.lib")
+#pragma comment(lib, "ws2_32.lib")
 #pragma warning(disable : 4731 26812)
 // 对于导出函数，需要使用此宏修饰
 #define DLLEXPORT extern "C" __declspec(dllexport)

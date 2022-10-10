@@ -138,4 +138,9 @@ BOOL __stdcall ForwardMessage(wstring wxid, ULONG64 msgid)
 {
     return ForwardMessage(WS2LW(wxid), msgid);
 }
+
+BOOL __stdcall SendXmlMsg(wstring wxid, wstring xml, wstring imgpath)
+{
+    return SendXmlMsg(WS2LW(wxid), WS2LW(xml), WS2LW(imgpath));
+}
 #endif
