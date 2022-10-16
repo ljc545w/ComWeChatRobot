@@ -249,7 +249,7 @@ void OnUpdateMessage(DWORD messageAddr)
 void OnVoipAckMessage(DWORD messageAddr)
 {
     DWORD type = *(DWORD *)(messageAddr + 0x38);
-    if (type == 0x32 || type == 0x33)
+    if (type == 0x32 || type == 0x33 || type == 0x2712)
         dealMessage(messageAddr, MSG_SYNC);
 }
 
