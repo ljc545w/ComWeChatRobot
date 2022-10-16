@@ -121,10 +121,10 @@ BOOL __stdcall SendFile(wchar_t *receiver, wchar_t *FilePath)
 		mov al,byte ptr [eax + 0x38];
 		movzx eax,al;
 		mov isSuccess,eax;
-		push 200;
-		call Sleep;
-		lea ecx, buffer;
-		call DeleteSendFileCacheCall;
+        // push 200;
+        // call Sleep;
+        // lea ecx, buffer;
+        // call DeleteSendFileCacheCall;
 		popfd;
 		popad;
     }

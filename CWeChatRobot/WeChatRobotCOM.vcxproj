@@ -237,6 +237,7 @@
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
     <ClInclude Include="GetHistoryPublicMsg.h" />
+    <ClInclude Include="GetTransfer.h" />
     <ClInclude Include="InjectDll.h" />
     <ClInclude Include="Logout.h" />
     <ClInclude Include="ntapi.h" />
@@ -288,6 +289,7 @@
     <ClCompile Include="GetChatRoomMembers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="GetHistoryPublicMsg.cpp" />
+    <ClCompile Include="GetTransfer.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
     <ClCompile Include="InjectDll.cpp" />

@@ -613,3 +613,16 @@ STDMETHODIMP CWeChatRobot::CLogout(DWORD pid, int *__result)
     *__result = Logout(pid);
     return S_OK;
 }
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：转账人wxid
+ * 参数2：从xml中获取的transcationid
+ * 参数3：从xml中获取的transferid
+ * 参数4：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CGetTransfer(DWORD pid, BSTR wxid, BSTR transcationid, BSTR transferid, int *__result)
+{
+    *__result = GetTransfer(pid, wxid, transcationid, transferid);
+    return S_OK;
+}

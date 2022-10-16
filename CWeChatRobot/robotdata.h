@@ -34,6 +34,7 @@
 #include "GetA8Key.h"
 #include "SendXmlMsg.h"
 #include "Logout.h"
+#include "GetTransfer.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
@@ -97,3 +98,5 @@
 #define GetA8KeyRemote "GetA8KeyRemote"
 #define SendXmlMsgRemote "SendXmlMsgRemote"
 #define LogoutRemote "Logout"
+
+#define GetTransferRemote "GetTransferRemote"

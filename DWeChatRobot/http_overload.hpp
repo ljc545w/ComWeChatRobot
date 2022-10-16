@@ -143,4 +143,9 @@ BOOL __stdcall SendXmlMsg(wstring wxid, wstring xml, wstring imgpath)
 {
     return SendXmlMsg(WS2LW(wxid), WS2LW(xml), WS2LW(imgpath));
 }
+
+BOOL __stdcall GetTransfer(wstring wxid, wstring transcationid, wstring transferid)
+{
+    return GetTransfer(WS2LW(wxid), WS2LW(transcationid), WS2LW(transferid));
+}
 #endif

@@ -47,6 +47,12 @@ struct WxString
         length = wcslen(pStr);
         maxLength = wcslen(pStr) * 2;
     }
+    void set_value(const wchar_t *pStr)
+    {
+        buffer = (wchar_t *)pStr;
+        length = wcslen(pStr);
+        maxLength = wcslen(pStr) * 2;
+    }
 };
 
 /*

@@ -142,6 +142,12 @@
     <Filter Include="登录相关\退出登录">
       <UniqueIdentifier>{e00caf3d-a0c2-4915-9ca5-47e429b4fcbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="未分类">
+      <UniqueIdentifier>{75895983-2efe-413f-a71b-1b1891b109a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="未分类\收款">
+      <UniqueIdentifier>{f24eb4af-96d0-41a3-ba1a-799d49f2fb4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -275,6 +281,9 @@
     </ClInclude>
     <ClInclude Include="Logout.h">
       <Filter>登录相关\退出登录</Filter>
+    </ClInclude>
+    <ClInclude Include="GetTransfer.h">
+      <Filter>未分类\收款</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="Logout.cpp">
       <Filter>登录相关\退出登录</Filter>
+    </ClCompile>
+    <ClCompile Include="GetTransfer.cpp">
+      <Filter>未分类\收款</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

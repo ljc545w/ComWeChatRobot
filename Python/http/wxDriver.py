@@ -85,7 +85,10 @@ class WECHAT_HTTP_APIS:
 
     WECHAT_MSG_FORWARD_MESSAGE = 40             # 转发消息
     WECHAT_GET_QRCODE_IMAGE = 41                # 获取二维码
-    WECHAT_GET_A8KEY = 42
+    WECHAT_GET_A8KEY = 42                       # 获取A8Key
+    WECHAT_MSG_SEND_XML = 43                    # 发送xml消息
+    WECHAT_LOGOUT = 44                          # 退出登录
+    WECHAT_GET_TRANSFER = 45                    # 收款
 
 APIS = WECHAT_HTTP_APIS
 
@@ -191,7 +194,10 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
 
         APIS.WECHAT_MSG_FORWARD_MESSAGE: {"wxid": "filehelper","msgid": 2 ** 64 - 1},
         APIS.WECHAT_GET_QRCODE_IMAGE: {},
-        APIS.WECHAT_GET_A8KEY: {"url":""}
+        APIS.WECHAT_GET_A8KEY: {"url":""},
+        APIS.WECHAT_MSG_SEND_XML: {"wxid":"filehelper","xml":"","img_path":""},
+        APIS.WECHAT_LOGOUT: {},
+        APIS.WECHAT_GET_TRANSFER: {"wxid":"","transcationid":"","transferid":""}
     }
 
     def get_http_template(self, api_number):
@@ -337,8 +343,8 @@ if __name__ == '__main__':
     if len(pids) == 0:
         pids.append(new_wechat())
     start_listen(pids[0],port)
-    post_wechat_http_api(APIS.WECHAT_LOG_START_HOOK,8000)
-    print(post_wechat_http_api(APIS.WECHAT_GET_SELF_INFO, 8000))
-    post_wechat_http_api(APIS.WECHAT_MSG_START_HOOK,8000,{"port":10808})
+    post_wechat_http_api(APIS.WECHAT_LOG_START_HOOK,port)
+    print(post_wechat_http_api(APIS.WECHAT_GET_SELF_INFO, port))
+    post_wechat_http_api(APIS.WECHAT_MSG_START_HOOK,port,{"port":10808})
     start_socket_server()
     stop_listen(pids[0])

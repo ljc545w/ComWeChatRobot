@@ -90,6 +90,7 @@ public:
     STDMETHODIMP CGetA8Key(DWORD pid, BSTR url, BSTR *__result);
     STDMETHODIMP CSendXmlMsg(DWORD pid, BSTR wxid, BSTR xml, BSTR imgpath, int *__result);
     STDMETHODIMP CLogout(DWORD pid, int *__result);
+    STDMETHODIMP CGetTransfer(DWORD pid, BSTR wxid, BSTR transcationid, BSTR transferid, int *__result);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(WeChatRobot), CWeChatRobot)

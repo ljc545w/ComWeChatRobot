@@ -331,6 +331,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClInclude Include="GetChatRoomMembers.h" />
     <ClInclude Include="GetDbHandles.h" />
     <ClInclude Include="GetHistoryPublicMsg.h" />
+    <ClInclude Include="GetTransfer.h" />
     <ClInclude Include="LogMsgInfo.h" />
     <ClInclude Include="http_overload.hpp" />
     <ClInclude Include="Logout.h" />
@@ -380,6 +381,7 @@ xcopy /y /d  "$(OutDir)..\..\Python\http\wxDriver.py"  "$(SolutionDir)build\http
     <ClCompile Include="GetChatRoomMemebers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="GetHistoryPublicMsg.cpp" />
+    <ClCompile Include="GetTransfer.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
     <ClCompile Include="Logout.cpp" />

@@ -18,3 +18,11 @@ BOOL __stdcall HookImageMsg(wstring save_path);
 
 void __stdcall HookVoiceMsg();
 void __stdcall HookImageMsg();
+
+typedef enum MSG_SOURCE_TYPETag
+{
+    MSG_SYNC,
+    MSG_UPDATE,
+    MSG_SEND,
+} MSG_SOURCE,
+    *PMSG_SOURCE;

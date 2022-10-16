@@ -49,7 +49,7 @@
 #include "WeChatRobotCOM_i.h"
 
 #define TYPE_FORMAT_STRING_SIZE   1239                              
-#define PROC_FORMAT_STRING_SIZE   2533                              
+#define PROC_FORMAT_STRING_SIZE   2593                              
 #define EXPR_FORMAT_STRING_SIZE   1                                 
 #define TRANSMIT_AS_TABLE_SIZE    0            
 #define WIRE_MARSHAL_TABLE_SIZE   2            
@@ -2331,14 +2331,14 @@ static const WeChatRobotCOM_MIDL_PROC_FORMAT_STRING WeChatRobotCOM__MIDL_ProcFor
 /* 2422 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
-	/* Procedure CPostMessage */
+	/* Procedure CGetTransfer */
 
 /* 2424 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 2426 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 2430 */	NdrFcShort( 0x7 ),	/* 7 */
-/* 2432 */	NdrFcShort( 0x20 ),	/* x86 Stack size/offset = 32 */
-/* 2434 */	NdrFcShort( 0x20 ),	/* 32 */
+/* 2430 */	NdrFcShort( 0x38 ),	/* 56 */
+/* 2432 */	NdrFcShort( 0x1c ),	/* x86 Stack size/offset = 28 */
+/* 2434 */	NdrFcShort( 0x8 ),	/* 8 */
 /* 2436 */	NdrFcShort( 0x24 ),	/* 36 */
 /* 2438 */	0x46,		/* Oi2 Flags:  clt must size, has return, has ext, */
 			0x6,		/* 6 */
@@ -2355,55 +2355,53 @@ static const WeChatRobotCOM_MIDL_PROC_FORMAT_STRING WeChatRobotCOM__MIDL_ProcFor
 /* 2452 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
-	/* Parameter msgtype */
+	/* Parameter wxid */
 
-/* 2454 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 2454 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
 /* 2456 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
-/* 2458 */	0x8,		/* FC_LONG */
-			0x0,		/* 0 */
+/* 2458 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
 
-	/* Parameter msgid */
+	/* Parameter transcationid */
 
-/* 2460 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 2460 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
 /* 2462 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
-/* 2464 */	0xb,		/* FC_HYPER */
-			0x0,		/* 0 */
+/* 2464 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
 
-	/* Parameter msg */
+	/* Parameter transferid */
 
-/* 2466 */	NdrFcShort( 0x10b ),	/* Flags:  must size, must free, in, simple ref, */
-/* 2468 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
-/* 2470 */	NdrFcShort( 0x4cc ),	/* Type Offset=1228 */
+/* 2466 */	NdrFcShort( 0x8b ),	/* Flags:  must size, must free, in, by val, */
+/* 2468 */	NdrFcShort( 0x10 ),	/* x86 Stack size/offset = 16 */
+/* 2470 */	NdrFcShort( 0x2a ),	/* Type Offset=42 */
 
 	/* Parameter __result */
 
 /* 2472 */	NdrFcShort( 0x2150 ),	/* Flags:  out, base type, simple ref, srv alloc size=8 */
-/* 2474 */	NdrFcShort( 0x18 ),	/* x86 Stack size/offset = 24 */
+/* 2474 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
 /* 2476 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
 	/* Return value */
 
 /* 2478 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
-/* 2480 */	NdrFcShort( 0x1c ),	/* x86 Stack size/offset = 28 */
+/* 2480 */	NdrFcShort( 0x18 ),	/* x86 Stack size/offset = 24 */
 /* 2482 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
-	/* Procedure CRegisterWxPidWithCookie */
+	/* Procedure CPostMessage */
 
 /* 2484 */	0x33,		/* FC_AUTO_HANDLE */
 			0x6c,		/* Old Flags:  object, Oi2 */
 /* 2486 */	NdrFcLong( 0x0 ),	/* 0 */
-/* 2490 */	NdrFcShort( 0x8 ),	/* 8 */
-/* 2492 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
-/* 2494 */	NdrFcShort( 0x10 ),	/* 16 */
+/* 2490 */	NdrFcShort( 0x7 ),	/* 7 */
+/* 2492 */	NdrFcShort( 0x20 ),	/* x86 Stack size/offset = 32 */
+/* 2494 */	NdrFcShort( 0x20 ),	/* 32 */
 /* 2496 */	NdrFcShort( 0x24 ),	/* 36 */
-/* 2498 */	0x44,		/* Oi2 Flags:  has return, has ext, */
-			0x4,		/* 4 */
+/* 2498 */	0x46,		/* Oi2 Flags:  clt must size, has return, has ext, */
+			0x6,		/* 6 */
 /* 2500 */	0x8,		/* 8 */
-			0x41,		/* Ext Flags:  new corr desc, has range on conformance */
+			0x45,		/* Ext Flags:  new corr desc, srv corr check, has range on conformance */
 /* 2502 */	NdrFcShort( 0x0 ),	/* 0 */
-/* 2504 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 2504 */	NdrFcShort( 0x1 ),	/* 1 */
 /* 2506 */	NdrFcShort( 0x0 ),	/* 0 */
 
 	/* Parameter pid */
@@ -2413,25 +2411,83 @@ static const WeChatRobotCOM_MIDL_PROC_FORMAT_STRING WeChatRobotCOM__MIDL_ProcFor
 /* 2512 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
-	/* Parameter cookie */
+	/* Parameter msgtype */
 
 /* 2514 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
 /* 2516 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
 /* 2518 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
+	/* Parameter msgid */
+
+/* 2520 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 2522 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
+/* 2524 */	0xb,		/* FC_HYPER */
+			0x0,		/* 0 */
+
+	/* Parameter msg */
+
+/* 2526 */	NdrFcShort( 0x10b ),	/* Flags:  must size, must free, in, simple ref, */
+/* 2528 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
+/* 2530 */	NdrFcShort( 0x4cc ),	/* Type Offset=1228 */
+
 	/* Parameter __result */
 
-/* 2520 */	NdrFcShort( 0x2150 ),	/* Flags:  out, base type, simple ref, srv alloc size=8 */
-/* 2522 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
-/* 2524 */	0x8,		/* FC_LONG */
+/* 2532 */	NdrFcShort( 0x2150 ),	/* Flags:  out, base type, simple ref, srv alloc size=8 */
+/* 2534 */	NdrFcShort( 0x18 ),	/* x86 Stack size/offset = 24 */
+/* 2536 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
 	/* Return value */
 
-/* 2526 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
-/* 2528 */	NdrFcShort( 0x10 ),	/* x86 Stack size/offset = 16 */
-/* 2530 */	0x8,		/* FC_LONG */
+/* 2538 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
+/* 2540 */	NdrFcShort( 0x1c ),	/* x86 Stack size/offset = 28 */
+/* 2542 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Procedure CRegisterWxPidWithCookie */
+
+/* 2544 */	0x33,		/* FC_AUTO_HANDLE */
+			0x6c,		/* Old Flags:  object, Oi2 */
+/* 2546 */	NdrFcLong( 0x0 ),	/* 0 */
+/* 2550 */	NdrFcShort( 0x8 ),	/* 8 */
+/* 2552 */	NdrFcShort( 0x14 ),	/* x86 Stack size/offset = 20 */
+/* 2554 */	NdrFcShort( 0x10 ),	/* 16 */
+/* 2556 */	NdrFcShort( 0x24 ),	/* 36 */
+/* 2558 */	0x44,		/* Oi2 Flags:  has return, has ext, */
+			0x4,		/* 4 */
+/* 2560 */	0x8,		/* 8 */
+			0x41,		/* Ext Flags:  new corr desc, has range on conformance */
+/* 2562 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 2564 */	NdrFcShort( 0x0 ),	/* 0 */
+/* 2566 */	NdrFcShort( 0x0 ),	/* 0 */
+
+	/* Parameter pid */
+
+/* 2568 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 2570 */	NdrFcShort( 0x4 ),	/* x86 Stack size/offset = 4 */
+/* 2572 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Parameter cookie */
+
+/* 2574 */	NdrFcShort( 0x48 ),	/* Flags:  in, base type, */
+/* 2576 */	NdrFcShort( 0x8 ),	/* x86 Stack size/offset = 8 */
+/* 2578 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Parameter __result */
+
+/* 2580 */	NdrFcShort( 0x2150 ),	/* Flags:  out, base type, simple ref, srv alloc size=8 */
+/* 2582 */	NdrFcShort( 0xc ),	/* x86 Stack size/offset = 12 */
+/* 2584 */	0x8,		/* FC_LONG */
+			0x0,		/* 0 */
+
+	/* Return value */
+
+/* 2586 */	NdrFcShort( 0x70 ),	/* Flags:  out, return, base type, */
+/* 2588 */	NdrFcShort( 0x10 ),	/* x86 Stack size/offset = 16 */
+/* 2590 */	0x8,		/* FC_LONG */
 			0x0,		/* 0 */
 
 			0x0
@@ -3327,7 +3383,8 @@ static const unsigned short IWeChatRobot_FormatStringOffsetTable[] =
     2232,
     2274,
     2322,
-    2382
+    2382,
+    2424
     };
 
 static const MIDL_STUBLESS_PROXY_INFO IWeChatRobot_ProxyInfo =
@@ -3351,7 +3408,7 @@ static const MIDL_SERVER_INFO IWeChatRobot_ServerInfo =
     0,
     0,
     0};
-CINTERFACE_PROXY_VTABLE(56) _IWeChatRobotProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(57) _IWeChatRobotProxyVtbl = 
 {
     &IWeChatRobot_ProxyInfo,
     &IID_IWeChatRobot,
@@ -3410,7 +3467,8 @@ CINTERFACE_PROXY_VTABLE(56) _IWeChatRobotProxyVtbl =
     (void *) (INT_PTR) -1 /* IWeChatRobot::CGetQrcodeImage */ ,
     (void *) (INT_PTR) -1 /* IWeChatRobot::CGetA8Key */ ,
     (void *) (INT_PTR) -1 /* IWeChatRobot::CSendXmlMsg */ ,
-    (void *) (INT_PTR) -1 /* IWeChatRobot::CLogout */
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CLogout */ ,
+    (void *) (INT_PTR) -1 /* IWeChatRobot::CGetTransfer */
 };
 
 
@@ -3468,6 +3526,7 @@ static const PRPC_STUB_FUNCTION IWeChatRobot_table[] =
     NdrStubCall2,
     NdrStubCall2,
     NdrStubCall2,
+    NdrStubCall2,
     NdrStubCall2
 };
 
@@ -3475,7 +3534,7 @@ CInterfaceStubVtbl _IWeChatRobotStubVtbl =
 {
     &IID_IWeChatRobot,
     &IWeChatRobot_ServerInfo,
-    56,
+    57,
     &IWeChatRobot_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };
@@ -3491,8 +3550,8 @@ static const unsigned short IRobotEvent_FormatStringOffsetTable[] =
     (unsigned short) -1,
     (unsigned short) -1,
     (unsigned short) -1,
-    2424,
-    2484
+    2484,
+    2544
     };
 
 static const MIDL_STUBLESS_PROXY_INFO IRobotEvent_ProxyInfo =
