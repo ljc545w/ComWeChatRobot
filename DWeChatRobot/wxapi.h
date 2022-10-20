@@ -36,6 +36,7 @@
 #include "GetQrcodeImage.h"
 #include "GetA8Key.h"
 #include "Logout.h"
+#include "GetTransfer.h"
 
 using namespace std;
 #pragma comment(lib, "version.lib")

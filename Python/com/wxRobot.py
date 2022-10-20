@@ -1134,6 +1134,27 @@ class WeChatRobot:
         """
         return self.robot.CLogout(self.pid)
 
+    def GetTransfer(self,wxid:str,transcationid:str,transferid:str) -> int:
+        """
+        收款
+
+        Parameters
+        ----------
+        wxid : str
+            转账人wxid.
+        transcationid : str
+            从转账消息xml中获取.
+        transferid : str
+            从转账消息xml中获取.
+
+        Returns
+        -------
+        int
+            成功返回0，失败返回非0值.
+
+        """
+        return self.robot.CGetTransfer(self.pid,wxid,transcationid,transferid)
+
 
 def get_wechat_pid_list() -> list:
     """

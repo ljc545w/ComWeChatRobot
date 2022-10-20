@@ -620,6 +620,16 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
         ret = ret_data.dump();
         break;
     }
+    case WECHAT_GET_TRANSFER:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring transcationid = get_http_param_str(hm, jData, "transcationid", method);
+        wstring transferid = get_http_param_str(hm, jData, "transferid", method);
+        BOOL response = GetTransfer(wxid, transcationid, transferid);
+        json ret_data = {{"msg", response}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
     default:
         // char* wxid = mg_json_get_str(hm->body, "$.wxid");
         break;

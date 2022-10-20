@@ -371,6 +371,13 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ DWORD pid,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetTransfer( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR transcationid,
+            /* [in] */ BSTR transferid,
+            /* [retval][out] */ int *__result) = 0;
+        
     };
     
     
@@ -735,6 +742,14 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ DWORD pid,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetTransfer )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR transcationid,
+            /* [in] */ BSTR transferid,
+            /* [retval][out] */ int *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -917,6 +932,9 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CLogout(This,pid,__result)	\
     ( (This)->lpVtbl -> CLogout(This,pid,__result) ) 
+
+#define IWeChatRobot_CGetTransfer(This,pid,wxid,transcationid,transferid,__result)	\
+    ( (This)->lpVtbl -> CGetTransfer(This,pid,wxid,transcationid,transferid,__result) ) 
 
 #endif /* COBJMACROS */
 

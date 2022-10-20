@@ -25,6 +25,10 @@ using namespace std;
 // 撤回消息HOOK的CALL偏移
 #define UpdateMessageNextCallOffset 0x5D6D3430 - 0x5D1F0000
 
+// 音视频通话
+#define VoipAckMessageHookOffset 0x1054A18F - 0x10000000
+#define VoipAckMessageNextCallOffset 0x1022BA60 - 0x10000000
+
 #define READ_WSTRING(addr, offset) ((*(DWORD *)(addr + offset + 0x4) == 0) ? wstring(L"") : wstring((wchar_t *)(*(DWORD *)(addr + offset)), *(DWORD *)(addr + offset + 0x4)))
 
 static int SRVPORT = 0;
@@ -35,6 +39,7 @@ BOOL ReceiveMessageHooked = false;
 static char OldReceiveMessageAsmCode[5] = {0};
 static char OldSendMessageAsmCode[5] = {0};
 static char OldUpdateMessageAsmCode[5] = {0};
+static char OldVoipAckMessageAsmCode[5] = {0};
 static DWORD WeChatWinBase = GetWeChatWinBase();
 // 接收消息HOOK地址
 static DWORD ReceiveMessageHookAddress = WeChatWinBase + ReceiveMessageHookOffset;
@@ -54,6 +59,10 @@ static DWORD UpdateMessageHookAddress = WeChatWinBase + UpdateMessageHookOffset;
 static DWORD UpdateMessageNextCall = WeChatWinBase + UpdateMessageNextCallOffset;
 // 撤回HOOK的跳转地址
 static DWORD UpdateMessageJmpBackAddress = UpdateMessageHookAddress + 0x5;
+// 音视频通话
+static DWORD VoipAckMessageHookAddress = WeChatWinBase + VoipAckMessageHookOffset;
+static DWORD VoipAckMessageNextCall = WeChatWinBase + VoipAckMessageNextCallOffset;
+static DWORD VoipAckMessageJmpBackAddress = VoipAckMessageHookAddress + 0x5;
 
 struct SocketMessageStruct
 {
@@ -157,7 +166,7 @@ void SendSocketMessageInThread(SocketMessageStruct *param)
     LOG(INFO) << "msgid: " << jMsg["msgid"].get<ULONG64>() << " send end." << endl;
 }
 
-static void dealMessage(DWORD messageAddr)
+static void dealMessage(DWORD messageAddr, int msg_source)
 {
     json jMsg;
     unsigned long long msgid = *(unsigned long long *)(messageAddr + 0x30);
@@ -166,7 +175,7 @@ static void dealMessage(DWORD messageAddr)
     jMsg["isSendMsg"] = *(BOOL *)(messageAddr + 0x3C);
     if (jMsg["isSendMsg"].get<BOOL>())
     {
-        jMsg["isSendByPhone"] = (int)(*(BYTE *)(messageAddr + 0xD8));
+        jMsg["isSendByPhone"] = (msg_source == MSG_SYNC) ? 1 : 0; // (int)(*(BYTE *)(messageAddr + 0xD8));
     }
     jMsg["msgid"] = msgid;
     // jMsg["localId"] = *(unsigned int *)(messageAddr + 0x20);
@@ -210,7 +219,7 @@ void OnReceiveMessage(DWORD messagesAddr)
     DWORD *messages = (DWORD *)messagesAddr;
     for (DWORD messageAddr = messages[0]; messageAddr < messages[1]; messageAddr += 0x298)
     {
-        dealMessage(messageAddr);
+        dealMessage(messageAddr, MSG_SYNC);
     }
 }
 
@@ -222,7 +231,7 @@ void OnSendMessage(DWORD messageAddr)
     BOOL isSendMsg = *(BOOL *)(messageAddr + 0x3C);
     if (!isSendMsg)
         return;
-    dealMessage(messageAddr);
+    dealMessage(messageAddr, MSG_SEND);
 }
 
 /*
@@ -231,7 +240,17 @@ void OnSendMessage(DWORD messageAddr)
 void OnUpdateMessage(DWORD messageAddr)
 {
     // DWORD type = *(DWORD *)(messageAddr + 0x38);
-    dealMessage(messageAddr);
+    dealMessage(messageAddr, MSG_UPDATE);
+}
+
+/*
+ * 处理音视频通话
+ */
+void OnVoipAckMessage(DWORD messageAddr)
+{
+    DWORD type = *(DWORD *)(messageAddr + 0x38);
+    if (type == 0x32 || type == 0x33 || type == 0x2712)
+        dealMessage(messageAddr, MSG_SYNC);
 }
 
 /*
@@ -289,6 +308,24 @@ _declspec(naked) void dealRevokeMessage()
 }
 
 /*
+ * HOOK的具体实现，接收到撤回消息后调用处理函数
+ */
+_declspec(naked) void dealVoipAckMessage()
+{
+    __asm {
+		pushad;
+		pushfd;
+		push ecx;
+		call OnVoipAckMessage;
+		add esp, 0x4;
+		popfd;
+		popad;
+		call VoipAckMessageNextCall;
+		jmp VoipAckMessageJmpBackAddress;
+    }
+}
+
+/*
  * 开始接收消息HOOK
  * return：void
  */
@@ -307,9 +344,13 @@ VOID HookReceiveMessage(int port)
     UpdateMessageHookAddress = WeChatWinBase + UpdateMessageHookOffset;
     UpdateMessageNextCall = WeChatWinBase + UpdateMessageNextCallOffset;
     UpdateMessageJmpBackAddress = UpdateMessageHookAddress + 0x5;
+    VoipAckMessageHookAddress = WeChatWinBase + VoipAckMessageHookOffset;
+    VoipAckMessageNextCall = WeChatWinBase + VoipAckMessageNextCallOffset;
+    VoipAckMessageJmpBackAddress = VoipAckMessageHookAddress + 0x5;
     HookAnyAddress(ReceiveMessageHookAddress, (LPVOID)dealReceiveMessage, OldReceiveMessageAsmCode);
     HookAnyAddress(SendMessageHookAddress, (LPVOID)dealSendMessage, OldSendMessageAsmCode);
     HookAnyAddress(UpdateMessageHookAddress, (LPVOID)dealRevokeMessage, OldUpdateMessageAsmCode);
+    HookAnyAddress(VoipAckMessageHookAddress, (LPVOID)dealVoipAckMessage, OldVoipAckMessageAsmCode);
     ReceiveMessageHooked = TRUE;
 }
 
@@ -325,5 +366,6 @@ VOID UnHookReceiveMessage()
     UnHookAnyAddress(ReceiveMessageHookAddress, OldReceiveMessageAsmCode);
     UnHookAnyAddress(SendMessageHookAddress, OldSendMessageAsmCode);
     UnHookAnyAddress(UpdateMessageHookAddress, OldUpdateMessageAsmCode);
+    UnHookAnyAddress(VoipAckMessageHookAddress, OldVoipAckMessageAsmCode);
     ReceiveMessageHooked = FALSE;
 }

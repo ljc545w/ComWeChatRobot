@@ -28,10 +28,10 @@ struct ImageParamStruct
  * return£ºvoid
  */
 #ifndef USE_SOCKET
-void SendImageRemote(LPVOID lpParamStruct)
+BOOL SendImageRemote(LPVOID lpParamStruct)
 {
     ImageParamStruct *params = (ImageParamStruct *)lpParamStruct;
-    SendImage((WCHAR *)params->wxid, (WCHAR *)params->imagepath);
+    return SendImage((WCHAR *)params->wxid, (WCHAR *)params->imagepath);
 }
 #endif
 
@@ -77,5 +77,5 @@ BOOL __stdcall SendImage(wchar_t *receiver, wchar_t *ImagePath)
 		call DeleteSendImageCacheCall;
 		popad;
     }
-    return isSuccess == 1;
+    return isSuccess;
 }

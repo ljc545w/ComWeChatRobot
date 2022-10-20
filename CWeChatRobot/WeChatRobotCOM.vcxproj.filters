@@ -143,6 +143,12 @@
     <Filter Include="登录相关\退出登录">
       <UniqueIdentifier>{33279923-8158-4b6f-af06-e7f093852e5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="未分类">
+      <UniqueIdentifier>{26820c31-881e-44a6-8c53-b26379ce9b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="未分类\收款">
+      <UniqueIdentifier>{79bb1058-041b-4bdc-8678-0369c294e570}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -289,6 +295,9 @@
     <ClInclude Include="Logout.h">
       <Filter>登录相关\退出登录</Filter>
     </ClInclude>
+    <ClInclude Include="GetTransfer.h">
+      <Filter>未分类\收款</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -434,6 +443,9 @@
     </ClCompile>
     <ClCompile Include="Logout.cpp">
       <Filter>登录相关\退出登录</Filter>
+    </ClCompile>
+    <ClCompile Include="GetTransfer.cpp">
+      <Filter>未分类\收款</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
