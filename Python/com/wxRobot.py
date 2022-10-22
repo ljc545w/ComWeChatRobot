@@ -351,10 +351,8 @@ class WeChatRobot:
         """
         if not self.AddressBook:
             self.GetAddressBook()
-        friend_list = []
-        for item in self.AddressBook:
-            if 'wxid_' == item['wxid'][0:5]:
-                friend_list.append(item)
+        friend_list = [item for item in self.AddressBook \
+                       if (item['wxType'] == 3 and item['wxid'][0:3] != 'gh_')]
         return friend_list
 
     def GetChatRoomList(self) -> list:
@@ -369,10 +367,8 @@ class WeChatRobot:
         """
         if not self.AddressBook:
             self.GetAddressBook()
-        chatroom_list = []
-        for item in self.AddressBook:
-            if '@chatroom' in item['wxid']:
-                chatroom_list.append(item)
+        chatroom_list = [item for item in self.AddressBook \
+                         if item['wxType'] == 2]
         return chatroom_list
 
     def GetOfficialAccountList(self) -> list:
@@ -387,10 +383,9 @@ class WeChatRobot:
         """
         if not self.AddressBook:
             self.GetAddressBook()
-        official_account_list = []
-        for item in self.AddressBook:
-            if 'wxid_' != item['wxid'][0:5] and '@chatroom' not in item['wxid']:
-                official_account_list.append(item)
+        official_account_list = [item for item in self.AddressBook \
+                                 if (item['wxType'] == 3 and \
+                                     item['wxid'][0:3] == 'gh_')]
         return official_account_list
 
     def GetFriendByWxRemark(self, remark: str) -> dict or None:

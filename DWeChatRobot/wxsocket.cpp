@@ -321,6 +321,8 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
             f_j["wxNumber"] = unicode_to_utf8(WS2LW(wxNumber));
             f_j["wxNickName"] = unicode_to_utf8(WS2LW(wxNickName));
             f_j["wxRemark"] = unicode_to_utf8(WS2LW(wxRemark));
+            f_j["wxType"] = *(DWORD *)f.wxTypeAddr;
+            f_j["wxVerifyFlag"] = *(DWORD *)f.wxVerifyFlagAddr;
             ret_data["data"].push_back(f_j);
         }
         ret = ret_data.dump();
