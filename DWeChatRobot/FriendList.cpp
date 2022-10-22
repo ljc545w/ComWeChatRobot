@@ -9,9 +9,9 @@ vector<WxFriendStruct> WxFriendList;
 
 #ifndef USE_SOCKET
 /*
-* 供外部调用的获取好友列表接口1
-* return：int，联系人数量
-*/
+ * 供外部调用的获取好友列表接口1
+ * return：int，联系人数量
+ */
 int GetFriendListInit()
 {
     GetFriendList();
@@ -22,9 +22,9 @@ int GetFriendListInit()
 }
 
 /*
-* 供外部调用的获取好友列表接口2
-* return：DWORD，WxFriendList第一个成员地址
-*/
+ * 供外部调用的获取好友列表接口2
+ * return：DWORD，WxFriendList第一个成员地址
+ */
 DWORD GetFriendListRemote()
 {
     if (WxFriendList.size() == 0 || WxFriendList.size() - 1 == 0)
@@ -37,9 +37,9 @@ DWORD GetFriendListRemote()
 }
 
 /*
-* 供外部调用的获取好友列表接口3，清空缓存
-* return：void
-*/
+ * 供外部调用的获取好友列表接口3，清空缓存
+ * return：void
+ */
 void GetFriendListFinish()
 {
     WxFriendList.clear();
@@ -54,9 +54,9 @@ vector<WxFriendStruct> GetWxContact()
 }
 #endif
 /*
-* 获取好友列表的具体实现
-* return：void
-*/
+ * 获取好友列表的具体实现
+ * return：void
+ */
 WxFriendStruct *__stdcall GetFriendList()
 {
 #ifdef _DEBUG
@@ -86,6 +86,8 @@ WxFriendStruct *__stdcall GetFriendList()
         DWORD wxNumberAddr = 0;
         DWORD wxNickNameAddr = 0;
         DWORD wxRemarkAddr = 0;
+        DWORD wxTypeAddr = 0;
+        DWORD wxVerifyFlagAddr = 0;
 
         __asm {
 			pushad;
@@ -102,11 +104,17 @@ WxFriendStruct *__stdcall GetFriendList()
 			mov ecx, eax;
 			add ecx, 0x78;
 			mov wxRemarkAddr, ecx;
+            mov ecx, eax;
+            add ecx, 0x70;
+            mov wxTypeAddr,ecx;
+            mov ecx, eax;
+            add ecx, 0x74;
+            mov wxVerifyFlagAddr,ecx;
 			mov ecx, dword ptr [eax];
 			mov LeftTreeAddr, ecx;
 			popad;
         }
-        WxFriendStruct p(wxIdAddr, wxNumberAddr, wxNickNameAddr, wxRemarkAddr);
+        WxFriendStruct p(wxIdAddr, wxNumberAddr, wxNickNameAddr, wxRemarkAddr, wxTypeAddr, wxVerifyFlagAddr);
         WxFriendList.push_back(p);
 #ifdef _DEBUG
         wcout << (wchar_t *)(*(DWORD *)p.wxIdAddr) << endl;
@@ -116,7 +124,7 @@ WxFriendStruct *__stdcall GetFriendList()
             break;
         }
     }
-    WxFriendStruct nullp(NULL, NULL, NULL, NULL);
+    WxFriendStruct nullp(NULL, NULL, NULL, NULL, NULL, NULL);
     WxFriendList.push_back(nullp);
     return WxFriendList.data();
 }

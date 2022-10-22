@@ -169,12 +169,18 @@ struct WxFriendStruct
     DWORD wxNumberAddr;
     DWORD wxNickNameAddr;
     DWORD wxRemarkAddr;
-    WxFriendStruct(DWORD wxIdAddr, DWORD wxNumberAddr, DWORD wxNickNameAddr, DWORD wxRemarkAddr)
+    DWORD wxTypeAddr;
+    DWORD wxVerifyFlagAddr;
+    WxFriendStruct(DWORD wxIdAddr, DWORD wxNumberAddr,
+                   DWORD wxNickNameAddr, DWORD wxRemarkAddr,
+                   DWORD wxTypeAddr, DWORD wxVerfifyFlagAddr)
     {
         this->wxIdAddr = wxIdAddr;
         this->wxNumberAddr = wxNumberAddr;
         this->wxNickNameAddr = wxNickNameAddr;
         this->wxRemarkAddr = wxRemarkAddr;
+        this->wxTypeAddr = wxTypeAddr;
+        this->wxVerifyFlagAddr = wxVerfifyFlagAddr;
     }
 };
 
