@@ -378,6 +378,17 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR transferid,
             /* [retval][out] */ int *__result) = 0;
         
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CSendEmotion( 
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR img_path,
+            /* [retval][out] */ int *__result) = 0;
+        
+        virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CGetMsgCDN( 
+            /* [in] */ DWORD pid,
+            /* [in] */ ULONG64 msgid,
+            /* [retval][out] */ BSTR *__result) = 0;
+        
     };
     
     
@@ -750,6 +761,19 @@ EXTERN_C const IID IID_IWeChatRobot;
             /* [in] */ BSTR transferid,
             /* [retval][out] */ int *__result);
         
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CSendEmotion )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ BSTR wxid,
+            /* [in] */ BSTR img_path,
+            /* [retval][out] */ int *__result);
+        
+        /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CGetMsgCDN )( 
+            IWeChatRobot * This,
+            /* [in] */ DWORD pid,
+            /* [in] */ ULONG64 msgid,
+            /* [retval][out] */ BSTR *__result);
+        
         END_INTERFACE
     } IWeChatRobotVtbl;
 
@@ -935,6 +959,12 @@ EXTERN_C const IID IID_IWeChatRobot;
 
 #define IWeChatRobot_CGetTransfer(This,pid,wxid,transcationid,transferid,__result)	\
     ( (This)->lpVtbl -> CGetTransfer(This,pid,wxid,transcationid,transferid,__result) ) 
+
+#define IWeChatRobot_CSendEmotion(This,pid,wxid,img_path,__result)	\
+    ( (This)->lpVtbl -> CSendEmotion(This,pid,wxid,img_path,__result) ) 
+
+#define IWeChatRobot_CGetMsgCDN(This,pid,msgid,__result)	\
+    ( (This)->lpVtbl -> CGetMsgCDN(This,pid,msgid,__result) ) 
 
 #endif /* COBJMACROS */
 

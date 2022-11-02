@@ -66,6 +66,7 @@ void __stdcall HookVoiceMsg()
     WeChatWinBase = GetWeChatWinBase();
     if (VoiceMsgHooked || !WeChatWinBase)
         return;
+    SetDownloadTime();
     HookVoiceMsgAddr = WeChatWinBase + HookVoiceMsgAddrOffset;
     HookVoiceMsgNextCall = WeChatWinBase + HookVoiceMsgNextCallOffset;
     HookVoiceMsgJmpBackAddr = HookVoiceMsgAddr + 0x5;
@@ -89,8 +90,7 @@ BOOL HookVoiceMsgRemote(LPVOID lpParameter)
     {
         global_save_path += L"\\";
     }
-    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
-    if (!FindOrCreateDirectory(createpath.c_str()))
+    if (!FindOrCreateDirectory(global_save_path.c_str()))
     {
         return false;
     }

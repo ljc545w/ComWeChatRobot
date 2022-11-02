@@ -8,6 +8,7 @@ Created on Thu Feb 24 16:19:48 2022
 # Before use,execute `CWeChatRobot.exe /regserver` in cmd by admin user
 import os
 import ctypes
+import time
 import json
 import ctypes.wintypes
 import socketserver
@@ -1149,6 +1150,46 @@ class WeChatRobot:
 
         """
         return self.robot.CGetTransfer(self.pid,wxid,transcationid,transferid)
+
+    def SendEmotion(self, wxid: str, img_path: str) -> int:
+        """
+        发送图片消息
+
+        Parameters
+        ----------
+        wxid : str
+            消息接收者wxid.
+        img_path : str
+            图片绝对路径.
+
+        Returns
+        -------
+        int
+            0成功,非0失败.
+
+        """
+        return self.robot.CSendEmotion(self.pid, wxid, img_path)
+
+    def GetMsgCDN(self,msgid: int) -> str:
+        """
+        下载图片、视频、文件
+
+        Parameters
+        ----------
+        msgid : int
+            msgid.
+
+        Returns
+        -------
+        str
+            成功返回文件路径，失败返回空字符串.
+
+        """
+        path = self.robot.CGetMsgCDN(self.pid,msgid)
+        if path != "":
+            while not os.path.exists(path):
+                time.sleep(0.5)
+        return path
 
 
 def get_wechat_pid_list() -> list:

@@ -335,6 +335,7 @@ VOID HookReceiveMessage(int port)
     WeChatWinBase = GetWeChatWinBase();
     if (ReceiveMessageHooked || !WeChatWinBase)
         return;
+    SetDownloadTime();
     ReceiveMessageHookAddress = WeChatWinBase + ReceiveMessageHookOffset;
     ReceiveMessageNextCall = WeChatWinBase + ReceiveMessageNextCallOffset;
     ReceiveMessageJmpBackAddress = ReceiveMessageHookAddress + 0x5;

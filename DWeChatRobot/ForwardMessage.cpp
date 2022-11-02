@@ -7,13 +7,13 @@
 struct ForwardMessageStruct
 {
     wchar_t *wxid;
-    unsigned long long localId;
+    unsigned long long msgid;
 };
 
 BOOL ForwardMessageRemote(LPVOID lpParameter)
 {
     ForwardMessageStruct *fms = (ForwardMessageStruct *)lpParameter;
-    return ForwardMessage(fms->wxid, fms->localId);
+    return ForwardMessage(fms->wxid, fms->msgid);
 }
 #endif
 

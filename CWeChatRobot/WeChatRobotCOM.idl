@@ -66,6 +66,8 @@ interface IWeChatRobot : IDispatch
     [id(51), helpstring("发送xml消息")] HRESULT CSendXmlMsg([in] DWORD pid, [in] BSTR wxid, [in] BSTR xml, [in] BSTR imgpath,[out, retval] int *__result);
     [id(52), helpstring("退出登录")] HRESULT CLogout([in] DWORD pid,[out, retval] int *__result);
     [id(53), helpstring("收款")] HRESULT CGetTransfer([in] DWORD pid, [in] BSTR wxid, [in] BSTR transcationid, [in] BSTR transferid, [out, retval] int *__result);
+    [id(54), helpstring("发送表情")] HRESULT CSendEmotion([in] DWORD pid, [in] BSTR wxid, [in] BSTR img_path, [ out, retval ] int *__result);
+    [id(55), helpstring("获取CDN")] HRESULT CGetMsgCDN([in] DWORD pid, [in] ULONG64 msgid, [ out, retval ] BSTR *__result);
 };
 [
 	object,

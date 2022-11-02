@@ -89,6 +89,8 @@ class WECHAT_HTTP_APIS:
     WECHAT_MSG_SEND_XML = 43                    # 发送xml消息
     WECHAT_LOGOUT = 44                          # 退出登录
     WECHAT_GET_TRANSFER = 45                    # 收款
+    WECHAT_MSG_SEND_EMOTION = 46                # 发送表情
+    WECHAT_GET_CDN = 47                         # 下载文件、视频、图片
 
 APIS = WECHAT_HTTP_APIS
 
@@ -197,7 +199,9 @@ class WECHAT_HTTP_API_PARAM_TEMPLATES:
         APIS.WECHAT_GET_A8KEY: {"url":""},
         APIS.WECHAT_MSG_SEND_XML: {"wxid":"filehelper","xml":"","img_path":""},
         APIS.WECHAT_LOGOUT: {},
-        APIS.WECHAT_GET_TRANSFER: {"wxid":"","transcationid":"","transferid":""}
+        APIS.WECHAT_GET_TRANSFER: {"wxid":"","transcationid":"","transferid":""},
+        APIS.WECHAT_MSG_SEND_EMOTION: {"wxid":"","img_path":""},
+        APIS.WECHAT_GET_CDN: {"msgid":2 ** 64 - 1},
     }
 
     def get_http_template(self, api_number):

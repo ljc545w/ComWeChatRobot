@@ -1,6 +1,7 @@
 ﻿// pch.cpp: 与预编译标头对应的源文件
 
 #include "pch.h"
+#include "io.h"
 #include <functional>
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
@@ -37,19 +38,15 @@ DWORD GetWeChatWinBase()
 
 BOOL FindOrCreateDirectory(const wchar_t *pszPath)
 {
-    WIN32_FIND_DATA fd;
-    HANDLE hFind = ::FindFirstFile(pszPath, &fd);
-    if (hFind != INVALID_HANDLE_VALUE)
+    string dir = unicode_to_gb2312((wchar_t *)pszPath);
+    char last_char = dir.back();
+    if (last_char != '\\')
     {
-        FindClose(hFind);
+        dir += '\\';
+    }
+    if (!_access(dir.c_str(), 0))
         return true;
-    }
-
-    if (!::CreateDirectory(pszPath, NULL))
-    {
-        return false;
-    }
-    return true;
+    return MakeSureDirectoryPathExists(dir.c_str());
 }
 
 /*

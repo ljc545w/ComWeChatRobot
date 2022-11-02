@@ -148,4 +148,9 @@ BOOL __stdcall GetTransfer(wstring wxid, wstring transcationid, wstring transfer
 {
     return GetTransfer(WS2LW(wxid), WS2LW(transcationid), WS2LW(transferid));
 }
+
+BOOL __stdcall SendEmotion(wstring wxid, wstring img_path)
+{
+    return SendEmotion(WS2LW(wxid), WS2LW(img_path));
+}
 #endif

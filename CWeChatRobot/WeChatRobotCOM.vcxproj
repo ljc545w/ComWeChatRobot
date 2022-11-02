@@ -253,6 +253,7 @@
     <ClInclude Include="SendArticle.h" />
     <ClInclude Include="SendAtText.h" />
     <ClInclude Include="SendCard.h" />
+    <ClInclude Include="SendEmotion.h" />
     <ClInclude Include="SendFile.h" />
     <ClInclude Include="SendImage.h" />
     <ClInclude Include="SendText.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="GetChatRoomMembers.cpp" />
     <ClCompile Include="GetDbHandles.cpp" />
     <ClCompile Include="GetHistoryPublicMsg.cpp" />
+    <ClCompile Include="GetMsgCDN.cpp" />
     <ClCompile Include="GetTransfer.cpp" />
     <ClCompile Include="HookImageMessage.cpp" />
     <ClCompile Include="HookVoiceMessage.cpp" />
@@ -311,6 +313,7 @@
     <ClCompile Include="SendArticle.cpp" />
     <ClCompile Include="SendAtText.cpp" />
     <ClCompile Include="SendCard.cpp" />
+    <ClCompile Include="SendEmotion.cpp" />
     <ClCompile Include="SendFile.cpp" />
     <ClCompile Include="SendImage.cpp" />
     <ClCompile Include="SendText.cpp" />

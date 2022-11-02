@@ -34,11 +34,10 @@ PC微信机器人，实现以下功能：
 `./DWeChatRobot`：注入的DLL实现代码，根据平台配置可编译出socket版和COM版  
 `./old_projects`:  包含C#的调用示例以及3.7.0.26版本的E语言调用  
 `./Python`：python示例和接口测试文件  
-`./wxDriver`：driver的实现代码，有些函数具有一定的学习意义  
-`./Release/CWeChatRobot.exe`：编译的COM组件  
-`./Release/DWeChatRobot.dll`：编译的DLL文件  
-`./Release/socket`：包含wxDriver.dll和socket接口的DLL  
-`./Release/WeChatTools.exe`：用于调试时注入或卸载DLL程序，具体参阅相关代码
+`./wxDriver`：driver的实现代码  
+
+下载二进制文件请到：[Release](https://github.com/ljc545w/ComWeChatRobot/releases)  
+
 # 快速启动
 以管理员权限执行以下命令：
 ```shell
@@ -159,6 +158,10 @@ CWeChatRobot.exe /unregserver
 1. 新增收款接口  
 2. 实时消息接口优化，支持获取音视频聊天信息，支持获取手机端切换联系人时的提示信息  
 3. 修复部分已知问题  
+## 2022.11.2  
+1. 支持发送动态表情  
+2. 支持夜间自动下载视频（需开启一次实时消息监听）  
+3. 新增通过消息id下载消息附件功能  
 
 # 打赏作者
 请给作者一个star，感谢感谢

@@ -626,3 +626,27 @@ STDMETHODIMP CWeChatRobot::CGetTransfer(DWORD pid, BSTR wxid, BSTR transcationid
     *__result = GetTransfer(pid, wxid, transcationid, transferid);
     return S_OK;
 }
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：接收人wxid
+ * 参数2：表情绝对路径
+ * 参数3：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CSendEmotion(DWORD pid, BSTR wxid, BSTR img_path, int *__result)
+{
+    *__result = SendEmotion(pid, wxid, img_path);
+    return S_OK;
+}
+
+/*
+ * 参数0：目标进程pid
+ * 参数1：消息id
+ * 参数2：预返回的值，调用时无需提供
+ */
+STDMETHODIMP CWeChatRobot::CGetMsgCDN(DWORD pid, ULONG64 msgid, BSTR *__result)
+{
+    _bstr_t path = (_bstr_t)GetMsgCND(pid, msgid).c_str();
+    *__result = path;
+    return S_OK;
+}

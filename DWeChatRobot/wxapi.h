@@ -37,6 +37,7 @@
 #include "GetA8Key.h"
 #include "Logout.h"
 #include "GetTransfer.h"
+#include "SendEmotion.h"
 
 using namespace std;
 #pragma comment(lib, "version.lib")

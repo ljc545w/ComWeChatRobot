@@ -148,6 +148,9 @@
     <Filter Include="未分类\收款">
       <UniqueIdentifier>{f24eb4af-96d0-41a3-ba1a-799d49f2fb4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送表情">
+      <UniqueIdentifier>{63a49bf5-1537-4fb1-be9a-acecc57ca98c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -284,6 +287,9 @@
     </ClInclude>
     <ClInclude Include="GetTransfer.h">
       <Filter>未分类\收款</Filter>
+    </ClInclude>
+    <ClInclude Include="SendEmotion.h">
+      <Filter>发送消息\发送表情</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -424,6 +430,15 @@
     </ClCompile>
     <ClCompile Include="GetTransfer.cpp">
       <Filter>未分类\收款</Filter>
+    </ClCompile>
+    <ClCompile Include="SendEmotion.cpp">
+      <Filter>发送消息\发送表情</Filter>
+    </ClCompile>
+    <ClCompile Include="GetMsgCDN.cpp">
+      <Filter>接收消息</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatMsg.cpp">
+      <Filter>接收消息</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

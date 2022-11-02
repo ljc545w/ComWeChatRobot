@@ -35,11 +35,13 @@
 #include "SendXmlMsg.h"
 #include "Logout.h"
 #include "GetTransfer.h"
+#include "SendEmotion.h"
 
 #define DLLNAME L"DWeChatRobot.dll"
 
 #define SendTextRemote "SendTextRemote"
 #define SendImageRemote "SendImageRemote"
+#define SendEmotionRemote "SendEmotionRemote"
 #define SendFileRemote "SendFileRemote"
 #define SendArticleRemote "SendArticleRemote"
 #define SendCardRemote "SendCardRemote"
@@ -100,3 +102,4 @@
 #define LogoutRemote "Logout"
 
 #define GetTransferRemote "GetTransferRemote"
+#define GetMsgCDNRemote "GetMsgCDNRemote"
