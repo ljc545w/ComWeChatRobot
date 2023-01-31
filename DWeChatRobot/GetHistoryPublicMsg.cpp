@@ -148,8 +148,13 @@ BOOL __stdcall GetHistoryPublicMsg(wchar_t *PublicId, wchar_t *Offset)
     if (!H5ExtBufHooked || isSuccess == 0) return FALSE;
     return TRUE;
 }
-
 #ifndef USE_SOCKET
+struct GetPublicMsgStruct
+{
+    wchar_t *PublicId;
+    wchar_t *Offset;
+};
+
 struct PublicMsgResponseStruct
 {
     DWORD buffer = 0;

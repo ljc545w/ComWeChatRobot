@@ -149,6 +149,9 @@
     <Filter Include="未分类\收款">
       <UniqueIdentifier>{79bb1058-041b-4bdc-8678-0369c294e570}</UniqueIdentifier>
     </Filter>
+    <Filter Include="发送消息\发送表情">
+      <UniqueIdentifier>{75c46b26-c4df-4772-862b-839be6a2bf95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -298,6 +301,9 @@
     <ClInclude Include="GetTransfer.h">
       <Filter>未分类\收款</Filter>
     </ClInclude>
+    <ClInclude Include="SendEmotion.h">
+      <Filter>发送消息\发送表情</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WeChatRobotCOM.cpp">
@@ -446,6 +452,12 @@
     </ClCompile>
     <ClCompile Include="GetTransfer.cpp">
       <Filter>未分类\收款</Filter>
+    </ClCompile>
+    <ClCompile Include="SendEmotion.cpp">
+      <Filter>发送消息\发送表情</Filter>
+    </ClCompile>
+    <ClCompile Include="GetMsgCDN.cpp">
+      <Filter>接收消息</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

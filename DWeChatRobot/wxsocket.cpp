@@ -632,6 +632,31 @@ void request_event(mg_http_message *hm, string &ret, struct mg_connection *c)
         ret = ret_data.dump();
         break;
     }
+    case WECHAT_MSG_SEND_EMOTION:
+    {
+        wstring wxid = get_http_param_str(hm, jData, "wxid", method);
+        wstring img_path = get_http_param_str(hm, jData, "img_path", method);
+        BOOL status = SendEmotion(wxid, img_path);
+        json ret_data = {{"msg", status}, {"result", "OK"}};
+        ret = ret_data.dump();
+        break;
+    }
+    case WECHAT_GET_CDN:
+    {
+        ULONG64 msgid = get_http_param_ulong64(hm, jData, "msgid", method);
+        wstring cdn_path = GetMsgCDN(msgid);
+        if (cdn_path == L"")
+        {
+            json ret_data = {{"msg", 0}, {"result", "OK"}};
+            ret = ret_data.dump();
+        }
+        else
+        {
+            json ret_data = {{"msg", 1}, {"result", "OK"}, {"path", unicode_to_utf8(WS2LW(cdn_path))}};
+            ret = ret_data.dump();
+        }
+        break;
+    }
     default:
         // char* wxid = mg_json_get_str(hm->body, "$.wxid");
         break;

@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <imagehlp.h>
 #include <time.h>
 #include "wxdata.h"
 #include "wxapi.h"

@@ -2,13 +2,11 @@
 
 #define HookImageMsgAddrOffset 0x10732D26 - 0x10000000
 #define HookImageMsgNextCallOffset 0x10732160 - 0x10000000
-#define AutoDownloadTimeSettingOffset 0x239EC50
 
 BOOL ImageMsgHooked = false;
-static DWORD WeChatWinBase = GetWeChatWinBase();
-static DWORD HookImageMsgAddr = WeChatWinBase + HookImageMsgAddrOffset;
-static DWORD HookImageMsgNextCall = WeChatWinBase + HookImageMsgNextCallOffset;
-static DWORD HookImageMsgJmpBackAddr = HookImageMsgAddr + 0x5;
+static DWORD HookImageMsgAddr = 0;
+static DWORD HookImageMsgNextCall = 0;
+static DWORD HookImageMsgJmpBackAddr = 0;
 static char ImageMsgOldAsm[5] = {0};
 static wstring global_save_path = L"";
 
@@ -82,27 +80,14 @@ __declspec(naked) void dealImageMsg()
 
 void __stdcall HookImageMsg()
 {
-    WeChatWinBase = GetWeChatWinBase();
+    DWORD WeChatWinBase = GetWeChatWinBase();
     if (ImageMsgHooked || !WeChatWinBase)
         return;
+    SetDownloadTime();
     HookImageMsgAddr = WeChatWinBase + HookImageMsgAddrOffset;
     HookImageMsgNextCall = WeChatWinBase + HookImageMsgNextCallOffset;
     HookImageMsgJmpBackAddr = HookImageMsgAddr + 0x5;
     HookAnyAddress(HookImageMsgAddr, dealImageMsg, ImageMsgOldAsm);
-    char settime[] = "00:00-00:00";
-    DWORD AutoDownloadTimeSettingAddr = GetWeChatWinBase() + AutoDownloadTimeSettingOffset;
-    WriteProcessMemory(GetCurrentProcess(), (LPVOID)AutoDownloadTimeSettingAddr, settime, strlen(settime) + 1, 0);
-
-    // video auto
-    BYTE nopVideo[] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90};
-    DWORD nopVideoAddr = WeChatWinBase + 0x48CE1B;
-    WriteProcessMemory(GetCurrentProcess(), (LPVOID)nopVideoAddr, &nopVideo, sizeof(nopVideo), 0);
-
-    // image auto
-    BYTE nopImg[] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90};
-    DWORD nopImgAddr = WeChatWinBase + 0x48D56B;
-    WriteProcessMemory(GetCurrentProcess(), (LPVOID)nopImgAddr, &nopImg, sizeof(nopImg), 0);
-
     ImageMsgHooked = true;
 }
 
@@ -122,8 +107,7 @@ BOOL HookImageMsgRemote(LPVOID lpParameter)
     {
         global_save_path += L"\\";
     }
-    wstring createpath = global_save_path.substr(0, global_save_path.length() - 1);
-    if (!FindOrCreateDirectory(createpath.c_str()))
+    if (!FindOrCreateDirectory(global_save_path.c_str()))
     {
         return false;
     }

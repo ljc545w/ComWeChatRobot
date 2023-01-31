@@ -14,34 +14,33 @@ using namespace std;
  * fill2：占位成员2，默认为0
  * WxString：默认构造函数
  */
-struct WxString
+typedef struct WxStringW
 {
-    wchar_t *buffer;
-    DWORD length;
-    DWORD maxLength;
+    wchar_t *buffer = NULL;
+    DWORD length = 0;
+    DWORD maxLength = 0;
     DWORD fill1 = 0;
     DWORD fill2 = 0;
-    WxString()
-    {
-        WxString(NULL);
-    }
-    WxString(wstring &str)
+    WxStringW() {}
+    WxStringW(wstring &str)
     {
         buffer = (wchar_t *)str.c_str();
         length = str.length();
         maxLength = str.length() * 2;
     }
-    WxString(const wchar_t *pStr)
+    WxStringW(const wchar_t *pStr)
     {
-        WxString((wchar_t *)pStr);
+        buffer = (wchar_t *)pStr;
+        length = wcslen(pStr);
+        maxLength = wcslen(pStr) * 2;
     }
-    WxString(int tmp)
+    WxStringW(int tmp)
     {
         buffer = NULL;
         length = 0x0;
         maxLength = 0x0;
     }
-    WxString(wchar_t *pStr)
+    WxStringW(wchar_t *pStr)
     {
         buffer = pStr;
         length = wcslen(pStr);
@@ -53,7 +52,7 @@ struct WxString
         length = wcslen(pStr);
         maxLength = wcslen(pStr) * 2;
     }
-};
+} WxString;
 
 /*
  * 保存单条信息的结构
@@ -184,8 +183,97 @@ struct WxFriendStruct
     }
 };
 
-struct GetPublicMsgStruct
+typedef struct CHAT_MSGTag
 {
-    wchar_t *PublicId;
-    wchar_t *Offset;
+    DWORD handle1 = 0;
+    DWORD null_value1 = 0;
+    ULONG64 sequence = 0x0;
+    DWORD null_value2[2] = {0};
+    ULONG64 msgsequence = 0x0;
+    DWORD localId = 0;
+    DWORD null_value3[3] = {0};
+    ULONG64 msgid = 0x0;
+    DWORD type = 0x1;
+    DWORD isSendMsg = 0x1;
+    DWORD unknown_value1 = 0x2;
+    DWORD create_time = 0x0;
+    WxString takler = {0};
+    WxString null_string1 = {0};
+    WxString content = {0};
+    DWORD null_value4[2] = {0};
+    DWORD extrabuf = 0;
+    DWORD extrabuf_len = 0;
+    DWORD null_value5[17] = {0};
+    BOOL isSyncMsg = 0x1;
+    DWORD null_value6[21] = {0};
+    DWORD handle2 = 0;
+    DWORD handle3 = 0;
+    void *unknown_ptr1 = NULL;
+    DWORD null_value7[13] = {0};
+    WxString chatroom_member = {0};
+    WxString md5 = {0};
+    WxString thumbnail = {0};
+    WxString file_save_path = {0};
+    DWORD null_value8[11] = {0};
+    WxString extra_info = {0};
+    DWORD null_value9[16] = {0};
+    DWORD unknown_value2 = 0x1;
+    DWORD unknown_value3 = 0x1;
+    DWORD null_value10[7] = {0};
+    DWORD unknown_value4 = 0x1;
+    DWORD null_value11 = 0;
+    DWORD unknown_value5 = 0xFF;
+    DWORD unknown_value6 = 0x1;
+    DWORD null_value12[6] = {0};
+    void *unknown_ptr2 = NULL;
+    DWORD null_value13[2] = {0};
+} CHAT_MSG, *PCHAT_MSG;
+
+struct WxStringA
+{
+    char buffer[0x10] = {0};
+    int length;
+    int maxLength;
+    WxStringA(string &str)
+    {
+        this->length = str.length();
+        this->maxLength = this->length - (this->length % 0x10) + 0xF;
+        if (this->length == 0)
+        {
+            *(DWORD *)this->buffer = 0;
+        }
+        else if (this->length < 0x10)
+        {
+            memcpy(this->buffer, str.c_str(), this->length + 1);
+        }
+        else
+        {
+            *(DWORD *)this->buffer = (DWORD)str.c_str();
+        }
+    }
+    WxStringA(const char *buf)
+    {
+        this->length = strlen(buf);
+        this->maxLength = this->length - (this->length % 0x10) + 0xF;
+        if (this->length == 0)
+        {
+            *(DWORD *)this->buffer = 0;
+        }
+        else if (this->length < 0x10)
+        {
+            memcpy(this->buffer, buf, this->length + 1);
+        }
+        else
+        {
+            *(DWORD *)this->buffer = (DWORD)buf;
+        }
+    }
+    char *get()
+    {
+        if (this->length < 0x10)
+        {
+            return this->buffer;
+        }
+        return (char *)(*(DWORD *)this->buffer);
+    }
 };
