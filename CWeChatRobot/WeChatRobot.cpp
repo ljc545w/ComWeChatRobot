@@ -116,10 +116,13 @@ STDMETHODIMP CWeChatRobot::CSendCard(DWORD pid, BSTR receiver, BSTR sharedwxid, 
  */
 STDMETHODIMP CWeChatRobot::CGetFriendList(DWORD pid, VARIANT *__result)
 {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = GetFriendList(pid);
-    *__result = vsaValue;
+    VariantInit(__result);
+    SAFEARRAY *psaValue = GetFriendList(pid);
+    ATL::CComSafeArray<VARIANT> cpsa;
+    cpsa.Attach(psaValue);
+    ATL::CComVariant cva = cpsa.m_psa;
+    cva.Detach(__result);
+    cpsa.Destroy();
     return S_OK;
 }
 
@@ -207,10 +210,13 @@ STDMETHODIMP CWeChatRobot::CStopReceiveMessage(DWORD pid, int *__result)
  */
 STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(DWORD pid, BSTR chatroomid, VARIANT *__result)
 {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = GetChatRoomMembers(pid, chatroomid);
-    *__result = vsaValue;
+    VariantInit(__result);
+    SAFEARRAY *psaValue = GetChatRoomMembers(pid, chatroomid);
+    ATL::CComSafeArray<VARIANT> cpsa;
+    cpsa.Attach(psaValue);
+    ATL::CComVariant cva = cpsa.m_psa;
+    cva.Detach(__result);
+    cpsa.Destroy();
     return S_OK;
 }
 
@@ -220,10 +226,13 @@ STDMETHODIMP CWeChatRobot::CGetChatRoomMembers(DWORD pid, BSTR chatroomid, VARIA
  */
 STDMETHODIMP CWeChatRobot::CGetDbHandles(DWORD pid, VARIANT *__result)
 {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = GetDbHandles(pid);
-    *__result = vsaValue;
+    VariantInit(__result);
+    SAFEARRAY *psaValue = GetDbHandles(pid);
+    ATL::CComSafeArray<VARIANT> cpsa;
+    cpsa.Attach(psaValue);
+    ATL::CComVariant cva = cpsa.m_psa;
+    cva.Detach(__result);
+    cpsa.Destroy();
     return S_OK;
 }
 
@@ -235,10 +244,13 @@ STDMETHODIMP CWeChatRobot::CGetDbHandles(DWORD pid, VARIANT *__result)
  */
 STDMETHODIMP CWeChatRobot::CExecuteSQL(DWORD pid, DWORD DbHandle, BSTR sql, VARIANT *__result)
 {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = ExecuteSQL(pid, DbHandle, sql);
-    *__result = vsaValue;
+    VariantInit(__result);
+    SAFEARRAY *psaValue = ExecuteSQL(pid, DbHandle, sql);
+    ATL::CComSafeArray<VARIANT> cpsa;
+    cpsa.Attach(psaValue);
+    ATL::CComVariant cva = cpsa.m_psa;
+    cva.Detach(__result);
+    cpsa.Destroy();
     return S_OK;
 }
 
@@ -318,10 +330,13 @@ STDMETHODIMP CWeChatRobot::CStartWeChat(int *__result)
  */
 STDMETHODIMP CWeChatRobot::CSearchContactByNet(DWORD pid, BSTR keyword, VARIANT *__result)
 {
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
-    V_ARRAY(&vsaValue) = SearchContactByNet(pid, keyword);
-    *__result = vsaValue;
+    VariantInit(__result);
+    SAFEARRAY *psaValue = SearchContactByNet(pid, keyword);
+    ATL::CComSafeArray<VARIANT> cpsa;
+    cpsa.Attach(psaValue);
+    ATL::CComVariant cva = cpsa.m_psa;
+    cva.Detach(__result);
+    cpsa.Destroy();
     return S_OK;
 }
 
@@ -545,16 +560,15 @@ STDMETHODIMP CWeChatRobot::COpenBrowser(DWORD pid, BSTR url, int *__result)
 STDMETHODIMP CWeChatRobot::CGetHistoryPublicMsg(DWORD pid, BSTR PublicId, BSTR Offset, VARIANT *__result)
 {
     HRESULT hr = S_OK;
+    VariantInit(__result);
     wstring result = GetHistoryPublicMsg(pid, PublicId, Offset);
-    VARIANT vsaValue;
-    vsaValue.vt = VT_ARRAY | VT_VARIANT;
     SAFEARRAYBOUND rgsaBound = {1, 0};
-    SAFEARRAY *psaValue = SafeArrayCreate(VT_VARIANT, 1, &rgsaBound);
+    ATL::CComSafeArray<VARIANT> cpsa(rgsaBound);
     long index = 0;
     // 数据大小超过16382个字符，客户端调用可能出现异常，因此将数据放入安全数组中传递
-    hr = SafeArrayPutElement(psaValue, &index, &(_variant_t)result.c_str());
-    V_ARRAY(&vsaValue) = psaValue;
-    *__result = vsaValue;
+    hr = SafeArrayPutElement(cpsa.m_psa, &index, &(_variant_t)result.c_str());
+    ATL::CComVariant vsa(cpsa.m_psa);
+    vsa.Detach(__result);
     return S_OK;
 }
 
@@ -576,7 +590,9 @@ STDMETHODIMP CWeChatRobot::CForwardMessage(DWORD pid, BSTR wxid, ULONG64 msgid, 
  */
 STDMETHODIMP CWeChatRobot::CGetQrcodeImage(DWORD pid, VARIANT *__result)
 {
-    *__result = GetQrcodeImage(pid);
+    ATL::CComVariant cva = GetQrcodeImage(pid);
+    VariantInit(__result);
+    cva.Detach(__result);
     return S_OK;
 }
 

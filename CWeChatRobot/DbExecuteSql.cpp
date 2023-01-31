@@ -58,17 +58,17 @@ void ClearResultArray()
             SQLResultStruct *sr = (SQLResultStruct *)&SQLResult[i][j];
             if (sr->ColName)
             {
-                delete sr->ColName;
+                delete[] sr->ColName;
                 sr->ColName = NULL;
             }
             if (sr->content)
             {
-                delete sr->content;
+                delete[] sr->content;
                 sr->content = NULL;
             }
             if (sr->BlobContent)
             {
-                delete sr->BlobContent;
+                delete[] sr->BlobContent;
                 sr->BlobContent = NULL;
             }
         }
@@ -93,29 +93,30 @@ SAFEARRAY *CreateSQLResultSafeArray()
             SQLResultStruct *ptrResult = (SQLResultStruct *)&SQLResult[i][j];
             if (i == 0)
             {
+                ATL::CComVariant val(ptrResult->ColName);
                 Index[0] = 0;
                 Index[1] = j;
-                hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)ptrResult->ColName);
+                hr = SafeArrayPutElement(psaValue, Index, &val);
             }
             Index[0] = i + 1;
             Index[1] = j;
             if (ptrResult->content)
-                hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)ptrResult->content);
+            {
+                ATL::CComVariant val(ptrResult->content);
+                hr = SafeArrayPutElement(psaValue, Index, &val);
+            }
             else
             {
-                VARIANT varChunk;
-                SAFEARRAY *bsa;
                 BYTE *pByte = NULL;
                 SAFEARRAYBOUND rgsabound[1];
                 rgsabound[0].cElements = ptrResult->BlobLength;
                 rgsabound[0].lLbound = 0;
-                bsa = SafeArrayCreate(VT_UI1, 1, rgsabound);
-                SafeArrayAccessData(bsa, (void **)&pByte);
+                ATL::CComSafeArray<BYTE> bsa(rgsabound);
+                SafeArrayAccessData(bsa.m_psa, (void **)&pByte);
                 memcpy(pByte, ptrResult->BlobContent, ptrResult->BlobLength);
-                SafeArrayUnaccessData(bsa);
-                varChunk.vt = VT_ARRAY | VT_UI1;
-                varChunk.parray = bsa;
-                hr = SafeArrayPutElement(psaValue, Index, &(_variant_t)varChunk);
+                SafeArrayUnaccessData(bsa.m_psa);
+                ATL::CComVariant val(bsa.m_psa);
+                hr = SafeArrayPutElement(psaValue, Index, &val);
             }
         }
     }
@@ -140,7 +141,7 @@ VOID ReadSQLResultFromWeChatProcess(HANDLE hProcess, DWORD dwHandle)
             char *ColName = new char[sqlresultAddr.l_ColName + 1];
             sqlresult.ColName = new wchar_t[sqlresultAddr.l_ColName + 1];
             ReadProcessMemory(hProcess, (LPCVOID)sqlresultAddr.ColName, ColName, sqlresultAddr.l_ColName + 1, 0);
-            MultiByteToWideChar(CP_ACP, 0, ColName, -1, sqlresult.ColName, strlen(ColName) + 1);
+            MultiByteToWideChar(CP_UTF8, 0, ColName, -1, sqlresult.ColName, strlen(ColName) + 1);
             char *content = new char[sqlresultAddr.l_content + 1];
             if (!sqlresultAddr.isblob)
             {
