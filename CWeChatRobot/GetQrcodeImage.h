@@ -1,4 +1,6 @@
 #pragma once
 #include <windows.h>
-VARIANT GetQrcodeImage(DWORD pid);
+#include <atlcomcli.h>
+#include <atlsafe.h>
+ATL::CComVariant GetQrcodeImage(DWORD pid);
 BOOL isWxLogin(DWORD pid);

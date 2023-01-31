@@ -31,16 +31,16 @@ struct DbInfoAddrStruct
 
 struct TableInfoStruct
 {
-    char *name;
-    char *tbl_name;
-    char *sql;
-    char *rootpage;
+    std::string name;
+    std::string tbl_name;
+    std::string sql;
+    std::string rootpage;
 };
 
 struct DbInfoStruct
 {
     DWORD handle;
-    wchar_t *dbname;
+    std::wstring dbname;
     vector<TableInfoStruct> tables;
     DWORD count;
 };
@@ -69,7 +69,7 @@ SAFEARRAY *CreateDbInfoSafeArray()
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"dbname");
             ArrayIndex[1] = 0;
             ArrayIndex[2] = {1};
-            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].dbname);
+            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].dbname.c_str());
             ArrayIndex[1] = 1;
             ArrayIndex[2] = {0};
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"Handle");
@@ -81,25 +81,25 @@ SAFEARRAY *CreateDbInfoSafeArray()
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"name");
             ArrayIndex[1] = 2;
             ArrayIndex[2] = {1};
-            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].name);
+            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].name.c_str());
             ArrayIndex[1] = 3;
             ArrayIndex[2] = {0};
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"tbl_name");
             ArrayIndex[1] = 3;
             ArrayIndex[2] = {1};
-            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].tbl_name);
+            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].tbl_name.c_str());
             ArrayIndex[1] = 4;
             ArrayIndex[2] = {0};
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"rootpage");
             ArrayIndex[1] = 4;
             ArrayIndex[2] = {1};
-            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].rootpage);
+            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].rootpage.c_str());
             ArrayIndex[1] = 5;
             ArrayIndex[2] = {0};
             hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)L"sql");
             ArrayIndex[1] = 5;
             ArrayIndex[2] = {1};
-            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].sql);
+            hr = SafeArrayPutElement(psaValue, ArrayIndex, &(_variant_t)dbs[i].tables[j].sql.c_str());
             index++;
         }
     }
@@ -125,22 +125,33 @@ SAFEARRAY *GetDbHandles(DWORD pid)
         DbInfoStruct db = {0};
         db.handle = dbaddr.handle;
         db.count = dbaddr.count;
-        db.dbname = new wchar_t[dbaddr.l_dbname + 1];
-        ReadProcessMemory(hp.GetHandle(), (LPCVOID)dbaddr.dbname, db.dbname, sizeof(wchar_t) * (dbaddr.l_dbname + 1), 0);
+        wchar_t *wbuf = new wchar_t[dbaddr.l_dbname + 1];
+        ReadProcessMemory(hp.GetHandle(), (LPCVOID)dbaddr.dbname, wbuf, sizeof(wchar_t) * (dbaddr.l_dbname + 1), 0);
+        db.dbname = std::wstring(wbuf);
+        delete[] wbuf;
         DWORD db_table_start_addr = dbaddr.v_data;
         while (db_table_start_addr < dbaddr.v_end1)
         {
+            char *buf = NULL;
             TableInfoAddrStruct tbaddr = {0};
-            TableInfoStruct tb = {0};
+            TableInfoStruct tb;
             ReadProcessMemory(hp.GetHandle(), (LPCVOID)db_table_start_addr, &tbaddr, sizeof(TableInfoAddrStruct), 0);
-            tb.name = new char[tbaddr.l_name + 1];
-            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.name, tb.name, tbaddr.l_name + 1, 0);
-            tb.tbl_name = new char[tbaddr.l_tbl_name + 1];
-            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.tbl_name, tb.tbl_name, tbaddr.l_tbl_name + 1, 0);
-            tb.rootpage = new char[tbaddr.l_rootpage + 1];
-            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.rootpage, tb.rootpage, tbaddr.l_rootpage + 1, 0);
-            tb.sql = new char[tbaddr.l_sql + 1];
-            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.sql, tb.sql, tbaddr.l_sql + 1, 0);
+            buf = new char[tbaddr.l_name + 1];
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.name, buf, tbaddr.l_name + 1, 0);
+            tb.name = std::string(buf);
+            delete[] buf;
+            buf = new char[tbaddr.l_tbl_name + 1];
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.tbl_name, buf, tbaddr.l_tbl_name + 1, 0);
+            tb.tbl_name = std::string(buf);
+            delete[] buf;
+            buf = new char[tbaddr.l_rootpage + 1];
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.rootpage, buf, tbaddr.l_rootpage + 1, 0);
+            tb.rootpage = std::string(buf);
+            delete[] buf;
+            buf = new char[tbaddr.l_sql + 1];
+            ReadProcessMemory(hp.GetHandle(), (LPCVOID)tbaddr.sql, buf, tbaddr.l_sql + 1, 0);
+            tb.sql = std::string(buf);
+            delete[] buf;
             db.tables.push_back(tb);
             db_table_start_addr += sizeof(TableInfoAddrStruct);
         }

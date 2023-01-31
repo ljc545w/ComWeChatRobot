@@ -1,4 +1,4 @@
 #pragma once
-#include<windows.h>
+#include <windows.h>
 
-SAFEARRAY* ExecuteSQL(DWORD pid,DWORD DbHandle, BSTR sql);
+SAFEARRAY *ExecuteSQL(DWORD pid, DWORD DbHandle, BSTR sql);
